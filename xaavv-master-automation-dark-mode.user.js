@@ -34,8 +34,36 @@
   const VIDEO_PROGRESS_FILL_CLASS = 'xaavv-video-progress-fill';
   const VIDEO_PROGRESS_HANDLE_CLASS = 'xaavv-video-progress-handle';
   const VIDEO_PROGRESS_BOUND_ATTR = 'data-xaavv-video-progress-bound';
-  const PLAY_ICON = '\u25B6';
-  const PAUSE_ICON = '\u23F8';
+  const PLAY_BUTTON_PLAY_ICON = `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M8 5.5 L18.5 12 L8 18.5 Z"></path>
+    </svg>
+  `;
+  const PLAY_BUTTON_PAUSE_ICON = `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="7" y="5.5" width="4" height="13" rx="1"></rect>
+      <rect x="13" y="5.5" width="4" height="13" rx="1"></rect>
+    </svg>
+  `;
+
+  const isVerticalVideoRect = (rect) => {
+    return !!rect && rect.height > rect.width * 1.05;
+  };
+
+  const setPlayButtonIcon = (button, isPlaying) => {
+    if (!(button instanceof HTMLElement)) {
+      return;
+    }
+
+    const desiredState = isPlaying ? 'pause' : 'play';
+    if (button.dataset.xaavvIconState === desiredState) {
+      return;
+    }
+
+    button.dataset.xaavvIconState = desiredState;
+    button.innerHTML = isPlaying ? PLAY_BUTTON_PAUSE_ICON : PLAY_BUTTON_PLAY_ICON;
+    button.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+  };
 
   if (document.getElementById(STYLE_ID)) {
     return;
@@ -229,6 +257,15 @@
       box-shadow: 0 4px 16px rgba(157, 140, 255, 0.4) !important;
       transition: all 0.2s ease !important;
       cursor: pointer !important;
+    }
+
+    #sp_play_btn svg {
+      width: 24px !important;
+      height: 24px !important;
+      display: block !important;
+      fill: #120f22 !important;
+      -webkit-text-fill-color: #120f22 !important;
+      pointer-events: none !important;
     }
 
     #sp_play_btn:hover {
@@ -1182,15 +1219,27 @@
     const rect = getPlaybackVideoRect(videos) || bestVideo.getBoundingClientRect();
     const searchButton = findSearchButton();
     const buttonWidth = 108;
+    const buttonHeight = 34;
+    const isVerticalVideo = isVerticalVideoRect(rect);
     let top = 106;
     let left = Math.max(12, window.innerWidth - buttonWidth - 16);
 
     if (searchButton instanceof HTMLElement) {
       const searchRect = searchButton.getBoundingClientRect();
-      // Position download button directly below search button with safe spacing
-      top = Math.round(searchRect.bottom + 16);
-      // Align with search button but ensure no overlap
-      left = Math.round(Math.max(12, searchRect.left));
+      if (isVerticalVideo) {
+        // For vertical videos, move the button to the right of search to avoid stacking overlap.
+        top = Math.round(searchRect.top + Math.max(0, (searchRect.height - buttonHeight) / 2));
+        left = Math.round(searchRect.right + 12);
+
+        if (left + buttonWidth > window.innerWidth - 12) {
+          top = Math.round(searchRect.bottom + 16);
+          left = Math.round(Math.max(12, searchRect.left));
+        }
+      } else {
+        // Position download button directly below search button with safe spacing.
+        top = Math.round(searchRect.bottom + 16);
+        left = Math.round(Math.max(12, searchRect.left));
+      }
     }
 
     // Clamp to ensure button doesn't overlap video or go off-screen
@@ -1238,10 +1287,19 @@
     bar.appendChild(handle);
     wrapper.appendChild(bar);
 
+    const videoRect = video.getBoundingClientRect();
+    const isVerticalVideo = isVerticalVideoRect(videoRect);
+    const wrapperBottom = isVerticalVideo ? 18 : -10;
+    const wrapperHeight = isVerticalVideo ? 20 : 14;
+
     // Position wrapper as overlay on video (use CSS for bottom positioning)
     wrapper.style.setProperty('position', 'absolute', 'important');
+    wrapper.style.setProperty('bottom', `${wrapperBottom}px`, 'important');
     wrapper.style.setProperty('left', '0', 'important');
     wrapper.style.setProperty('right', '0', 'important');
+    wrapper.style.setProperty('height', `${wrapperHeight}px`, 'important');
+    wrapper.style.setProperty('z-index', '18', 'important');
+    wrapper.style.setProperty('touch-action', 'manipulation', 'important');
 
     // Wire seek on click
     wrapper.addEventListener('click', (ev) => {
@@ -1277,28 +1335,44 @@
     video.addEventListener('play', updateProgress, { passive: true });
     video.addEventListener('pause', updateProgress, { passive: true });
 
-    // Show progress bar on any mouseover of the video
-    video.addEventListener('mouseover', () => {
+    let hideTimer = null;
+    const showProgress = () => {
+      if (hideTimer) {
+        window.clearTimeout(hideTimer);
+        hideTimer = null;
+      }
       wrapper.classList.add('visible');
-    }, { passive: true });
+    };
 
-    video.addEventListener('mouseout', () => {
-      wrapper.classList.remove('visible');
-    }, { passive: true });
+    const hideProgress = () => {
+      if (hideTimer) {
+        window.clearTimeout(hideTimer);
+      }
 
-    // Also listen on the wrapper itself for hover
-    wrapper.addEventListener('mouseover', () => {
-      wrapper.classList.add('visible');
-    }, { passive: true });
+      hideTimer = window.setTimeout(() => {
+        wrapper.classList.remove('visible');
+      }, 120);
+    };
 
-    wrapper.addEventListener('mouseout', () => {
-      wrapper.classList.remove('visible');
-    }, { passive: true });
+    // Show progress bar on pointer movement or hover over either the video or the seek bar.
+    video.addEventListener('pointerenter', showProgress, { passive: true });
+    video.addEventListener('pointermove', showProgress, { passive: true });
+    video.addEventListener('mouseover', showProgress, { passive: true });
+
+    video.addEventListener('pointerleave', hideProgress, { passive: true });
+    video.addEventListener('mouseout', hideProgress, { passive: true });
+
+    // Also listen on the wrapper itself for hover.
+    wrapper.addEventListener('pointerenter', showProgress, { passive: true });
+    wrapper.addEventListener('pointermove', showProgress, { passive: true });
+    wrapper.addEventListener('mouseover', showProgress, { passive: true });
+
+    wrapper.addEventListener('pointerleave', hideProgress, { passive: true });
+    wrapper.addEventListener('mouseout', hideProgress, { passive: true });
 
     // Inject into DOM hierarchy - append to video element's parent for proper positioning
     wrapper.style.setProperty('width', '100%', 'important');
-    wrapper.style.setProperty('height', '5px', 'important');
-    wrapper.style.setProperty('z-index', '15', 'important');
+    wrapper.style.setProperty('background', 'transparent', 'important');
 
     if (video.parentNode instanceof HTMLElement) {
       // Ensure parent is relatively positioned for absolute child
@@ -1306,8 +1380,6 @@
       if (parentStyle.position === 'static' || !parentStyle.position) {
         video.parentNode.style.setProperty('position', 'relative', 'important');
       }
-      // Set bottom positioning on the wrapper for CSS to take effect
-      wrapper.style.setProperty('bottom', '-10px', 'important');
       video.parentNode.appendChild(wrapper);
     } else {
       // Fallback: append to video itself
@@ -1462,8 +1534,7 @@
 
     const playBtnNode = document.getElementById('sp_play_btn');
     if (playBtnNode instanceof HTMLElement) {
-      playBtnNode.textContent = isPlaying ? PAUSE_ICON : PLAY_ICON;
-      playBtnNode.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+      setPlayButtonIcon(playBtnNode, isPlaying);
     }
 
     const seekOverlayEls = document.querySelectorAll('#sp_seek_gesture, #sp_seek_ui');
