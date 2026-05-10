@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.15
+// @version      1.2.16
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -1322,33 +1322,99 @@
     wrapper.style.setProperty('z-index', '18', 'important');
     wrapper.style.setProperty('touch-action', 'manipulation', 'important');
 
+    const getActiveSeekTargets = () => {
+      const videos = Array.from(document.querySelectorAll('video')).filter((v) => v instanceof HTMLVideoElement);
+      let primary = null;
+      let primaryScore = -1;
+
+      for (const candidate of videos) {
+        const style = getComputedStyle(candidate);
+        if (style.display === 'none' || style.visibility === 'hidden') {
+          continue;
+        }
+
+        const rect = candidate.getBoundingClientRect();
+        if (rect.width <= 1 || rect.height <= 1) {
+          continue;
+        }
+
+        if (!Number.isFinite(candidate.duration) || candidate.duration <= 0) {
+          continue;
+        }
+
+        const hasSource = !!(candidate.currentSrc || candidate.src);
+        const area = rect.width * rect.height;
+        const playingBonus = (!candidate.paused && !candidate.ended) ? 1000000000 : 0;
+        const sourceBonus = hasSource ? 1000000 : 0;
+        const score = area + playingBonus + sourceBonus;
+
+        if (score > primaryScore) {
+          primary = candidate;
+          primaryScore = score;
+        }
+      }
+
+      if (!(primary instanceof HTMLVideoElement)) {
+        return [video];
+      }
+
+      const synced = videos.filter((v) => Number.isFinite(v.duration)
+        && v.duration > 0
+        && Math.abs(v.duration - primary.duration) < 2);
+
+      return synced.length ? synced : [primary];
+    };
+
+    const seekFromEvent = (ev) => {
+      const rect = wrapper.getBoundingClientRect();
+      const clickX = ev.clientX - rect.left;
+      const percent = Math.max(0, Math.min(1, clickX / rect.width));
+      const targets = getActiveSeekTargets();
+
+      for (const target of targets) {
+        if (!(target instanceof HTMLVideoElement) || !Number.isFinite(target.duration) || target.duration <= 0) {
+          continue;
+        }
+        target.currentTime = percent * target.duration;
+      }
+    };
+
     // Wire seek on click
     wrapper.addEventListener('click', (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
+      seekFromEvent(ev);
+    }, true);
 
-      if (!(video instanceof HTMLVideoElement) || !Number.isFinite(video.duration)) {
+    wrapper.addEventListener('pointerdown', (ev) => {
+      if (ev.button !== 0) {
         return;
       }
-
-      const rect = wrapper.getBoundingClientRect();
-      const clickX = ev.clientX - rect.left;
-      const percent = Math.max(0, Math.min(1, clickX / rect.width));
-      video.currentTime = percent * video.duration;
+      ev.preventDefault();
+      ev.stopPropagation();
+      seekFromEvent(ev);
     }, true);
 
     // Update on video timeupdate
     const updateProgress = () => {
-      if (!(video instanceof HTMLVideoElement)) {
+      const targets = getActiveSeekTargets();
+      const active = targets.find((v) => !v.paused && !v.ended) || targets[0] || video;
+      if (!(active instanceof HTMLVideoElement)) {
         return;
       }
 
-      const duration = video.duration || 0;
-      const current = video.currentTime || 0;
+      const duration = active.duration || 0;
+      const current = active.currentTime || 0;
       const percent = duration > 0 ? (current / duration) * 100 : 0;
 
       fill.style.setProperty('width', `${percent}%`, 'important');
       handle.style.setProperty('left', `${percent}%`, 'important');
+
+      if (active.buffered && active.buffered.length > 0 && duration > 0) {
+        const bufferedEnd = active.buffered.end(active.buffered.length - 1);
+        const bufferedPct = Math.max(0, Math.min(100, (bufferedEnd / duration) * 100));
+        buffer.style.setProperty('width', `${bufferedPct}%`, 'important');
+      }
     };
 
     video.addEventListener('timeupdate', updateProgress, { passive: true });
