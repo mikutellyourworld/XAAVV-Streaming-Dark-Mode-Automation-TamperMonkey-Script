@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.28.user.js
+  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.29.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,28 +23,28 @@
 
 ---
 
-## What's New in v1.2.28
+## What's New in v1.2.29
 
 ### ✅ This Iteration Fixes
 
-#### 1. Top controls restored on play pages
-- **Issue before:** Search, login, and register could disappear on some play-page renders.
-- **Now:** Top controls remain visible and clickable on play pages.
-- **Technical change:** Removed play-page rules that collapsed/hidden entire header containers.
+#### 1. Search/download alignment tightened
+- **Issue before:** Download alignment was close but still visually off from the top search label.
+- **Now:** Download alignment is anchored using the visible search label position for better visual match.
+- **Technical change:** Added a search-label locator and used its right edge for download placement calculations.
 
-#### 2. Header background no longer overlaps video
-- **Issue before:** The top bar background could extend into/over the video area.
-- **Now:** Only top-level header wrappers are forced transparent on play pages.
-- **Technical change:** Transparency logic was narrowed to top-level wrappers and pseudo-elements instead of all descendants.
+#### 2. Login/register/hamburger backgrounds are transparent
+- **Issue before:** Top-right control chips could still render dark backgrounds on play pages.
+- **Now:** Login, register, and hamburger controls render transparent backgrounds.
+- **Technical change:** Added stricter play-page selectors and reinforced transparency through runtime hardening.
 
-#### 3. Runtime hardening aligned with CSS behavior
-- **Issue before:** JS hardening could re-apply dark backgrounds to header bars after CSS made them transparent.
-- **Now:** JS hardening keeps top wrappers transparent on play pages while still preserving readable text.
-- **Technical change:** Added play-page guards in the known-bar hardening and nuclear pass logic.
+#### 3. Download button background is transparent
+- **Issue before:** Download chip retained a dark fill.
+- **Now:** Download background is transparent while preserving border and readable text color.
+- **Technical change:** Added play-page CSS override and inline style reinforcement during sync updates.
 
-#### 4. Version and file naming fully synchronized
-- **Now:** File name and internal metadata both use 1.2.27.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.28.user.js`
+#### 4. Version and file naming synchronized
+- **Now:** File name and internal metadata both use 1.2.29.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.29.user.js`
 
 ---
 
@@ -105,7 +105,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.28.user.js
+  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.29.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -119,7 +119,7 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.28.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.29.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -140,9 +140,9 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.28)
+2. Find the latest release (v1.2.29)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.28.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.29.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -243,7 +243,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.28.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.29.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -256,7 +256,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.28
+- **Current Version:** 1.2.29
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers
@@ -336,9 +336,10 @@ This script combines:
 
 **Need help?** Check [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) or visit the GitHub repository.
 
-**Version:** 1.2.28 | **Updated:** 2026-05-10
+**Version:** 1.2.29 | **Updated:** 2026-05-10
 
 ### v1.2.21 (2024-06-09)
 - UI polish for play pages: Download button never overlaps search, always below and right-aligned; top bar fully transparent and non-blocking.
 - All changes are documented in the userscript source code and documentation files.
+
 

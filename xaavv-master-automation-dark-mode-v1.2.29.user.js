@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.28
+// @version      1.2.29
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.28';
+  const SCRIPT_VERSION = '1.2.29';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -160,6 +160,18 @@
       filter: brightness(1.06) !important;
       transform: translateY(-1px) !important;
       opacity: 1 !important;
+    }
+
+    body.sp-play #xaavv-video-download-btn,
+    html.sp-play #xaavv-video-download-btn {
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      border-color: #c3b7ff !important;
+      color: #eceffd !important;
+      -webkit-text-fill-color: #eceffd !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
     }
 
     .xaavv-video-progress-wrapper {
@@ -1312,6 +1324,41 @@
     return best;
   };
 
+  const findSearchLabel = () => {
+    const candidates = Array.from(document.querySelectorAll('a, button, span, div'));
+    let best = null;
+    let bestScore = -1;
+
+    for (const node of candidates) {
+      if (!(node instanceof HTMLElement)) {
+        continue;
+      }
+
+      const label = (node.textContent || '').trim().toLowerCase();
+      if (label !== 'search' && !label.includes('\u641C\u7D22')) {
+        continue;
+      }
+
+      const rect = node.getBoundingClientRect();
+      if (rect.width <= 1 || rect.height <= 1) {
+        continue;
+      }
+
+      const inTopBand = rect.top >= 0 && rect.top <= 220;
+      if (!inTopBand) {
+        continue;
+      }
+
+      const score = rect.right + (220 - rect.top);
+      if (score > bestScore) {
+        best = node;
+        bestScore = score;
+      }
+    }
+
+    return best;
+  };
+
   const syncVideoDownloadButton = () => {
     const btn = ensureVideoDownloadButton();
     if (!(btn instanceof HTMLButtonElement)) {
@@ -1335,7 +1382,7 @@
     const source = getVideoDownloadSource(bestVideo);
 
     const rect = getPlaybackVideoRect(videos) || bestVideo.getBoundingClientRect();
-    const searchButton = findSearchButton();
+    const searchButton = findSearchLabel() || findSearchButton();
     const buttonWidth = 108;
     const buttonHeight = 34;
     let top = 106;
@@ -1373,6 +1420,13 @@
 
     btn.style.setProperty('top', `${top}px`, 'important');
     btn.style.setProperty('left', `${left}px`, 'important');
+    btn.style.setProperty('background', 'transparent', 'important');
+    btn.style.setProperty('background-color', 'transparent', 'important');
+    btn.style.setProperty('background-image', 'none', 'important');
+    btn.style.setProperty('border-color', '#c3b7ff', 'important');
+    btn.style.setProperty('color', '#eceffd', 'important');
+    btn.style.setProperty('-webkit-text-fill-color', '#eceffd', 'important');
+    btn.style.setProperty('box-shadow', 'none', 'important');
     btn.style.setProperty('display', 'block', 'important');
   };
 
@@ -1903,6 +1957,28 @@
         if (node instanceof HTMLElement) {
           node.style.setProperty('color', 'var(--xaavv-text)', 'important');
           node.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text)', 'important');
+        }
+      }
+
+      if (onPlayPage) {
+        const controls = bar.querySelectorAll('a, button, [role="button"]');
+        for (const control of controls) {
+          if (!(control instanceof HTMLElement)) {
+            continue;
+          }
+
+          const rect = control.getBoundingClientRect();
+          const nearTopRight = rect.top >= -2 && rect.top <= 180 && rect.left >= window.innerWidth * 0.45;
+          if (!nearTopRight) {
+            continue;
+          }
+
+          control.style.setProperty('background', 'transparent', 'important');
+          control.style.setProperty('background-color', 'transparent', 'important');
+          control.style.setProperty('background-image', 'none', 'important');
+          control.style.setProperty('border-color', 'transparent', 'important');
+          control.style.setProperty('box-shadow', 'none', 'important');
+          control.style.setProperty('backdrop-filter', 'none', 'important');
         }
       }
     }
