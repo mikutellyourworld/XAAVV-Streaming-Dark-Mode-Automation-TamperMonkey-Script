@@ -336,25 +336,33 @@
       border-color: var(--xaavv-border) !important;
     }
 
-    /* On play pages, keep the header/top bar completely transparent and overlaid like stock UI. */
+    /* On play pages, completely hide the header and all top navigation overlays so video is fully visible. */
     body.sp-play header,
     body.sp-play [role='banner'],
-    html.sp-play header,
-    html.sp-play [role='banner'],
     body.sp-play .pink-header,
     body.sp-play .pink-header > div,
+    body.sp-play [class*='topbar'],
+    body.sp-play [class*='navbar'],
+    html.sp-play header,
+    html.sp-play [role='banner'],
     html.sp-play .pink-header,
     html.sp-play .pink-header > div,
-    body.sp-play [class*='topbar'],
-    body.sp-play [class*='navbar'] {
+    html.sp-play [class*='topbar'],
+    html.sp-play [class*='navbar'] {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
       background: transparent !important;
       background-color: transparent !important;
       background-image: none !important;
-      border-color: transparent !important;
-      border: none !important;
       box-shadow: none !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
     }
 
     /* Force pseudo-elements of play-page header to be transparent. */
