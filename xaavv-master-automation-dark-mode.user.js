@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.16
+// @version      1.2.17
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -16,6 +16,8 @@
 
 (function () {
   'use strict';
+
+  const SCRIPT_VERSION = '1.2.17';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -56,14 +58,14 @@
       return;
     }
 
-    const desiredState = isPlaying ? 'pause' : 'play';
+    const desiredState = isPlaying ? 'hidden' : 'pause';
     if (button.dataset.xaavvIconState === desiredState) {
       return;
     }
 
     button.dataset.xaavvIconState = desiredState;
-    button.innerHTML = isPlaying ? PLAY_BUTTON_PAUSE_ICON : PLAY_BUTTON_PLAY_ICON;
-    button.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
+    button.innerHTML = isPlaying ? '' : PLAY_BUTTON_PAUSE_ICON;
+    button.setAttribute('aria-label', isPlaying ? 'Playing' : 'Pause');
   };
 
   if (document.getElementById(STYLE_ID)) {
@@ -252,8 +254,8 @@
       align-items: center !important;
       justify-content: center !important;
       font-size: 24px !important;
-      color: #120f22 !important;
-      -webkit-text-fill-color: #120f22 !important;
+      color: #f8f7ff !important;
+      -webkit-text-fill-color: #f8f7ff !important;
       font-weight: bold !important;
       box-shadow: 0 4px 16px rgba(157, 140, 255, 0.4) !important;
       transition: all 0.2s ease !important;
@@ -264,8 +266,8 @@
       width: 24px !important;
       height: 24px !important;
       display: block !important;
-      fill: #120f22 !important;
-      -webkit-text-fill-color: #120f22 !important;
+      fill: #f8f7ff !important;
+      -webkit-text-fill-color: #f8f7ff !important;
       pointer-events: none !important;
     }
 
@@ -1925,6 +1927,7 @@
   style.textContent = css;
 
   document.documentElement.appendChild(style);
+  document.documentElement.setAttribute('data-xaavv-script-version', SCRIPT_VERSION);
 
   const delayedPass = () => {
     ensureAutoTranslateToEnglish();

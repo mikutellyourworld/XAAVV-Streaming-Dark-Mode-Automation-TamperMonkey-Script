@@ -1,86 +1,59 @@
 # About
 
-This repository contains a Tampermonkey userscript for XAAVV playback enhancement and dark-mode styling.
+XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades XAAVV with a stable dark UI and player automation focused on real-world reliability across both horizontal and vertical videos.
 
-## Current Features (v1.2.11)
+## Current Script
 
-### Visual & Styling
-- Professional dark-mode interface on all XAAVV pages
-- No gradients or white-surface leaks
-- Consistent dark palette applied to headers, footers, and content
-- Automatic light/dark theme detection support
+- **Name:** XAAVV Master Automation and Dark Mode
+- **File:** `xaavv-master-automation-dark-mode.user.js`
+- **Current Version:** 1.2.17
 
-### Video Playback Controls
-- **Interactive Progress Bar**: Visual seek bar overlay at the bottom of each video
-  - Displays current playback time as a filled segment
-  - Click anywhere to seek to that timestamp
-  - Draggable handle appears on hover
-  - Real-time updates during playback
-- **Automatic Pause Overlay**: Invisible full-video overlay that pauses on click during active playback
-- **Download Button**: Floating control below search that triggers browser download for active video source
-- **Playback Automation**: Auto-plays video on play pages with volume restoration
+## What This Script Does
 
-### Navigation & Routing
-- Direct play-page routing (skip intermediate detail pages)
-- Automatic redirect from `/xaavv/{slug}.html` to `/xavplay/{slug}/...`
-- Click-through route interception for seamless navigation
+### Interface
+- Applies an end-to-end dark theme on XAAVV pages
+- Removes bright gradient leaks and white-surface flashes
+- Preserves readability and avoids media-breaking CSS filters
 
-### Player State Synchronization
-- Center play/pause control visibility tied to video playback state
-- Hides on playback, shows on pause
-- Multi-video layout support (handles dual-layer video scenarios)
-- Seek overlay management
+### Video Controls
+- Adds a floating **Download** button on play pages
+  - Handles delayed source initialization with loading state
+  - Supports blob and direct media URLs
+  - Adapts placement for vertical and horizontal layouts
+- Adds an interactive **progress/seek bar**
+  - Click-to-seek and pointer-friendly hover behavior
+  - Syncs to active playback layer in stacked video layouts
+- Adds a click-to-pause invisible overlay while preserving seek usability
 
-### User Experience
-- Unobtrusive Google Translate integration (auto English, hidden toolbar)
-- Top-left spinner/loader cleanup
-- Translation text highlight artifact removal
-- Player controls preservation (no filter tricks that break media)
+### Playback Automation
+- Attempts autoplay immediately on load with retry logic
+- Uses muted-start autoplay flow with delayed audio restoration
+- Works around late-loading media states (`loadedmetadata`, `loadeddata`, `canplay`, `canplaythrough`)
 
-## Supported Sites
+### Routing & Sync
+- Converts intermediate detail clicks into direct play-route navigation
+- Keeps center controls and overlays synchronized with real playback state
+- Handles dual-layer/stacked XAAVV video rendering safely
+
+### QoL
+- Optional unobtrusive translation bootstrap for English-first reading
+- Removes persistent top-left spinner artifacts
+
+## Supported Domains
 
 - `*.xaavv.com`
 - `*.xaavv.live`
 
-## Installation
+## Design Principles
 
-1. Install Tampermonkey browser extension
-2. Create new userscript from `xaavv-dark-theme.user.js`
-3. Save and refresh XAAVV pages
+1. **Player-safe first**: never break native playback behavior.
+2. **Resilient timing**: tolerate delayed DOM/media initialization.
+3. **Minimal intrusion**: overlays and controls do not block key interactions.
+4. **Layout-aware behavior**: adapt controls for vertical and horizontal videos.
+5. **Operational clarity**: versioned script header and file-level version marker.
 
-## Architecture
+## Key Documentation
 
-- **CSS Baseline** (document-start): Initial dark paint before JS
-- **Nuclear Pass**: Computed-style overrides for late-loaded white elements
-- **Mutation Observer**: Handles SPA updates and dynamic content
-- **Watchdog Intervals**: Continuous state sync every 220ms on play pages
-- **Scheduled Passes**: Additional updates at 300ms, 1200ms, 2600ms
-
-## Documentation
-
-- [README.md](README.md) - Full changelog and implementation details
-- [DARK_MODING_SKILL.md](DARK_MODING_SKILL.md) - Reusable dark-mode patterns and best practices
-- [VIDEO_PROGRESS_BAR_1.2.11.md](VIDEO_PROGRESS_BAR_1.2.11.md) - Progress bar implementation details
-
-## Key Design Principles
-
-1. **Non-invasive**: Preserves native player controls and interaction
-2. **Player-safe**: Never touches media element filters or rendering
-3. **Performant**: Debounced observers, scheduled passes, no continuous polling
-4. **Responsive**: Updates dynamically as DOM changes
-5. **Accessible**: Maintains keyboard and touch interactions
-
-## Browser Compatibility
-
-- Chrome/Edge (Tampermonkey)
-- Firefox (Tampermonkey)
-- Safari (Tampermonkey)
-- Any browser with Tampermonkey support
-
-## Safety Notes
-
-- No network requests beyond page load
-- No storage access or cookies written
-- Local DOM manipulation only
-- No invasive global overrides
-- Video download uses browser-native download mechanism
+- [README.md](README.md) - changelog and project overview
+- [INSTALLATION_AND_UPDATE_GUIDE.md](INSTALLATION_AND_UPDATE_GUIDE.md) - install/update flow
+- [TROUBLESHOOTING_v1.2.13.md](TROUBLESHOOTING_v1.2.13.md) - diagnostics and fixes
