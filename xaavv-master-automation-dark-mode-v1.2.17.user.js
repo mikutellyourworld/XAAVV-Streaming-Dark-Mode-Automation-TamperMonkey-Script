@@ -172,7 +172,8 @@
       height: 3px !important;
       background: rgba(26, 31, 43, 0.3) !important;
       cursor: pointer !important;
-      z-index: 10 !important;
+      z-index: 220 !important;
+      pointer-events: auto !important;
       transition: height 0.15s ease, background 0.15s ease !important;
     }
 
@@ -188,6 +189,7 @@
       width: 100% !important;
       height: 100% !important;
       background: transparent !important;
+      pointer-events: auto !important;
     }
 
     .xaavv-video-progress-buffer {
@@ -334,6 +336,22 @@
       color: var(--xaavv-text) !important;
       -webkit-text-fill-color: var(--xaavv-text) !important;
       border-color: var(--xaavv-border) !important;
+    }
+
+    /* On play pages, keep the header/top bar transparent like stock UI. */
+    body.sp-play header,
+    body.sp-play [role='banner'],
+    html.sp-play header,
+    html.sp-play [role='banner'],
+    body.sp-play .pink-header,
+    body.sp-play .pink-header > div,
+    html.sp-play .pink-header,
+    html.sp-play .pink-header > div {
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
     }
 
     footer,
@@ -1312,8 +1330,8 @@
 
     const videoRect = video.getBoundingClientRect();
     const isVerticalVideo = isVerticalVideoRect(videoRect);
-    const wrapperBottom = isVerticalVideo ? 18 : -10;
-    const wrapperHeight = isVerticalVideo ? 20 : 14;
+    const wrapperBottom = isVerticalVideo ? 16 : 2;
+    const wrapperHeight = isVerticalVideo ? 20 : 16;
 
     // Position wrapper as overlay on video (use CSS for bottom positioning)
     wrapper.style.setProperty('position', 'absolute', 'important');
