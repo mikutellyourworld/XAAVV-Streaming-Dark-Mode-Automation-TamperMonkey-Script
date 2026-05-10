@@ -34,6 +34,7 @@
   const VIDEO_PROGRESS_FILL_CLASS = 'xaavv-video-progress-fill';
   const VIDEO_PROGRESS_HANDLE_CLASS = 'xaavv-video-progress-handle';
   const VIDEO_PROGRESS_BOUND_ATTR = 'data-xaavv-video-progress-bound';
+  const PROGRESS_SEEK_HIT_STRIP_PX = 36;
   const PLAY_BUTTON_PLAY_ICON = `
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M8 5.5 L18.5 12 L8 18.5 Z"></path>
@@ -1501,14 +1502,16 @@
       return;
     }
 
+    const effectiveHeight = Math.max(0, Math.round(rect.height) - PROGRESS_SEEK_HIT_STRIP_PX);
+
     overlay.style.setProperty('display', 'block', 'important');
     overlay.style.setProperty('visibility', 'visible', 'important');
     overlay.style.setProperty('opacity', '0', 'important');
-    overlay.style.setProperty('pointer-events', 'auto', 'important');
+    overlay.style.setProperty('pointer-events', effectiveHeight > 0 ? 'auto' : 'none', 'important');
     overlay.style.setProperty('left', `${Math.round(rect.left)}px`, 'important');
     overlay.style.setProperty('top', `${Math.round(rect.top)}px`, 'important');
     overlay.style.setProperty('width', `${Math.round(rect.width)}px`, 'important');
-    overlay.style.setProperty('height', `${Math.round(rect.height)}px`, 'important');
+    overlay.style.setProperty('height', `${effectiveHeight}px`, 'important');
   };
 
   const syncCenterPlayOverlay = () => {
