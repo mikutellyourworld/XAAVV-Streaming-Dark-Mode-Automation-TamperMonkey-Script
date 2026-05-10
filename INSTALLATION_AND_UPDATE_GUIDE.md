@@ -343,3 +343,7 @@ This script combines:
 **Need help?** Check [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) or visit the GitHub repository.
 
 **Version:** 1.2.13 | **Updated:** 2026-05-10
+
+### v1.2.21 (2024-06-09)
+- UI polish for play pages: Download button never overlaps search, always below and right-aligned; top bar fully transparent and non-blocking.
+- All changes are documented in the userscript source code and documentation files.

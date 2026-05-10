@@ -57,3 +57,8 @@ XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades
 - [README.md](README.md) - changelog and project overview
 - [INSTALLATION_AND_UPDATE_GUIDE.md](INSTALLATION_AND_UPDATE_GUIDE.md) - install/update flow
 - [TROUBLESHOOTING_v1.2.13.md](TROUBLESHOOTING_v1.2.13.md) - diagnostics and fixes
+
+### v1.2.21 (UI Polish)
+- Download button never overlaps or covers the search link; always below and right-aligned to search bar on play pages.
+- Top bar (header, search, login, register) is now fully transparent and non-blocking on play pages.
+- All changes are documented in the userscript source code and this file.
