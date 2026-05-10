@@ -75,6 +75,21 @@ Deliver a true dark UI where all non-media surfaces are dark, readable, and beha
 - Runtime flattening:
   - If `getComputedStyle(el).backgroundImage !== 'none'`, set it to `none` and set solid base background.
 
+## Video-Site Scripting Standard (New)
+
+When applying this skill to video websites, treat the following behaviors as mandatory defaults:
+
+1. Seek bar must be interactable in active playback state.
+2. Seek strip must sit above non-essential overlays (higher z-index and pointer-events enabled).
+3. Pause/click overlays must reserve a bottom hit strip for seek interactions.
+4. In stacked/dual-video layouts, seek updates must target the active playback layer, not a random video node.
+5. Progress visuals must follow active-layer time and buffered ranges.
+6. Play-page top bar should preserve stock visual behavior unless user explicitly asks otherwise.
+7. If stock is transparent top controls, use transparent/fixed overlay header on play pages rather than forcing dark background blocks.
+8. Autoplay assist must try multiple readiness events (`loadedmetadata`, `loadeddata`, `canplay`, `canplaythrough`) and retry briefly.
+9. Download button should remain visible during source initialization with a non-clickable loading state.
+10. All fixes must be validated against both vertical and horizontal video pages before closure.
+
 ## Acceptance Expectation
 
-A finished dark-mode delivery is accepted only when user screenshots show no remaining white/gradient artifacts in the requested strict mode.
+A finished dark-mode delivery is accepted only when user screenshots show no remaining white/gradient artifacts in the requested strict mode, and core video interactions (play/pause, seek, download, overlays) function correctly on both portrait and landscape playback pages.

@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.17.user.js
+   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.18.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -50,7 +50,7 @@
 #### 4. **Script Rename**
 - **Before:** "XAAVV Dark Theme" (vague naming)
 - **After:** "XAAVV Master Automation and Dark Mode" (reflects all features)
-- **File:** `xaavv-master-automation-dark-mode-v1.2.17.user.js`
+- **File:** `xaavv-master-automation-dark-mode-v1.2.18.user.js`
 
 ---
 
@@ -111,7 +111,7 @@
 
 2. Visit the raw script URL:
    ```
-   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.17.user.js
+   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.18.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -125,7 +125,7 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.17.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.18.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -148,7 +148,7 @@
 
 2. Find the latest release (v1.2.13)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.17.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.18.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -249,7 +249,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.17.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.18.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`

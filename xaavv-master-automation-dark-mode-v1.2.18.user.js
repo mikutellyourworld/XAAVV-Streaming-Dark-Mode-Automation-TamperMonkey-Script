@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.17
+// @version      1.2.18
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.17';
+  const SCRIPT_VERSION = '1.2.18';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -338,7 +338,7 @@
       border-color: var(--xaavv-border) !important;
     }
 
-    /* On play pages, keep the header/top bar transparent like stock UI. */
+    /* On play pages, keep the header/top bar transparent and overlaid like stock UI. */
     body.sp-play header,
     body.sp-play [role='banner'],
     html.sp-play header,
@@ -346,12 +346,29 @@
     body.sp-play .pink-header,
     body.sp-play .pink-header > div,
     html.sp-play .pink-header,
-    html.sp-play .pink-header > div {
+    html.sp-play .pink-header > div,
+    body.sp-play [class*='topbar'],
+    body.sp-play [class*='navbar'] {
       background: transparent !important;
       background-color: transparent !important;
       background-image: none !important;
       border-color: transparent !important;
       box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    body.sp-play .pink-header,
+    body.sp-play [role='banner'],
+    body.sp-play header,
+    body.sp-play [class*='topbar'],
+    body.sp-play [class*='navbar'] {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 300 !important;
+      width: 100% !important;
     }
 
     footer,

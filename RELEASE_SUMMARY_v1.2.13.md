@@ -101,7 +101,7 @@ if (searchButton instanceof HTMLElement) {
 
 **Old Name:** XAAVV Dark Theme (vague)  
 **New Name:** XAAVV Master Automation and Dark Mode (descriptive)  
-**File:** `xaavv-master-automation-dark-mode-v1.2.17.user.js`
+**File:** `xaavv-master-automation-dark-mode-v1.2.18.user.js`
 
 **Rationale:** New name accurately reflects the script's comprehensive feature set including automation, playback controls, and dark mode styling.
 
@@ -145,7 +145,7 @@ if (searchButton instanceof HTMLElement) {
 ## 📦 Deliverables
 
 ### Scripts
-- ✅ `xaavv-master-automation-dark-mode-v1.2.17.user.js` (Main script, 1750+ lines)
+- ✅ `xaavv-master-automation-dark-mode-v1.2.18.user.js` (Main script, 1750+ lines)
 
 ### Documentation
 - ✅ `README.md` - Feature changelog and overview
@@ -223,7 +223,7 @@ de87333 - Remove Kiro branding; rename to XAAVV Dark Theme
 ### Quick Start
 ```
 1. Install Tampermonkey extension (Chrome, Firefox, Safari)
-2. Visit: https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.17.user.js
+2. Visit: https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.18.user.js
 3. Click "Install"
 4. Refresh XAAVV page
 5. Features should be active immediately

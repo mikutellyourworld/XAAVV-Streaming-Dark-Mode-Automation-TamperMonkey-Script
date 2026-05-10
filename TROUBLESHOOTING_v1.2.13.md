@@ -249,7 +249,7 @@ Press F12 → Console tab → Look for red error messages
 - **Improved:** Pause button styling with purple gradient and hover effects
 - **Improved:** Progress bar visibility on mouseover with class-based transitions
 - **Renamed:** Script to "XAAVV Master Automation and Dark Mode"
-- **File:** `xaavv-master-automation-dark-mode-v1.2.17.user.js`
+- **File:** `xaavv-master-automation-dark-mode-v1.2.18.user.js`
 
 ### v1.2.12
 - UI improvements: pause button styling, progress bar mouseover, slider positioning
