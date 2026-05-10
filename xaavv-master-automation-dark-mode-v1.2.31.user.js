@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.30
+// @version      1.2.31
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.30';
+  const SCRIPT_VERSION = '1.2.31';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -1828,6 +1828,7 @@
       syncVideoDownloadButton();
       syncVideoProgressBars();
       enforceTopRightControlTransparency();
+      enforceTopLeftBrandAndSearchTransparency();
     }, 220);
   };
 
@@ -2046,6 +2047,62 @@
     }
   };
 
+  const enforceTopLeftBrandAndSearchTransparency = () => {
+    if (!isPlayPath()) {
+      return;
+    }
+
+    const headerRoots = document.querySelectorAll('.pink-header, [role="banner"], header');
+    for (const root of headerRoots) {
+      if (!(root instanceof HTMLElement)) {
+        continue;
+      }
+
+      const candidates = root.querySelectorAll('a, button, span, div, p, strong, [role="button"]');
+      for (const node of candidates) {
+        if (!(node instanceof HTMLElement)) {
+          continue;
+        }
+
+        const rect = node.getBoundingClientRect();
+        if (rect.width <= 1 || rect.height <= 1) {
+          continue;
+        }
+
+        const label = (node.textContent || '').trim().toLowerCase();
+        const mentionsBrand = label.includes('av welfare website') || label.includes('\u798f\u5229\u7f51');
+        const isSearchLabel = label === 'search' || label.includes('\u641c\u7d22');
+        const nearTop = rect.top >= -2 && rect.top <= 210;
+        const nearLeft = rect.left <= window.innerWidth * 0.58;
+
+        const brandMatch = mentionsBrand && nearLeft;
+        const searchMatch = isSearchLabel;
+
+        if (!nearTop || (!brandMatch && !searchMatch)) {
+          continue;
+        }
+
+        const nodesToClear = [
+          node,
+          node.parentElement,
+          node.closest('a, button, [role="button"], [class*="chip"], [class*="tag"], [class*="btn"], [class*="search"], [class*="brand"]')
+        ];
+
+        for (const target of nodesToClear) {
+          if (!(target instanceof HTMLElement)) {
+            continue;
+          }
+          target.style.setProperty('background', 'transparent', 'important');
+          target.style.setProperty('background-color', 'transparent', 'important');
+          target.style.setProperty('background-image', 'none', 'important');
+          target.style.setProperty('border-color', 'transparent', 'important');
+          target.style.setProperty('box-shadow', 'none', 'important');
+          target.style.setProperty('backdrop-filter', 'none', 'important');
+        }
+      }
+    }
+  };
+
   // Source pattern: computed-style nuclear pass with top-bar forcing for late-loaded elements.
   const runNuclearPass = () => {
     const root = document.body || document.documentElement;
@@ -2190,6 +2247,7 @@
     syncVideoProgressBars();
     syncVideoDownloadButton();
     enforceTopRightControlTransparency();
+    enforceTopLeftBrandAndSearchTransparency();
     schedule(runNuclearPass, [500, 1500, 3000]);
     schedule(tryRedirectFromIntermediatePage, [200, 800, 1800]);
     schedule(killTopLeftSwirl, [300, 1200, 2600]);
@@ -2197,6 +2255,7 @@
     schedule(syncVideoProgressBars, [300, 1200, 2600]);
     schedule(syncVideoDownloadButton, [300, 1200, 2600]);
     schedule(enforceTopRightControlTransparency, [300, 1200, 2600]);
+    schedule(enforceTopLeftBrandAndSearchTransparency, [300, 1200, 2600]);
   };
 
   setupDirectPlayRouting();
@@ -2215,6 +2274,7 @@
     syncCenterPlayOverlay();
     syncVideoDownloadButton();
     enforceTopRightControlTransparency();
+    enforceTopLeftBrandAndSearchTransparency();
   }, 150));
   observer.observe(document.documentElement, {
     childList: true,
