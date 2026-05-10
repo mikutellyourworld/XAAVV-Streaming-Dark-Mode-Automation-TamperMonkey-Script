@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Kiro Dark Theme
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.8
+// @version      1.2.9
 // @description  Apply XAAVV dark mode with player-safe rendering, reliable intermediate routing, playback automation assists, unobtrusive translation, loader cleanup, multi-video-safe playback UI syncing, and a play-page video download button.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -1027,9 +1027,12 @@
       return;
     }
 
-    const rect = bestVideo.getBoundingClientRect();
-    const top = Math.max(8, Math.round(rect.top + 10));
-    const left = Math.max(8, Math.min(window.innerWidth - 120, Math.round(rect.right - 106)));
+    const rect = getPlaybackVideoRect(videos) || bestVideo.getBoundingClientRect();
+    const buttonWidth = 108;
+
+    // Keep control anchored inside the video viewport and away from top-nav controls.
+    const top = Math.max(96, Math.min(window.innerHeight - 48, Math.round(rect.top + 14)));
+    const left = Math.max(12, Math.min(window.innerWidth - buttonWidth - 12, Math.round(rect.left + 14)));
 
     btn.dataset.downloadUrl = source;
     btn.dataset.downloadName = buildDownloadFilename(source);
