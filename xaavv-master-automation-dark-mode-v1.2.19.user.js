@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.18
+// @version      1.2.19
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.18';
+  const SCRIPT_VERSION = '1.2.19';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -338,7 +338,7 @@
       border-color: var(--xaavv-border) !important;
     }
 
-    /* On play pages, keep the header/top bar transparent and overlaid like stock UI. */
+    /* On play pages, keep the header/top bar completely transparent and overlaid like stock UI. */
     body.sp-play header,
     body.sp-play [role='banner'],
     html.sp-play header,
@@ -353,16 +353,48 @@
       background-color: transparent !important;
       background-image: none !important;
       border-color: transparent !important;
+      border: none !important;
       box-shadow: none !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
+    }
+
+    /* Force all descendants of play-page header to be transparent. */
+    body.sp-play header *,
+    body.sp-play [role='banner'] *,
+    body.sp-play .pink-header *,
+    html.sp-play header *,
+    html.sp-play [role='banner'] *,
+    html.sp-play .pink-header * {
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      border: none !important;
+      border-color: transparent !important;
+    }
+
+    /* Keep text and buttons visible inside play-page header. */
+    body.sp-play header *,
+    body.sp-play [role='banner'] *,
+    body.sp-play .pink-header *,
+    html.sp-play header *,
+    html.sp-play [role='banner'] *,
+    html.sp-play .pink-header * {
+      visibility: visible !important;
+      opacity: 1 !important;
     }
 
     body.sp-play .pink-header,
     body.sp-play [role='banner'],
     body.sp-play header,
     body.sp-play [class*='topbar'],
-    body.sp-play [class*='navbar'] {
+    body.sp-play [class*='navbar'],
+    html.sp-play .pink-header,
+    html.sp-play [role='banner'],
+    html.sp-play header,
+    html.sp-play [class*='topbar'],
+    html.sp-play [class*='navbar'] {
       position: fixed !important;
       top: 0 !important;
       left: 0 !important;
