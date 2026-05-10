@@ -1073,10 +1073,6 @@
   };
 
   const ensureVideoDownloadButton = () => {
-    if (!document.body) {
-      return null;
-    }
-
     let btn = document.getElementById(VIDEO_DOWNLOAD_BUTTON_ID);
     if (!(btn instanceof HTMLButtonElement)) {
       if (btn instanceof HTMLElement) {
@@ -1088,7 +1084,7 @@
       btn.id = VIDEO_DOWNLOAD_BUTTON_ID;
       btn.textContent = 'Download';
       btn.setAttribute('aria-label', 'Download active video');
-      document.body.appendChild(btn);
+      (document.body || document.documentElement).appendChild(btn);
     }
 
     if (btn.getAttribute(VIDEO_DOWNLOAD_BOUND_ATTR) !== '1') {
@@ -1107,7 +1103,7 @@
         anchor.rel = 'noopener';
         anchor.target = '_blank';
         anchor.download = btn.dataset.downloadName || buildDownloadFilename(source);
-        document.body.appendChild(anchor);
+        (document.body || document.documentElement).appendChild(anchor);
         anchor.click();
         anchor.remove();
       }, true);
@@ -1535,6 +1531,10 @@
     const playBtnNode = document.getElementById('sp_play_btn');
     if (playBtnNode instanceof HTMLElement) {
       setPlayButtonIcon(playBtnNode, isPlaying);
+      playBtnNode.style.setProperty('display', isPlaying ? 'none' : 'flex', 'important');
+      playBtnNode.style.setProperty('visibility', isPlaying ? 'hidden' : 'visible', 'important');
+      playBtnNode.style.setProperty('opacity', isPlaying ? '0' : '1', 'important');
+      playBtnNode.style.setProperty('pointer-events', isPlaying ? 'none' : 'auto', 'important');
     }
 
     const seekOverlayEls = document.querySelectorAll('#sp_seek_gesture, #sp_seek_ui');
