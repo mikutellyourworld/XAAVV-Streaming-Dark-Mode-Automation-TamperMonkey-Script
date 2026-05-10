@@ -14,6 +14,7 @@ A focused Tampermonkey userscript that applies a Kiro-inspired dark interface to
 - Explicitly forces dark header/banners and brand logo text contrast on XAAVV
 - Forces top and bottom site bars to match the page background tone
 - Adds a play-page video download button that tracks the active/visible video
+- Adds an interactive video progress/seek bar with time tracking on vertical videos
 
 ## Supported Match Rules
 
@@ -43,6 +44,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.11`: Added an interactive video progress/seek bar overlay on play-page videos. The bar displays current time as a filled segment, allows seeking by clicking, and includes a draggable handle that appears on hover. Themed with Kiro purple accents.
 - `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
 - `1.2.9`: Fixed download-button placement so it anchors inside the video area with a safe top offset, preventing overlap with header navigation buttons (login/register/menu).
 - `1.2.8`: Added a floating play-page `Download` button for video elements. The button auto-tracks the best active/visible video source, follows player bounds, and triggers browser-native download/open behavior with a generated filename.

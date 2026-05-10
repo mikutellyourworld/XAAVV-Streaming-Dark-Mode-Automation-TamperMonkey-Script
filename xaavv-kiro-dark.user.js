@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         XAAVV Kiro Dark Theme
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.10
-// @description  Apply XAAVV dark mode with player-safe rendering, reliable intermediate routing, playback automation assists, unobtrusive translation, loader cleanup, multi-video-safe playback UI syncing, and a play-page video download button.
+// @version      1.2.11
+// @description  Apply XAAVV dark mode with player-safe rendering, reliable intermediate routing, playback automation assists, unobtrusive translation, loader cleanup, multi-video-safe playback UI syncing, download button, and video progress/seek bar.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
 // @match        *://xaavv.live/*
@@ -28,6 +28,12 @@
   const INVISIBLE_PAUSE_OVERLAY_BOUND_ATTR = 'data-xaavv-invisible-pause-overlay-bound';
   const VIDEO_DOWNLOAD_BUTTON_ID = 'xaavv-video-download-btn';
   const VIDEO_DOWNLOAD_BOUND_ATTR = 'data-xaavv-video-download-bound';
+  const VIDEO_PROGRESS_WRAPPER_CLASS = 'xaavv-video-progress-wrapper';
+  const VIDEO_PROGRESS_BAR_CLASS = 'xaavv-video-progress-bar';
+  const VIDEO_PROGRESS_BUFFER_CLASS = 'xaavv-video-progress-buffer';
+  const VIDEO_PROGRESS_FILL_CLASS = 'xaavv-video-progress-fill';
+  const VIDEO_PROGRESS_HANDLE_CLASS = 'xaavv-video-progress-handle';
+  const VIDEO_PROGRESS_BOUND_ATTR = 'data-xaavv-video-progress-bound';
 
   if (document.getElementById(STYLE_ID)) {
     return;
@@ -123,6 +129,71 @@
       filter: brightness(1.06) !important;
       transform: translateY(-1px) !important;
       opacity: 1 !important;
+    }
+
+    .xaavv-video-progress-wrapper {
+      position: absolute !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 3px !important;
+      background: rgba(26, 31, 43, 0.3) !important;
+      cursor: pointer !important;
+      z-index: 10 !important;
+    }
+
+    .xaavv-video-progress-bar {
+      position: absolute !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: transparent !important;
+    }
+
+    .xaavv-video-progress-buffer {
+      position: absolute !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      height: 100% !important;
+      background: rgba(157, 140, 255, 0.4) !important;
+      pointer-events: none !important;
+    }
+
+    .xaavv-video-progress-fill {
+      position: absolute !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      height: 100% !important;
+      background: #9d8cff !important;
+      pointer-events: none !important;
+      transition: width 0.05s linear !important;
+    }
+
+    .xaavv-video-progress-handle {
+      position: absolute !important;
+      bottom: -4px !important;
+      width: 11px !important;
+      height: 11px !important;
+      border-radius: 50% !important;
+      background: #b5a8ff !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+      transform: translateX(-50%) !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transition: opacity 0.15s ease !important;
+    }
+
+    .xaavv-video-progress-wrapper:hover .xaavv-video-progress-handle {
+      opacity: 1 !important;
+    }
+
+    .xaavv-video-progress-wrapper:hover {
+      height: 5px !important;
+    }
+
+    .xaavv-video-progress-wrapper:hover .xaavv-video-progress-fill {
+      background: #c3b7ff !important;
     }
 
     body {
@@ -1089,6 +1160,105 @@
     btn.style.setProperty('pointer-events', 'auto', 'important');
   };
 
+  const ensureVideoProgressBar = (video) => {
+    if (!(video instanceof HTMLVideoElement)) {
+      return null;
+    }
+    if (video.getAttribute(VIDEO_PROGRESS_BOUND_ATTR) === '1') {
+      const existing = video.parentNode?.querySelector(`.${VIDEO_PROGRESS_WRAPPER_CLASS}`);
+      return existing instanceof HTMLElement ? existing : null;
+    }
+
+    video.setAttribute(VIDEO_PROGRESS_BOUND_ATTR, '1');
+
+    const wrapper = document.createElement('div');
+    wrapper.className = VIDEO_PROGRESS_WRAPPER_CLASS;
+
+    const bar = document.createElement('div');
+    bar.className = VIDEO_PROGRESS_BAR_CLASS;
+
+    const buffer = document.createElement('div');
+    buffer.className = VIDEO_PROGRESS_BUFFER_CLASS;
+
+    const fill = document.createElement('div');
+    fill.className = VIDEO_PROGRESS_FILL_CLASS;
+
+    const handle = document.createElement('div');
+    handle.className = VIDEO_PROGRESS_HANDLE_CLASS;
+
+    bar.appendChild(buffer);
+    bar.appendChild(fill);
+    bar.appendChild(handle);
+    wrapper.appendChild(bar);
+
+    // Position wrapper as overlay on video
+    wrapper.style.setProperty('position', 'absolute', 'important');
+    wrapper.style.setProperty('bottom', '0', 'important');
+    wrapper.style.setProperty('left', '0', 'important');
+    wrapper.style.setProperty('right', '0', 'important');
+
+    // Wire seek on click
+    wrapper.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      if (!(video instanceof HTMLVideoElement) || !Number.isFinite(video.duration)) {
+        return;
+      }
+
+      const rect = wrapper.getBoundingClientRect();
+      const clickX = ev.clientX - rect.left;
+      const percent = Math.max(0, Math.min(1, clickX / rect.width));
+      video.currentTime = percent * video.duration;
+    }, true);
+
+    // Update on video timeupdate
+    const updateProgress = () => {
+      if (!(video instanceof HTMLVideoElement)) {
+        return;
+      }
+
+      const duration = video.duration || 0;
+      const current = video.currentTime || 0;
+      const percent = duration > 0 ? (current / duration) * 100 : 0;
+
+      fill.style.setProperty('width', `${percent}%`, 'important');
+      handle.style.setProperty('left', `${percent}%`, 'important');
+    };
+
+    video.addEventListener('timeupdate', updateProgress, { passive: true });
+    video.addEventListener('loadedmetadata', updateProgress, { passive: true });
+    video.addEventListener('play', updateProgress, { passive: true });
+    video.addEventListener('pause', updateProgress, { passive: true });
+
+    // Inject into DOM hierarchy
+    const videoRect = video.getBoundingClientRect();
+    wrapper.style.setProperty('width', '100%', 'important');
+    wrapper.style.setProperty('height', '3px', 'important');
+
+    if (video.parentNode instanceof HTMLElement) {
+      // Ensure parent is relatively positioned for absolute child
+      const parentStyle = getComputedStyle(video.parentNode);
+      if (parentStyle.position === 'static' || !parentStyle.position) {
+        video.parentNode.style.setProperty('position', 'relative', 'important');
+      }
+      video.parentNode.appendChild(wrapper);
+    }
+
+    return wrapper;
+  };
+
+  const syncVideoProgressBars = () => {
+    if (!isPlayPath()) {
+      return;
+    }
+
+    const videos = Array.from(document.querySelectorAll('video')).filter((v) => v instanceof HTMLVideoElement);
+    for (const video of videos) {
+      ensureVideoProgressBar(video);
+    }
+  };
+
   const ensureInvisiblePauseOverlay = () => {
     if (!document.body) {
       return null;
@@ -1261,6 +1431,7 @@
     setInterval(() => {
       syncCenterPlayOverlay();
       syncVideoDownloadButton();
+      syncVideoProgressBars();
     }, 220);
   };
 
@@ -1328,6 +1499,7 @@
     wirePlayPauseBehavior();
     syncCenterPlayOverlay();
     syncVideoDownloadButton();
+    syncVideoProgressBars();
   };
 
   const killTopLeftSwirl = () => {
@@ -1528,11 +1700,13 @@
     setupPlaybackAutomationAssist();
     wireCenterPlayOverlayState();
     startOverlayWatchdog();
+    syncVideoProgressBars();
     syncVideoDownloadButton();
     schedule(runNuclearPass, [500, 1500, 3000]);
     schedule(tryRedirectFromIntermediatePage, [200, 800, 1800]);
     schedule(killTopLeftSwirl, [300, 1200, 2600]);
     schedule(syncCenterPlayOverlay, [300, 1200, 2600]);
+    schedule(syncVideoProgressBars, [300, 1200, 2600]);
     schedule(syncVideoDownloadButton, [300, 1200, 2600]);
   };
 
@@ -1548,6 +1722,7 @@
     runNuclearPass();
     killTopLeftSwirl();
     wireCenterPlayOverlayState();
+    syncVideoProgressBars();
     syncCenterPlayOverlay();
     syncVideoDownloadButton();
   }, 150));
