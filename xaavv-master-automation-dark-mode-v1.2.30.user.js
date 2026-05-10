@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.29
+// @version      1.2.30
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.29';
+  const SCRIPT_VERSION = '1.2.30';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -417,6 +417,10 @@
     body.sp-play .pink-header button,
     body.sp-play [role='banner'] button,
     body.sp-play header button,
+    body.sp-play .pink-header .pink-btn,
+    body.sp-play .pink-header .pink-btn-primary,
+    body.sp-play [role='banner'] .pink-btn,
+    body.sp-play [role='banner'] .pink-btn-primary,
     body.sp-play .pink-header a[href*='login'],
     body.sp-play .pink-header a[href*='register'],
     body.sp-play [role='banner'] a[href*='login'],
@@ -426,6 +430,10 @@
     html.sp-play .pink-header button,
     html.sp-play [role='banner'] button,
     html.sp-play header button,
+    html.sp-play .pink-header .pink-btn,
+    html.sp-play .pink-header .pink-btn-primary,
+    html.sp-play [role='banner'] .pink-btn,
+    html.sp-play [role='banner'] .pink-btn-primary,
     html.sp-play .pink-header a[href*='login'],
     html.sp-play .pink-header a[href*='register'],
     html.sp-play [role='banner'] a[href*='login'],
@@ -1819,6 +1827,7 @@
       syncCenterPlayOverlay();
       syncVideoDownloadButton();
       syncVideoProgressBars();
+      enforceTopRightControlTransparency();
     }, 220);
   };
 
@@ -1997,6 +2006,46 @@
     }
   };
 
+  const enforceTopRightControlTransparency = () => {
+    if (!isPlayPath()) {
+      return;
+    }
+
+    const headerRoots = document.querySelectorAll('.pink-header, [role="banner"], header');
+    for (const root of headerRoots) {
+      if (!(root instanceof HTMLElement)) {
+        continue;
+      }
+
+      const candidates = root.querySelectorAll('a, button, [role="button"], div, nav, ul');
+      for (const node of candidates) {
+        if (!(node instanceof HTMLElement)) {
+          continue;
+        }
+
+        const rect = node.getBoundingClientRect();
+        if (rect.width <= 1 || rect.height <= 1) {
+          continue;
+        }
+
+        const nearTopRight = rect.top >= -2 && rect.top <= 190 && rect.left >= window.innerWidth * 0.42;
+        const isChipLike = rect.width <= 420 && rect.height <= 140;
+        const hasControls = node.matches('a, button, [role="button"]') || !!node.querySelector('a, button, [role="button"]');
+
+        if (!nearTopRight || !isChipLike || !hasControls) {
+          continue;
+        }
+
+        node.style.setProperty('background', 'transparent', 'important');
+        node.style.setProperty('background-color', 'transparent', 'important');
+        node.style.setProperty('background-image', 'none', 'important');
+        node.style.setProperty('border-color', 'transparent', 'important');
+        node.style.setProperty('box-shadow', 'none', 'important');
+        node.style.setProperty('backdrop-filter', 'none', 'important');
+      }
+    }
+  };
+
   // Source pattern: computed-style nuclear pass with top-bar forcing for late-loaded elements.
   const runNuclearPass = () => {
     const root = document.body || document.documentElement;
@@ -2140,12 +2189,14 @@
     startOverlayWatchdog();
     syncVideoProgressBars();
     syncVideoDownloadButton();
+    enforceTopRightControlTransparency();
     schedule(runNuclearPass, [500, 1500, 3000]);
     schedule(tryRedirectFromIntermediatePage, [200, 800, 1800]);
     schedule(killTopLeftSwirl, [300, 1200, 2600]);
     schedule(syncCenterPlayOverlay, [300, 1200, 2600]);
     schedule(syncVideoProgressBars, [300, 1200, 2600]);
     schedule(syncVideoDownloadButton, [300, 1200, 2600]);
+    schedule(enforceTopRightControlTransparency, [300, 1200, 2600]);
   };
 
   setupDirectPlayRouting();
@@ -2163,6 +2214,7 @@
     syncVideoProgressBars();
     syncCenterPlayOverlay();
     syncVideoDownloadButton();
+    enforceTopRightControlTransparency();
   }, 150));
   observer.observe(document.documentElement, {
     childList: true,
