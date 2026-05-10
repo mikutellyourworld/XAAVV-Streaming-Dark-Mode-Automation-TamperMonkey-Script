@@ -29,8 +29,9 @@
 
 #### 1. **Download Button Overlap** 
 - **Before:** Button appeared on top of search bar
-- **After:** Button positioned directly below search with 16px spacing
-- **How it works:** Script now detects search input field first, then calculates position relative to it
+- **After:** Button positions directly below search on normal layouts, and shifts to the right of search on vertical layouts when needed
+- **How it works:** Script now detects the search input field first, then calculates a layout-aware position relative to it
+- **Fallback:** If body timing is delayed, the button is created from `document.documentElement` so it still appears
 
 #### 2. **Progress Bar Mouseover**
 - **Before:** Progress bar only visible during click+drag, required interaction to see
@@ -68,7 +69,7 @@
   - Works with both blob: and HTTP URLs
 
 - **Interactive Progress Bar:**
-  - Visible on any mouseover
+  - Visible on any mouseover or pointer movement
   - Click anywhere to seek to that timestamp
   - Drag handle for fine-grained control
   - Shows current playback time in real-time
@@ -76,7 +77,7 @@
 - **Center Pause Overlay:**
   - Click anywhere on video to pause during playback
   - Center play button hides when playing, shows when paused
-  - Styled with purple gradient
+  - Styled with purple gradient and a clean SVG play/pause icon
 
 ### 🎬 Playback Automation
 - Auto-plays videos on play pages
@@ -174,13 +175,14 @@ After installing/updating, verify these features work:
 
 - [ ] **Download Button Below Search**
   - On play page (`/xavplay/`)
-  - Download button should appear below search with 16px gap
+  - Download button should appear below search on standard layouts
+  - On vertical video pages, it may shift to the right of search instead of stacking underneath
   - Button should have purple styling (#7d71db)
   - Not overlapping any other buttons
 
 - [ ] **Progress Bar on Hover**
-  - Move mouse over video
-  - Thin line (3px) should appear at bottom of video
+  - Move mouse or pointer over video
+  - Thin line (3px) should appear near the bottom of the video
   - Line should grow to 5px thick
   - Should be purple colored
   - Move mouse away, line should shrink back
@@ -192,9 +194,10 @@ After installing/updating, verify these features work:
   - Handle (white circle) should appear when hovering
 
 - [ ] **Center Play Button Styled**
-  - Video should have purple gradient play button in center
+  - Video should have a purple gradient play button in center when paused
   - Button should be circular (60px)
   - Hover effect: button brightens and scales up
+  - Icon should look like a normal play/pause control, not plain text glyphs
   - Click to play/pause
 
 - [ ] **Pause Overlay Works**

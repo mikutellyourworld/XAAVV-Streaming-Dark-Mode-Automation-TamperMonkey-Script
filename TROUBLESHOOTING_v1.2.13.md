@@ -34,6 +34,10 @@ const findSearchButton = () => {
 // Better spacing calculation
 top = Math.round(searchRect.bottom + 16);  // 16px spacing below
 left = Math.round(Math.max(12, searchRect.left));  // Align with search left edge
+
+// Vertical-video fallback
+// If the player is portrait-oriented and the button would collide with the layout,
+// the script shifts the button to the right of search instead of forcing it below.
 ```
 
 **How to Verify:**
@@ -41,6 +45,7 @@ left = Math.round(Math.max(12, searchRect.left));  // Align with search left edg
 2. Look for Download button below search input
 3. Should have 16px gap between search and button
 4. Button should not overlap search or any header elements
+5. On vertical videos, the button may sit to the right of search if that avoids overlap
 
 **Fallback:** If still overlapping, check that:
 - Search input has `placeholder` attribute with "搜索" or "search"
@@ -67,12 +72,16 @@ wrapper.style.setProperty('left', '0', 'important');
 wrapper.style.setProperty('right', '0', 'important');
 // bottom: 0 removed - let CSS handle it with bottom: -10px
 
-// Added visible class toggle on any mouseover
-video.addEventListener('mouseover', () => {
+// Added visible class toggle on any mouseover / pointer movement
+video.addEventListener('pointerenter', () => {
   wrapper.classList.add('visible');
 }, { passive: true });
 
-wrapper.addEventListener('mouseover', () => {
+video.addEventListener('pointermove', () => {
+  wrapper.classList.add('visible');
+}, { passive: true });
+
+wrapper.addEventListener('pointerenter', () => {
   wrapper.classList.add('visible');
 }, { passive: true });
 
@@ -106,7 +115,7 @@ wrapper.addEventListener('mouseover', () => {
 **How to Verify:**
 1. Install updated script in Tampermonkey
 2. Refresh XAAVV play page
-3. Move mouse over video - progress bar should appear (more visible, taller)
+3. Move mouse or pointer over video - progress bar should appear (more visible, taller)
 4. Move mouse away - progress bar should fade back to thin line
 5. Click and drag on progress bar to seek
 
@@ -156,10 +165,15 @@ wrapper.addEventListener('mouseover', () => {
 
 **How to Verify:**
 1. Load XAAVV play page
-2. Look at center play button (▶)
-3. Should have purple gradient background
-4. Should have subtle shadow effect
-5. On hover, gradient brightens and button scales up
+2. Look at center play button when paused
+3. It should show a normal play/pause SVG icon, not a text glyph
+4. It should have a purple gradient background
+5. On hover, the gradient brightens and button scales up
+
+**Current Behavior (v1.2.13+):**
+- The center control now uses explicit SVG icons for play and pause
+- The button is hidden while the video is actively playing
+- It reappears when paused so the icon always matches the state
 
 ---
 
@@ -213,6 +227,7 @@ Press F12 → Console tab → Look for red error messages
 2. Check if on a play page: `/xavplay/` should be in URL
 3. Verify video is actually loaded (not just thumbnail)
 4. Try different video/episode
+5. If the page is still loading, the button now falls back to `document.documentElement` and should appear after the next sync pass
 
 ---
 
