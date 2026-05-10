@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Kiro Dark Theme
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.9
+// @version      1.2.10
 // @description  Apply XAAVV dark mode with player-safe rendering, reliable intermediate routing, playback automation assists, unobtrusive translation, loader cleanup, multi-video-safe playback UI syncing, and a play-page video download button.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -101,20 +101,20 @@
       display: none !important;
       position: fixed !important;
       z-index: 160 !important;
-      min-width: 96px !important;
-      border: 1px solid #8be2c8 !important;
+      min-width: 92px !important;
+      border: 1px solid #c3b7ff !important;
       border-radius: 999px !important;
-      background: #57c5a7 !important;
-      color: #0b1324 !important;
-      -webkit-text-fill-color: #0b1324 !important;
+      background: #7d71db !important;
+      color: #120f22 !important;
+      -webkit-text-fill-color: #120f22 !important;
       font-size: 12px !important;
       font-weight: 700 !important;
       letter-spacing: 0.02em !important;
-      padding: 8px 12px !important;
+      padding: 7px 11px !important;
       line-height: 1 !important;
       cursor: pointer !important;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35) !important;
-      opacity: 0.96 !important;
+      box-shadow: none !important;
+      opacity: 0.98 !important;
       transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease !important;
       touch-action: manipulation !important;
     }
@@ -1000,6 +1000,42 @@
     return best;
   };
 
+  const findSearchButton = () => {
+    const candidates = Array.from(document.querySelectorAll('button, a[role="button"], [role="button"]'));
+    let best = null;
+    let bestScore = -1;
+
+    for (const node of candidates) {
+      if (!(node instanceof HTMLElement)) {
+        continue;
+      }
+
+      const label = `${node.textContent || ''} ${node.getAttribute('aria-label') || ''}`.toLowerCase();
+      if (!label.includes('search') && !label.includes('搜索')) {
+        continue;
+      }
+
+      const rect = node.getBoundingClientRect();
+      if (rect.width <= 1 || rect.height <= 1) {
+        continue;
+      }
+
+      const inTopBand = rect.top >= 0 && rect.top <= 200;
+      if (!inTopBand) {
+        continue;
+      }
+
+      // Favor top-right search controls.
+      const score = rect.right + (200 - rect.top);
+      if (score > bestScore) {
+        best = node;
+        bestScore = score;
+      }
+    }
+
+    return best;
+  };
+
   const syncVideoDownloadButton = () => {
     const btn = ensureVideoDownloadButton();
     if (!(btn instanceof HTMLButtonElement)) {
@@ -1028,11 +1064,22 @@
     }
 
     const rect = getPlaybackVideoRect(videos) || bestVideo.getBoundingClientRect();
+    const searchButton = findSearchButton();
     const buttonWidth = 108;
+    let top = 106;
+    let left = Math.max(12, window.innerWidth - buttonWidth - 16);
 
-    // Keep control anchored inside the video viewport and away from top-nav controls.
-    const top = Math.max(96, Math.min(window.innerHeight - 48, Math.round(rect.top + 14)));
-    const left = Math.max(12, Math.min(window.innerWidth - buttonWidth - 12, Math.round(rect.left + 14)));
+    if (searchButton instanceof HTMLElement) {
+      const searchRect = searchButton.getBoundingClientRect();
+      top = Math.round(searchRect.bottom + 8);
+      left = Math.round(searchRect.right - buttonWidth);
+    }
+
+    // Keep button outside video by clamping it above the player area.
+    const maxTopBeforeVideo = Math.max(80, Math.round(rect.top - 10));
+    top = Math.min(top, maxTopBeforeVideo);
+    top = Math.max(64, Math.min(window.innerHeight - 46, top));
+    left = Math.max(12, Math.min(window.innerWidth - buttonWidth - 12, left));
 
     btn.dataset.downloadUrl = source;
     btn.dataset.downloadName = buildDownloadFilename(source);

@@ -43,6 +43,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
 - `1.2.9`: Fixed download-button placement so it anchors inside the video area with a safe top offset, preventing overlap with header navigation buttons (login/register/menu).
 - `1.2.8`: Added a floating play-page `Download` button for video elements. The button auto-tracks the best active/visible video source, follows player bounds, and triggers browser-native download/open behavior with a generated filename.
 - `1.2.7`: Added an invisible full-video pause overlay that tracks the active video bounds and pauses playback on click while keeping the control invisible; updated player-state syncing so the overlay only exists during active playback.
