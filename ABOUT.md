@@ -11,8 +11,8 @@ XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades
 ## Current Script
 
 - **Name:** XAAVV Master Automation and Dark Mode
-- **File:** `xaavv-master-automation-dark-mode-v1.2.20.user.js`
-- **Current Version:** 1.2.20
+- **File:** `xaavv-master-automation-dark-mode-v1.2.27.user.js`
+- **Current Version:** 1.2.27
 
 ## What This Script Does
 
@@ -64,7 +64,7 @@ XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades
 - [INSTALLATION_AND_UPDATE_GUIDE.md](INSTALLATION_AND_UPDATE_GUIDE.md) - install/update flow
 - [TROUBLESHOOTING_v1.2.13.md](TROUBLESHOOTING_v1.2.13.md) - diagnostics and fixes
 
-### v1.2.21 (UI Polish)
-- Download button never overlaps or covers the search link; always below and right-aligned to search bar on play pages.
-- Top bar (header, search, login, register) is now fully transparent and non-blocking on play pages.
-- All changes are documented in the userscript source code and this file.
+### v1.2.27 (Top Controls + Version Sync)
+- Restored top controls (search, login, register) on play pages.
+- Restricted transparent background enforcement to top-level header wrappers only so no large background block overlaps the video.
+- Synchronized file naming and internal script versioning to 1.2.27.

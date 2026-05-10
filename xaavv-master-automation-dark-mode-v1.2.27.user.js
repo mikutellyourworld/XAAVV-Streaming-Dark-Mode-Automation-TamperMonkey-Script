@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.26
+// @version      1.2.27
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.26';
+  const SCRIPT_VERSION = '1.2.27';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -336,7 +336,7 @@
       border-color: var(--xaavv-border) !important;
     }
 
-    /* On play pages, completely hide the header and all top navigation overlays so video is fully visible. */
+    /* On play pages, keep top controls visible while removing only top-level header backgrounds. */
     body.sp-play header,
     body.sp-play [role='banner'],
     body.sp-play .pink-header,
@@ -349,86 +349,38 @@
     html.sp-play .pink-header > div,
     html.sp-play [class*='topbar'],
     html.sp-play [class*='navbar'] {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-      height: 0 !important;
-      min-height: 0 !important;
-      max-height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      border: none !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
       background: transparent !important;
       background-color: transparent !important;
       background-image: none !important;
       box-shadow: none !important;
+      border-color: transparent !important;
+      backdrop-filter: none !important;
     }
 
-    /* Force pseudo-elements of play-page header to be transparent. */
+    /* Remove large overlay layers attached to top-level play-page header wrappers only. */
     body.sp-play header::before,
     body.sp-play header::after,
     body.sp-play [role='banner']::before,
     body.sp-play [role='banner']::after,
     body.sp-play .pink-header::before,
     body.sp-play .pink-header::after,
+    body.sp-play .pink-header > div::before,
+    body.sp-play .pink-header > div::after,
     html.sp-play header::before,
     html.sp-play header::after,
     html.sp-play [role='banner']::before,
     html.sp-play [role='banner']::after,
     html.sp-play .pink-header::before,
-    html.sp-play .pink-header::after {
+    html.sp-play .pink-header::after,
+    html.sp-play .pink-header > div::before,
+    html.sp-play .pink-header > div::after {
       background: transparent !important;
       background-color: transparent !important;
       background-image: none !important;
       box-shadow: none !important;
-      display: none !important;
-    }
-
-    /* Force all descendants of play-page header to be transparent. */
-    body.sp-play header *,
-    body.sp-play [role='banner'] *,
-    body.sp-play .pink-header *,
-    html.sp-play header *,
-    html.sp-play [role='banner'] *,
-    html.sp-play .pink-header * {
-      background: transparent !important;
-      background-color: transparent !important;
-      background-image: none !important;
-      box-shadow: none !important;
-      border: none !important;
-      border-color: transparent !important;
-    }
-
-    /* Force pseudo-elements of all descendants to be transparent. */
-    body.sp-play header *::before,
-    body.sp-play header *::after,
-    body.sp-play [role='banner'] *::before,
-    body.sp-play [role='banner'] *::after,
-    body.sp-play .pink-header *::before,
-    body.sp-play .pink-header *::after,
-    html.sp-play header *::before,
-    html.sp-play header *::after,
-    html.sp-play [role='banner'] *::before,
-    html.sp-play [role='banner'] *::after,
-    html.sp-play .pink-header *::before,
-    html.sp-play .pink-header *::after {
-      background: transparent !important;
-      background-color: transparent !important;
-      background-image: none !important;
-      box-shadow: none !important;
-      display: none !important;
-    }
-
-    /* Keep text and buttons visible inside play-page header. */
-    body.sp-play header *,
-    body.sp-play [role='banner'] *,
-    body.sp-play .pink-header *,
-    html.sp-play header *,
-    html.sp-play [role='banner'] *,
-    html.sp-play .pink-header * {
-      visibility: visible !important;
-      opacity: 1 !important;
     }
 
     body.sp-play .pink-header,
@@ -1911,12 +1863,22 @@
   };
 
   const hardenKnownBars = () => {
+    const onPlayPage = isPlayPath();
     const topBars = document.querySelectorAll('.pink-header, [role="banner"], header');
     for (const bar of topBars) {
       if (!(bar instanceof HTMLElement)) {
         continue;
       }
-      bar.style.setProperty('background-color', 'var(--xaavv-bg)', 'important');
+
+      if (onPlayPage) {
+        bar.style.setProperty('background', 'transparent', 'important');
+        bar.style.setProperty('background-color', 'transparent', 'important');
+        bar.style.setProperty('background-image', 'none', 'important');
+        bar.style.setProperty('border-color', 'transparent', 'important');
+        bar.style.setProperty('box-shadow', 'none', 'important');
+      } else {
+        bar.style.setProperty('background-color', 'var(--xaavv-bg)', 'important');
+      }
       bar.style.setProperty('color', 'var(--xaavv-text)', 'important');
       bar.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text)', 'important');
 
@@ -1968,6 +1930,24 @@
       const pos = cs.position;
       const bgImage = cs.backgroundImage;
       const inHeader = !!el.closest('.pink-header, [role="banner"], header');
+      const isPlayTopHeaderWrapper = isPlayPath() && (
+        el.matches('header')
+        || el.matches('[role="banner"]')
+        || el.matches('.pink-header')
+        || el.matches('.pink-header > div')
+        || el.matches('[class*="topbar"]')
+        || el.matches('[class*="navbar"]')
+      );
+
+      if (isPlayTopHeaderWrapper) {
+        el.style.setProperty('background', 'transparent', 'important');
+        el.style.setProperty('background-color', 'transparent', 'important');
+        el.style.setProperty('background-image', 'none', 'important');
+        el.style.setProperty('border-color', 'transparent', 'important');
+        el.style.setProperty('box-shadow', 'none', 'important');
+        el.style.setProperty('backdrop-filter', 'none', 'important');
+        continue;
+      }
 
       if (inHeader) {
         el.style.setProperty('background-image', 'none', 'important');

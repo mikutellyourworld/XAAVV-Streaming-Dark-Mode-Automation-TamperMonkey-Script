@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.20.user.js
+  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.27.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,34 +23,28 @@
 
 ---
 
-## What's New in v1.2.13
+## What's New in v1.2.27
 
-### ✅ Fixed Issues
+### ✅ This Iteration Fixes
 
-#### 1. **Download Button Overlap** 
-- **Before:** Button appeared on top of search bar
-- **After:** Button positions directly below search on normal layouts, and shifts to the right of search on vertical layouts when needed
-- **How it works:** Script now detects the search input field first, then calculates a layout-aware position relative to it
-- **Fallback:** If body timing is delayed, the button is created from `document.documentElement` so it still appears
+#### 1. Top controls restored on play pages
+- **Issue before:** Search, login, and register could disappear on some play-page renders.
+- **Now:** Top controls remain visible and clickable on play pages.
+- **Technical change:** Removed play-page rules that collapsed/hidden entire header containers.
 
-#### 2. **Progress Bar Mouseover**
-- **Before:** Progress bar only visible during click+drag, required interaction to see
-- **After:** Progress bar appears instantly on any mouseover of video
-- **How it works:** 
-  - Added mouseover/mouseout event listeners to both video and progress wrapper
-  - Progress bar grows from 3px to 5px on hover
-  - Handle (drag dot) becomes visible on hover
-  - Progress bar color brightens to #c3b7ff on hover
+#### 2. Header background no longer overlaps video
+- **Issue before:** The top bar background could extend into/over the video area.
+- **Now:** Only top-level header wrappers are forced transparent on play pages.
+- **Technical change:** Transparency logic was narrowed to top-level wrappers and pseudo-elements instead of all descendants.
 
-#### 3. **Progress Bar Positioning**
-- **Before:** Progress bar appeared at bottom of video, hard to interact with
-- **After:** Progress bar moved 10px up from video bottom for better visibility
-- **How it works:** CSS now sets `bottom: -10px` on the wrapper, positioning it just above the video bottom edge
+#### 3. Runtime hardening aligned with CSS behavior
+- **Issue before:** JS hardening could re-apply dark backgrounds to header bars after CSS made them transparent.
+- **Now:** JS hardening keeps top wrappers transparent on play pages while still preserving readable text.
+- **Technical change:** Added play-page guards in the known-bar hardening and nuclear pass logic.
 
-#### 4. **Script Rename**
-- **Before:** "XAAVV Dark Theme" (vague naming)
-- **After:** "XAAVV Master Automation and Dark Mode" (reflects all features)
-- **File:** `xaavv-master-automation-dark-mode-v1.2.18.user.js`
+#### 4. Version and file naming fully synchronized
+- **Now:** File name and internal metadata both use 1.2.27.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.27.user.js`
 
 ---
 
@@ -111,7 +105,7 @@
 
 2. Visit the raw script URL:
    ```
-   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.18.user.js
+  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.27.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -125,7 +119,7 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.18.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.27.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -146,9 +140,9 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.13)
+2. Find the latest release (v1.2.27)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.18.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.27.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -249,7 +243,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.18.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.27.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -262,7 +256,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.13
+- **Current Version:** 1.2.27
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers
@@ -342,7 +336,7 @@ This script combines:
 
 **Need help?** Check [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) or visit the GitHub repository.
 
-**Version:** 1.2.13 | **Updated:** 2026-05-10
+**Version:** 1.2.27 | **Updated:** 2026-05-10
 
 ### v1.2.21 (2024-06-09)
 - UI polish for play pages: Download button never overlaps search, always below and right-aligned; top bar fully transparent and non-blocking.

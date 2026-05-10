@@ -11,7 +11,7 @@
 2. **Add the XAAVV Dark Mode + Automation Script**
    - Click the Tampermonkey icon in your browser toolbar.
    - Choose "Create a new script".
-   - Delete any code in the editor, then copy and paste the contents of `xaavv-master-automation-dark-mode-v1.2.20.user.js` into the editor.
+   - Delete any code in the editor, then copy and paste the contents of `xaavv-master-automation-dark-mode-v1.2.27.user.js` into the editor.
    - Click **File > Save** (or press Ctrl+S).
 
 3. **Use the Script**
@@ -78,6 +78,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.27`: Restored top play-page controls (search/login/register) while limiting background removal to top-level header wrappers so no large header background overlaps the video.
 - `1.2.20`: Fixed redirect loop issue on intermediate pages by adding safeguards to prevent redirecting to the same URL; added flag to ensure redirect is only attempted once per page load. Improved reliability of intermediate-to-play page routing logic.
 - `1.2.19`: Strengthened play-page header CSS transparency by forcing all descendants of the header to be completely transparent while preserving button and text visibility; header now matches stock UI appearance.
 - `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
@@ -138,19 +139,21 @@ Note: Browser-based DOM inspection and interaction tooling was used to validate 
 
 The following project documents were reviewed/updated as part of this workstream:
 
-1. `xaavv-dark-theme.user.js`
-	- Core implementation: dark mode, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
+1. `xaavv-master-automation-dark-mode-v1.2.27.user.js`
+   - Core implementation: dark mode, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
 2. `README.md`
-	- Full changelog (`1.1.1` through `1.2.7`), chronology, constraints, and latest execution notes.
-3. `DARK_MODING_SKILL.md`
+   - Full changelog, chronology, constraints, and latest execution notes.
+3. `RELEASE_SUMMARY_v1.2.27.md`
+   - Release-scoped implementation details, verification checklist, and migration notes for v1.2.27.
+4. `DARK_MODING_SKILL.md`
 	- Reusable skill guidance: do/don't patterns, misses, prevention checklist.
-4. `SITE_AUTOMATION_TEMPLATE.md`
+5. `SITE_AUTOMATION_TEMPLATE.md`
 	- Generic template for darkening + playback automation + skip-intermediate + translation workflows.
-5. `CENTER_PLAY_OVERLAY_VALIDATION_1.2.6.md`
+6. `CENTER_PLAY_OVERLAY_VALIDATION_1.2.6.md`
 	- Browser recon + iteration log for center control and bottom seek-overlay blocking fix.
-6. `CENTER_PLAY_OVERLAY_VALIDATION_1.2.7.md`
+7. `CENTER_PLAY_OVERLAY_VALIDATION_1.2.7.md`
 	- Added invisible pause-overlay recon, implementation notes, and verification steps.
-7. `ABOUT.md`
+8. `ABOUT.md`
 	- Short repo summary with the current player-overlay behavior and explicit request boundary.
 
 Current request status:
