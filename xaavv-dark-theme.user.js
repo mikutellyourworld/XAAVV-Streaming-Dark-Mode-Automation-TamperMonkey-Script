@@ -133,13 +133,19 @@
 
     .xaavv-video-progress-wrapper {
       position: absolute !important;
-      bottom: 0 !important;
+      bottom: -10px !important;
       left: 0 !important;
       right: 0 !important;
       height: 3px !important;
       background: rgba(26, 31, 43, 0.3) !important;
       cursor: pointer !important;
       z-index: 10 !important;
+      transition: height 0.15s ease, background 0.15s ease !important;
+    }
+
+    .xaavv-video-progress-wrapper.visible {
+      height: 5px !important;
+      background: rgba(157, 140, 255, 0.5) !important;
     }
 
     .xaavv-video-progress-bar {
@@ -167,7 +173,11 @@
       height: 100% !important;
       background: #9d8cff !important;
       pointer-events: none !important;
-      transition: width 0.05s linear !important;
+      transition: width 0.05s linear, background 0.15s ease !important;
+    }
+
+    .xaavv-video-progress-wrapper.visible .xaavv-video-progress-fill {
+      background: #c3b7ff !important;
     }
 
     .xaavv-video-progress-handle {
@@ -184,16 +194,49 @@
       transition: opacity 0.15s ease !important;
     }
 
+    .xaavv-video-progress-wrapper.visible .xaavv-video-progress-handle {
+      opacity: 1 !important;
+    }
+
     .xaavv-video-progress-wrapper:hover .xaavv-video-progress-handle {
       opacity: 1 !important;
     }
 
     .xaavv-video-progress-wrapper:hover {
       height: 5px !important;
+      background: rgba(157, 140, 255, 0.5) !important;
     }
 
     .xaavv-video-progress-wrapper:hover .xaavv-video-progress-fill {
       background: #c3b7ff !important;
+    }
+
+    #sp_play_btn {
+      background: linear-gradient(135deg, #9d8cff 0%, #b5a8ff 100%) !important;
+      border: 2px solid #c3b7ff !important;
+      border-radius: 50% !important;
+      width: 60px !important;
+      height: 60px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 24px !important;
+      color: #120f22 !important;
+      -webkit-text-fill-color: #120f22 !important;
+      font-weight: bold !important;
+      box-shadow: 0 4px 16px rgba(157, 140, 255, 0.4) !important;
+      transition: all 0.2s ease !important;
+      cursor: pointer !important;
+    }
+
+    #sp_play_btn:hover {
+      background: linear-gradient(135deg, #b5a8ff 0%, #c3b7ff 100%) !important;
+      box-shadow: 0 6px 20px rgba(157, 140, 255, 0.6) !important;
+      transform: scale(1.05) !important;
+    }
+
+    #sp_play_btn:active {
+      transform: scale(0.95) !important;
     }
 
     body {
@@ -1142,11 +1185,12 @@
 
     if (searchButton instanceof HTMLElement) {
       const searchRect = searchButton.getBoundingClientRect();
-      top = Math.round(searchRect.bottom + 8);
-      left = Math.round(searchRect.right - buttonWidth);
+      // Position download button below search with proper spacing
+      top = Math.round(searchRect.bottom + 12);
+      left = Math.round(searchRect.left);
     }
 
-    // Keep button outside video by clamping it above the player area.
+    // Keep button below search and outside video
     const maxTopBeforeVideo = Math.max(80, Math.round(rect.top - 10));
     top = Math.min(top, maxTopBeforeVideo);
     top = Math.max(64, Math.min(window.innerHeight - 46, top));
@@ -1230,6 +1274,24 @@
     video.addEventListener('loadedmetadata', updateProgress, { passive: true });
     video.addEventListener('play', updateProgress, { passive: true });
     video.addEventListener('pause', updateProgress, { passive: true });
+
+    // Show progress bar on any mouseover of the video
+    video.addEventListener('mouseover', () => {
+      wrapper.classList.add('visible');
+    }, { passive: true });
+
+    video.addEventListener('mouseout', () => {
+      wrapper.classList.remove('visible');
+    }, { passive: true });
+
+    // Also listen on the wrapper itself for hover
+    wrapper.addEventListener('mouseover', () => {
+      wrapper.classList.add('visible');
+    }, { passive: true });
+
+    wrapper.addEventListener('mouseout', () => {
+      wrapper.classList.remove('visible');
+    }, { passive: true });
 
     // Inject into DOM hierarchy
     const videoRect = video.getBoundingClientRect();
