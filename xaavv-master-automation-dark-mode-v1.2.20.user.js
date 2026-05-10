@@ -359,6 +359,26 @@
       -webkit-backdrop-filter: none !important;
     }
 
+    /* Force pseudo-elements of play-page header to be transparent. */
+    body.sp-play header::before,
+    body.sp-play header::after,
+    body.sp-play [role='banner']::before,
+    body.sp-play [role='banner']::after,
+    body.sp-play .pink-header::before,
+    body.sp-play .pink-header::after,
+    html.sp-play header::before,
+    html.sp-play header::after,
+    html.sp-play [role='banner']::before,
+    html.sp-play [role='banner']::after,
+    html.sp-play .pink-header::before,
+    html.sp-play .pink-header::after {
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      display: none !important;
+    }
+
     /* Force all descendants of play-page header to be transparent. */
     body.sp-play header *,
     body.sp-play [role='banner'] *,
@@ -372,6 +392,26 @@
       box-shadow: none !important;
       border: none !important;
       border-color: transparent !important;
+    }
+
+    /* Force pseudo-elements of all descendants to be transparent. */
+    body.sp-play header *::before,
+    body.sp-play header *::after,
+    body.sp-play [role='banner'] *::before,
+    body.sp-play [role='banner'] *::after,
+    body.sp-play .pink-header *::before,
+    body.sp-play .pink-header *::after,
+    html.sp-play header *::before,
+    html.sp-play header *::after,
+    html.sp-play [role='banner'] *::before,
+    html.sp-play [role='banner'] *::after,
+    html.sp-play .pink-header *::before,
+    html.sp-play .pink-header *::after {
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      display: none !important;
     }
 
     /* Keep text and buttons visible inside play-page header. */
