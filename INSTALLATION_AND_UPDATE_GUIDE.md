@@ -1,0 +1,342 @@
+# XAAVV Master Automation and Dark Mode - Installation & Update Guide
+
+## Quick Update Instructions
+
+### Method 1: Direct URL Import (Recommended)
+
+1. **Copy the raw script URL:**
+   ```
+   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode.user.js
+   ```
+
+2. **In Tampermonkey Dashboard:**
+   - Click the Tampermonkey icon (top-right of browser)
+   - Click "Dashboard" or "Create a new script"
+   - If creating new: paste the entire script content
+   - If updating existing:
+     - Click the ⚙️ (settings) icon next to the old script
+     - Delete the old version
+     - Create new with the URL above
+
+3. **Refresh XAAVV page**
+   - The script should now load with new features
+
+---
+
+## What's New in v1.2.13
+
+### ✅ Fixed Issues
+
+#### 1. **Download Button Overlap** 
+- **Before:** Button appeared on top of search bar
+- **After:** Button positioned directly below search with 16px spacing
+- **How it works:** Script now detects search input field first, then calculates position relative to it
+
+#### 2. **Progress Bar Mouseover**
+- **Before:** Progress bar only visible during click+drag, required interaction to see
+- **After:** Progress bar appears instantly on any mouseover of video
+- **How it works:** 
+  - Added mouseover/mouseout event listeners to both video and progress wrapper
+  - Progress bar grows from 3px to 5px on hover
+  - Handle (drag dot) becomes visible on hover
+  - Progress bar color brightens to #c3b7ff on hover
+
+#### 3. **Progress Bar Positioning**
+- **Before:** Progress bar appeared at bottom of video, hard to interact with
+- **After:** Progress bar moved 10px up from video bottom for better visibility
+- **How it works:** CSS now sets `bottom: -10px` on the wrapper, positioning it just above the video bottom edge
+
+#### 4. **Script Rename**
+- **Before:** "XAAVV Dark Theme" (vague naming)
+- **After:** "XAAVV Master Automation and Dark Mode" (reflects all features)
+- **File:** `xaavv-master-automation-dark-mode.user.js`
+
+---
+
+## Feature Overview (Complete)
+
+### 🎨 Dark Mode
+- Complete dark theme applied to all XAAVV pages
+- Purple accent colors (#9d8cff, #b5a8ff)
+- No white surface leaks
+- Maintains readability while reducing eye strain
+
+### ▶️ Video Playback Controls
+- **Download Button:** Click to download active video
+  - Located below search bar for easy access
+  - Automatically selects best quality video
+  - Works with both blob: and HTTP URLs
+
+- **Interactive Progress Bar:**
+  - Visible on any mouseover
+  - Click anywhere to seek to that timestamp
+  - Drag handle for fine-grained control
+  - Shows current playback time in real-time
+
+- **Center Pause Overlay:**
+  - Click anywhere on video to pause during playback
+  - Center play button hides when playing, shows when paused
+  - Styled with purple gradient
+
+### 🎬 Playback Automation
+- Auto-plays videos on play pages
+- Starts muted, unmutes after 1.2 seconds
+- Improves auto-play success rate in browsers with autoplay restrictions
+
+### 🔄 Navigation
+- Direct routing from detail pages to play pages
+- Skip intermediate pages automatically
+- Seamless navigation experience
+
+### 🌐 Multi-Video Support
+- Handles pages with multiple video layers
+- Synchronizes playback controls across all video elements
+- Safe state management
+
+### 🔤 Translation
+- Unobtrusive Google Translate integration
+- Auto English translation without popup
+- Toolbar hidden from UI
+
+---
+
+## Installation Methods
+
+### Method A: From Browser Extension Store (Easiest)
+1. Install Tampermonkey extension:
+   - Chrome: [Tampermonkey on Chrome Web Store](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobp55f)
+   - Firefox: [Tampermonkey on Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)
+   - Safari: [Tampermonkey on App Store](https://apps.apple.com/us/app/tampermonkey/id1482490089)
+
+2. Visit the raw script URL:
+   ```
+   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode.user.js
+   ```
+
+3. Tampermonkey will show an install dialog
+4. Click "Install"
+5. Refresh XAAVV page
+
+### Method B: Manual Copy-Paste
+
+1. Go to GitHub: 
+   ```
+   https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+   ```
+
+2. Click the script file: `xaavv-master-automation-dark-mode.user.js`
+
+3. Click "Raw" button (top-right of code view)
+
+4. Select all (Ctrl+A) and copy
+
+5. In Tampermonkey Dashboard:
+   - Click "+ Create a new script"
+   - Delete the default template content
+   - Paste the script
+   - Click "File" → "Save" (or Ctrl+S)
+
+6. Refresh XAAVV page
+
+### Method C: GitHub Releases
+
+1. Visit Releases page:
+   ```
+   https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
+   ```
+
+2. Find the latest release (v1.2.13)
+
+3. Download `xaavv-master-automation-dark-mode.user.js`
+
+4. In Tampermonkey Dashboard:
+   - "+ Create a new script"
+   - Paste the downloaded file content
+   - Save
+
+5. Refresh XAAVV page
+
+---
+
+## Testing Checklist After Installation
+
+After installing/updating, verify these features work:
+
+- [ ] **Dark Mode Applied**
+  - Visit any XAAVV page
+  - Page should have dark background (#121520)
+  - Text should be light (#eceffd)
+  - No white elements visible
+
+- [ ] **Search Bar Appears**
+  - Top of page should have search input
+  - Next to search should be login/register links
+
+- [ ] **Download Button Below Search**
+  - On play page (`/xavplay/`)
+  - Download button should appear below search with 16px gap
+  - Button should have purple styling (#7d71db)
+  - Not overlapping any other buttons
+
+- [ ] **Progress Bar on Hover**
+  - Move mouse over video
+  - Thin line (3px) should appear at bottom of video
+  - Line should grow to 5px thick
+  - Should be purple colored
+  - Move mouse away, line should shrink back
+
+- [ ] **Progress Bar Seek**
+  - Hover over video
+  - Click on progress bar at any position
+  - Video should seek to that timestamp
+  - Handle (white circle) should appear when hovering
+
+- [ ] **Center Play Button Styled**
+  - Video should have purple gradient play button in center
+  - Button should be circular (60px)
+  - Hover effect: button brightens and scales up
+  - Click to play/pause
+
+- [ ] **Pause Overlay Works**
+  - During playback, click anywhere on video
+  - Video should pause
+  - Center button should reappear
+
+---
+
+## Troubleshooting
+
+### Script Not Loading?
+
+1. **Check if Tampermonkey is enabled:**
+   - Click Tampermonkey icon
+   - Make sure it's toggled ON
+
+2. **Check site permissions:**
+   - Tampermonkey Dashboard → "Installed scripts"
+   - Click ⚙️ next to XAAVV script
+   - Under "Runs on" - verify `*xaavv.com*` and `*xaavv.live*` are listed
+
+3. **Force reload:**
+   - Press Ctrl+Shift+R (hard refresh)
+   - Clear browser cache
+   - Reinstall script
+
+### Features Not Working?
+
+**See:** [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) for detailed diagnostics
+
+Common fixes:
+- Hard refresh (Ctrl+Shift+R)
+- Clear Tampermonkey cache (Dashboard → ⚙️ → Storage → Clear all)
+- Disable other userscripts (may conflict)
+- Check browser console (F12 → Console) for errors
+
+### Performance Issues?
+
+- Script uses passive event listeners (no jank)
+- Progress bar updates at video's framerate (60fps typical)
+- Download button repositioned every 220ms during play
+- If lag occurs:
+  - Check browser extensions (disable others)
+  - Update browser to latest version
+  - Close unnecessary tabs
+
+---
+
+## File Naming
+
+**Current Version:** `xaavv-master-automation-dark-mode.user.js`
+
+**Previous Names:**
+- v1.2.11: `xaavv-dark-theme.user.js`
+- v1.2.10: `xaavv-kiro-dark.user.js`
+
+If you have old versions installed, consider deleting them from Tampermonkey Dashboard to avoid conflicts.
+
+---
+
+## Repository Info
+
+- **Repository:** [mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
+- **Current Version:** 1.2.13
+- **Last Updated:** 2026-05-10
+- **License:** See repository
+- **Author:** XAAVV Automation Maintainers
+
+---
+
+## Support Domains
+
+The script works on:
+- `*.xaavv.com`
+- `*.xaavv.live`
+- All subdomains
+
+It does NOT apply to:
+- Other streaming sites
+- XAAVV detail/category pages (only play pages)
+- Non-XAAVV domains
+
+---
+
+## FAQ
+
+**Q: Is this script safe?**
+A: Yes. The script:
+- Only manipulates DOM and CSS
+- Never sends data to external servers
+- Never steals credentials or cookies
+- Open source - you can review the code on GitHub
+- Uses standard Tampermonkey security sandbox
+
+**Q: Will this get me banned?**
+A: No. The script:
+- Only improves user interface
+- Doesn't automate downloads in bulk
+- Doesn't bypass age restrictions
+- Doesn't scrape content
+- Is similar to browser extensions like uBlock, Dark Reader, etc.
+
+**Q: Does it work on mobile?**
+A: No. Tampermonkey scripts require:
+- Desktop/laptop browser
+- Not available on mobile browsers (Android, iOS)
+- Some mobile browsers (Kiwi Browser on Android) may support extensions
+
+**Q: Why isn't the dark mode applying everywhere?**
+A: The script targets:
+- XAAVV domain only
+- Play pages specifically for video features
+- Other pages get dark mode but no video controls
+
+**Q: Can I customize the colors?**
+A: Yes. In Tampermonkey Dashboard:
+1. Click ⚙️ next to the script
+2. Click "Edit"
+3. Find the color definitions (search for `--xaavv-accent`)
+4. Modify hex colors
+5. Save (Ctrl+S)
+
+Example:
+```javascript
+--xaavv-accent: #ff6b9d;  // Change to any hex color
+```
+
+---
+
+## Credits & Acknowledgments
+
+This script combines:
+- Dark mode expertise from web accessibility standards
+- Tampermonkey scripting best practices
+- XAAVV platform API knowledge
+- Community feedback and testing
+
+**Maintained by:** XAAVV Automation Team
+
+---
+
+**Need help?** Check [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) or visit the GitHub repository.
+
+**Version:** 1.2.13 | **Updated:** 2026-05-10
