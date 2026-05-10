@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.27
+// @version      1.2.28
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.27';
+  const SCRIPT_VERSION = '1.2.28';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -399,6 +399,33 @@
       right: 0 !important;
       z-index: 300 !important;
       width: 100% !important;
+    }
+
+    /* Keep top-right auth/menu chips visible but fully transparent on play pages. */
+    body.sp-play .pink-header button,
+    body.sp-play [role='banner'] button,
+    body.sp-play header button,
+    body.sp-play .pink-header a[href*='login'],
+    body.sp-play .pink-header a[href*='register'],
+    body.sp-play [role='banner'] a[href*='login'],
+    body.sp-play [role='banner'] a[href*='register'],
+    body.sp-play .pink-header [aria-label*='menu' i],
+    body.sp-play [role='banner'] [aria-label*='menu' i],
+    html.sp-play .pink-header button,
+    html.sp-play [role='banner'] button,
+    html.sp-play header button,
+    html.sp-play .pink-header a[href*='login'],
+    html.sp-play .pink-header a[href*='register'],
+    html.sp-play [role='banner'] a[href*='login'],
+    html.sp-play [role='banner'] a[href*='register'],
+    html.sp-play .pink-header [aria-label*='menu' i],
+    html.sp-play [role='banner'] [aria-label*='menu' i] {
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
     }
 
     /* On play pages, make body and html transparent so video shows through header. */
@@ -1311,26 +1338,15 @@
     const searchButton = findSearchButton();
     const buttonWidth = 108;
     const buttonHeight = 34;
-    const isVerticalVideo = isVerticalVideoRect(rect);
     let top = 106;
     let left = Math.max(12, window.innerWidth - buttonWidth - 16);
 
     if (searchButton instanceof HTMLElement) {
       const searchRect = searchButton.getBoundingClientRect();
-      if (isVerticalVideo) {
-        // For vertical videos, move the button to the right of search to avoid stacking overlap.
-        top = Math.round(searchRect.top + Math.max(0, (searchRect.height - buttonHeight) / 2));
-        left = Math.round(searchRect.right + 12);
-
-        if (left + buttonWidth > window.innerWidth - 12) {
-          top = Math.round(searchRect.bottom + 16);
-          left = Math.round(Math.max(12, searchRect.left));
-        }
-      } else {
-        // Position download button directly below search button with safe spacing.
-        top = Math.round(searchRect.bottom + 16);
-        left = Math.round(Math.max(12, searchRect.left));
-      }
+      // Position download directly under search and align the trailing label edge.
+      const downloadLabelTrailingInsetPx = 11;
+      top = Math.round(searchRect.bottom + 16);
+      left = Math.round(searchRect.right - buttonWidth + downloadLabelTrailingInsetPx);
     }
 
     // Clamp to ensure button doesn't overlap video or go off-screen

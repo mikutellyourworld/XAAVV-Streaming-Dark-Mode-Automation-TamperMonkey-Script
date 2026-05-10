@@ -11,7 +11,7 @@
 2. **Add the XAAVV Dark Mode + Automation Script**
    - Click the Tampermonkey icon in your browser toolbar.
    - Choose "Create a new script".
-   - Delete any code in the editor, then copy and paste the contents of `xaavv-master-automation-dark-mode-v1.2.27.user.js` into the editor.
+   - Delete any code in the editor, then copy and paste the contents of `xaavv-master-automation-dark-mode-v1.2.28.user.js` into the editor.
    - Click **File > Save** (or press Ctrl+S).
 
 3. **Use the Script**
@@ -139,7 +139,7 @@ Note: Browser-based DOM inspection and interaction tooling was used to validate 
 
 The following project documents were reviewed/updated as part of this workstream:
 
-1. `xaavv-master-automation-dark-mode-v1.2.27.user.js`
+1. `xaavv-master-automation-dark-mode-v1.2.28.user.js`
    - Core implementation: dark mode, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
 2. `README.md`
    - Full changelog, chronology, constraints, and latest execution notes.
@@ -255,3 +255,4 @@ For reverting only trim/refactor changes (without undoing behavior fixes), see [
 ## License
 
 MIT
+

@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.27.user.js
+  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.28.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,7 +23,7 @@
 
 ---
 
-## What's New in v1.2.27
+## What's New in v1.2.28
 
 ### ✅ This Iteration Fixes
 
@@ -44,7 +44,7 @@
 
 #### 4. Version and file naming fully synchronized
 - **Now:** File name and internal metadata both use 1.2.27.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.27.user.js`
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.28.user.js`
 
 ---
 
@@ -105,7 +105,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.27.user.js
+  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.28.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -119,7 +119,7 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.27.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.28.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -140,9 +140,9 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.27)
+2. Find the latest release (v1.2.28)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.27.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.28.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -243,7 +243,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.27.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.28.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -256,7 +256,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.27
+- **Current Version:** 1.2.28
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers
@@ -336,8 +336,9 @@ This script combines:
 
 **Need help?** Check [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) or visit the GitHub repository.
 
-**Version:** 1.2.27 | **Updated:** 2026-05-10
+**Version:** 1.2.28 | **Updated:** 2026-05-10
 
 ### v1.2.21 (2024-06-09)
 - UI polish for play pages: Download button never overlaps search, always below and right-aligned; top bar fully transparent and non-blocking.
 - All changes are documented in the userscript source code and documentation files.
+
