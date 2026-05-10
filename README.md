@@ -1,10 +1,10 @@
 # XAAVV Dark Mode + Automation (Tampermonkey)
 
-A focused Tampermonkey userscript that applies a Kiro-inspired dark interface to XAAVV pages without changing page behavior, player controls, or media rendering.
+A focused Tampermonkey userscript that applies a professional dark interface to XAAVV pages without changing page behavior, player controls, or media rendering.
 
 ## Features
 
-- Kiro-style dark palette with purple accent highlights
+- Professional dark palette with purple accent highlights
 - Works on current and future XAAVV subdomains
 - Avoids global inversion/filter tricks that can break images and video
 - Keeps forms, navigation, cards, and buttons readable
@@ -29,7 +29,7 @@ A focused Tampermonkey userscript that applies a Kiro-inspired dark interface to
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-kiro-dark.user.js`.
+3. Replace the default content with `xaavv-dark-theme.user.js`.
 4. Save and refresh XAAVV pages.
 
 ## Validation Notes
@@ -44,7 +44,7 @@ Checked against:
 
 ## Fix Log
 
-- `1.2.11`: Added an interactive video progress/seek bar overlay on play-page videos. The bar displays current time as a filled segment, allows seeking by clicking, and includes a draggable handle that appears on hover. Themed with Kiro purple accents.
+- `1.2.11`: Added an interactive video progress/seek bar overlay on play-page videos. The bar displays current time as a filled segment, allows seeking by clicking, and includes a draggable handle that appears on hover. Themed with purple accent colors.
 - `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
 - `1.2.9`: Fixed download-button placement so it anchors inside the video area with a safe top offset, preventing overlap with header navigation buttons (login/register/menu).
 - `1.2.8`: Added a floating play-page `Download` button for video elements. The button auto-tracks the best active/visible video source, follows player bounds, and triggers browser-native download/open behavior with a generated filename.
@@ -103,7 +103,7 @@ Note: Browser-based DOM inspection and interaction tooling was used to validate 
 
 The following project documents were reviewed/updated as part of this workstream:
 
-1. `xaavv-kiro-dark.user.js`
+1. `xaavv-dark-theme.user.js`
 	- Core implementation: dark mode, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
 2. `README.md`
 	- Full changelog (`1.1.1` through `1.2.7`), chronology, constraints, and latest execution notes.
@@ -164,7 +164,7 @@ Do Not:
 
 ## What Went Wrong (Postmortem)
 
-- I initially preserved some decorative gradients while trying to keep the Kiro look.
+- I initially preserved some decorative gradients while trying to keep a polished dark look.
 - I over-focused on container backgrounds first and missed a gradient-like visual artifact on button/chip surfaces.
 - I should have switched to strict no-gradient mode earlier after your explicit requirement.
 

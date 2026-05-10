@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         XAAVV Kiro Dark Theme
+// @name         XAAVV Dark Theme
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
 // @version      1.2.11
 // @description  Apply XAAVV dark mode with player-safe rendering, reliable intermediate routing, playback automation assists, unobtrusive translation, loader cleanup, multi-video-safe playback UI syncing, download button, and video progress/seek bar.
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const STYLE_ID = 'xaavv-kiro-dark-theme-style';
+  const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
   const TRANSLATE_HOOK_ID = 'xaavv-translate-hook';
   const PLAYBACK_AUTOMATION_ATTR = 'data-xaavv-playback-automation-wired';
@@ -39,22 +39,22 @@
     return;
   }
 
-  // Source pattern: dark-mode baseline adapted for XAAVV + Kiro accents.
+  // Source pattern: dark-mode baseline adapted for XAAVV + accent colors.
   const css = `
     :root {
       color-scheme: dark;
-      --kiro-bg: #121520;
-      --kiro-bg-elev: #1a1f2b;
-      --kiro-bg-soft: #22283a;
-      --kiro-surface-2: #2b3347;
-      --kiro-text: #eceffd;
-      --kiro-text-muted: #b9c0d9;
-      --kiro-accent: #9d8cff;
-      --kiro-accent-strong: #b5a8ff;
-      --kiro-link: #8ac4ff;
-      --kiro-border: #3f4a63;
-      --kiro-success: #57c5a7;
-      --kiro-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+      --xaavv-bg: #121520;
+      --xaavv-bg-elev: #1a1f2b;
+      --xaavv-bg-soft: #22283a;
+      --xaavv-surface-2: #2b3347;
+      --xaavv-text: #eceffd;
+      --xaavv-text-muted: #b9c0d9;
+      --xaavv-accent: #9d8cff;
+      --xaavv-accent-strong: #b5a8ff;
+      --xaavv-link: #8ac4ff;
+      --xaavv-border: #3f4a63;
+      --xaavv-success: #57c5a7;
+      --xaavv-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
     }
 
     html,
@@ -66,9 +66,9 @@
     body.sp-play,
     html.sp-play,
     #sp_player_wrap {
-      background: var(--kiro-bg) !important;
+      background: var(--xaavv-bg) !important;
       background-image: none !important;
-      color: var(--kiro-text) !important;
+      color: var(--xaavv-text) !important;
     }
 
     #sp_player_wrap,
@@ -79,7 +79,7 @@
     .sp-play aside,
     .sp-play [class*='drawer'],
     .sp-play [class*='panel'] {
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
       background-image: none !important;
     }
 
@@ -197,12 +197,12 @@
     }
 
     body {
-      color: var(--kiro-text) !important;
-      -webkit-text-fill-color: var(--kiro-text) !important;
+      color: var(--xaavv-text) !important;
+      -webkit-text-fill-color: var(--xaavv-text) !important;
     }
 
     * {
-      scrollbar-color: #3f4a63 var(--kiro-bg);
+      scrollbar-color: #3f4a63 var(--xaavv-bg);
     }
 
     /* Use one base tone for all common bright wrappers so side/corner boxes cannot stay white. */
@@ -229,11 +229,11 @@
     [class*='from-pink-'],
     [class*='to-rose-'],
     [class*='border-pink-'] {
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
       background-image: none !important;
-      border-color: var(--kiro-border) !important;
-      color: var(--kiro-text) !important;
-      -webkit-text-fill-color: var(--kiro-text) !important;
+      border-color: var(--xaavv-border) !important;
+      color: var(--xaavv-text) !important;
+      -webkit-text-fill-color: var(--xaavv-text) !important;
     }
 
     .pink-header,
@@ -244,11 +244,11 @@
     .pink-header [class*='bg-pink-100'],
     [role='banner'],
     [role='banner'] > div {
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
       background-image: none !important;
-      color: var(--kiro-text) !important;
-      -webkit-text-fill-color: var(--kiro-text) !important;
-      border-color: var(--kiro-border) !important;
+      color: var(--xaavv-text) !important;
+      -webkit-text-fill-color: var(--xaavv-text) !important;
+      border-color: var(--xaavv-border) !important;
     }
 
     footer,
@@ -258,11 +258,11 @@
     .footer,
     footer > div,
     [role='contentinfo'] > div {
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
       background-image: none !important;
-      color: var(--kiro-text-muted) !important;
-      -webkit-text-fill-color: var(--kiro-text-muted) !important;
-      border-color: var(--kiro-border) !important;
+      color: var(--xaavv-text-muted) !important;
+      -webkit-text-fill-color: var(--xaavv-text-muted) !important;
+      border-color: var(--xaavv-border) !important;
     }
 
     .pink-header a[href='/'],
@@ -272,8 +272,8 @@
     .pink-header .text-pink-900,
     .pink-header .text-pink-800,
     .pink-header .text-white {
-      color: var(--kiro-text) !important;
-      -webkit-text-fill-color: var(--kiro-text) !important;
+      color: var(--xaavv-text) !important;
+      -webkit-text-fill-color: var(--xaavv-text) !important;
       text-shadow: none !important;
     }
 
@@ -296,10 +296,10 @@
     .text-gray-500,
     .text-gray-600,
     .text-gray-700 {
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
       background-image: none !important;
-      color: var(--kiro-text) !important;
-      -webkit-text-fill-color: var(--kiro-text) !important;
+      color: var(--xaavv-text) !important;
+      -webkit-text-fill-color: var(--xaavv-text) !important;
     }
 
     .text-pink-300,
@@ -310,8 +310,8 @@
     .text-gray-400,
     .text-gray-500,
     .text-gray-600 {
-      color: var(--kiro-text-muted) !important;
-      -webkit-text-fill-color: var(--kiro-text-muted) !important;
+      color: var(--xaavv-text-muted) !important;
+      -webkit-text-fill-color: var(--xaavv-text-muted) !important;
     }
 
     a,
@@ -321,9 +321,9 @@
     .pink-btn,
     .pink-btn-primary,
     [role='button'] {
-      color: var(--kiro-link) !important;
-      -webkit-text-fill-color: var(--kiro-link) !important;
-      border-color: var(--kiro-border) !important;
+      color: var(--xaavv-link) !important;
+      -webkit-text-fill-color: var(--xaavv-link) !important;
+      border-color: var(--xaavv-border) !important;
       transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease !important;
     }
 
@@ -389,16 +389,16 @@
     input,
     textarea,
     select {
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
       background-image: none !important;
-      color: var(--kiro-text) !important;
-      -webkit-text-fill-color: var(--kiro-text) !important;
-      border-color: var(--kiro-border) !important;
+      color: var(--xaavv-text) !important;
+      -webkit-text-fill-color: var(--xaavv-text) !important;
+      border-color: var(--xaavv-border) !important;
     }
 
     input::placeholder,
     textarea::placeholder {
-      color: var(--kiro-text-muted) !important;
+      color: var(--xaavv-text-muted) !important;
       opacity: 0.9 !important;
     }
 
@@ -411,29 +411,29 @@
     strong,
     .font-semibold,
     .font-bold {
-      color: var(--kiro-text) !important;
-      -webkit-text-fill-color: var(--kiro-text) !important;
+      color: var(--xaavv-text) !important;
+      -webkit-text-fill-color: var(--xaavv-text) !important;
     }
 
     .rounded-xl,
     .rounded-2xl,
     .rounded-full,
     [class*='rounded-'] {
-      border-color: var(--kiro-border) !important;
+      border-color: var(--xaavv-border) !important;
     }
 
     .border,
     [class*='border-'] {
-      border-color: var(--kiro-border) !important;
+      border-color: var(--xaavv-border) !important;
     }
 
     [style*='position: fixed'],
     [style*='position:fixed'],
     [style*='position: sticky'],
     [style*='position:sticky'] {
-      background-color: var(--kiro-bg-elev) !important;
-      color: var(--kiro-text) !important;
-      -webkit-text-fill-color: var(--kiro-text) !important;
+      background-color: var(--xaavv-bg-elev) !important;
+      color: var(--xaavv-text) !important;
+      -webkit-text-fill-color: var(--xaavv-text) !important;
     }
 
     .bg-gradient-to-br,
@@ -446,13 +446,13 @@
     [class*='to-white'],
     [style*='gradient'] {
       background-image: none !important;
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
     }
 
     [style*='linear-gradient'],
     [style*='radial-gradient'] {
       background-image: none !important;
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
     }
 
     /* Hard-disable top header fade overlays that still show white edges. */
@@ -531,7 +531,7 @@
     div[style*='#fff'],
     div[style*='white'],
     div[style*='rgb(255'] {
-      background-color: var(--kiro-bg) !important;
+      background-color: var(--xaavv-bg) !important;
       background-image: none !important;
     }
 
@@ -549,7 +549,7 @@
     [class*='content']::after,
     [class*='cat-']::before,
     [class*='cat-']::after {
-      background: var(--kiro-bg) !important;
+      background: var(--xaavv-bg) !important;
       background-image: none !important;
       box-shadow: none !important;
     }
@@ -557,7 +557,7 @@
     .text-emerald-500,
     .text-green-500,
     .text-green-600 {
-      color: var(--kiro-success) !important;
+      color: var(--xaavv-success) !important;
     }
 
     .backdrop-blur-sm,
@@ -581,7 +581,7 @@
     }
 
     :focus-visible {
-      outline: 2px solid var(--kiro-accent-strong) !important;
+      outline: 2px solid var(--xaavv-accent-strong) !important;
       outline-offset: 2px !important;
     }
 
@@ -1082,7 +1082,7 @@
       }
 
       const label = `${node.textContent || ''} ${node.getAttribute('aria-label') || ''}`.toLowerCase();
-      if (!label.includes('search') && !label.includes('搜索')) {
+      if (!label.includes('search') && !label.includes('æœç´¢')) {
         continue;
       }
 
@@ -1363,8 +1363,8 @@
     const hasVideo = videos.length > 0;
     const isPlayingByVideo = videos.some((v) => !v.paused && !v.ended);
     const isPausedByVideo = hasVideo && videos.every((v) => v.paused || v.ended);
-    const isPlayingByIcon = btnText.includes('❚❚') || btnText.includes('||');
-    const isPausedByIcon = btnText === '▶' || btnText.includes('►') || btnText.toLowerCase().includes('play');
+    const isPlayingByIcon = btnText.includes('âšâš') || btnText.includes('||');
+    const isPausedByIcon = btnText === 'â–¶' || btnText.includes('â–º') || btnText.toLowerCase().includes('play');
 
     const isPlaying = isPlayingByVideo || (!isPausedByVideo && isPlayingByIcon);
     const isPaused = isPausedByVideo || (!isPlayingByVideo && isPausedByIcon);
@@ -1393,8 +1393,8 @@
 
     const playBtnNode = document.getElementById('sp_play_btn');
     if (playBtnNode instanceof HTMLElement) {
-      playBtnNode.textContent = isPlaying ? '❚❚' : '▶';
-      playBtnNode.setAttribute('aria-label', isPlaying ? '暂停' : '播放');
+      playBtnNode.textContent = isPlaying ? 'âšâš' : 'â–¶';
+      playBtnNode.setAttribute('aria-label', isPlaying ? 'æš‚åœ' : 'æ’­æ”¾');
     }
 
     const seekOverlayEls = document.querySelectorAll('#sp_seek_gesture, #sp_seek_ui');
@@ -1551,15 +1551,15 @@
       if (!(bar instanceof HTMLElement)) {
         continue;
       }
-      bar.style.setProperty('background-color', 'var(--kiro-bg)', 'important');
-      bar.style.setProperty('color', 'var(--kiro-text)', 'important');
-      bar.style.setProperty('-webkit-text-fill-color', 'var(--kiro-text)', 'important');
+      bar.style.setProperty('background-color', 'var(--xaavv-bg)', 'important');
+      bar.style.setProperty('color', 'var(--xaavv-text)', 'important');
+      bar.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text)', 'important');
 
       const brandText = bar.querySelectorAll('a[href="/"] span, .text-pink-900, .text-pink-800, .text-white');
       for (const node of brandText) {
         if (node instanceof HTMLElement) {
-          node.style.setProperty('color', 'var(--kiro-text)', 'important');
-          node.style.setProperty('-webkit-text-fill-color', 'var(--kiro-text)', 'important');
+          node.style.setProperty('color', 'var(--xaavv-text)', 'important');
+          node.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text)', 'important');
         }
       }
     }
@@ -1569,11 +1569,11 @@
       if (!(bar instanceof HTMLElement)) {
         continue;
       }
-      if ((bar.textContent || '').includes('SiteMap') || (bar.textContent || '').includes('本网站内容来自互联网')) {
-        bar.style.setProperty('background-color', 'var(--kiro-bg)', 'important');
-        bar.style.setProperty('color', 'var(--kiro-text-muted)', 'important');
-        bar.style.setProperty('-webkit-text-fill-color', 'var(--kiro-text-muted)', 'important');
-        bar.style.setProperty('border-color', 'var(--kiro-border)', 'important');
+      if ((bar.textContent || '').includes('SiteMap') || (bar.textContent || '').includes('æœ¬ç½‘ç«™å†…å®¹æ¥è‡ªäº’è”ç½‘')) {
+        bar.style.setProperty('background-color', 'var(--xaavv-bg)', 'important');
+        bar.style.setProperty('color', 'var(--xaavv-text-muted)', 'important');
+        bar.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text-muted)', 'important');
+        bar.style.setProperty('border-color', 'var(--xaavv-border)', 'important');
       }
     }
   };
@@ -1614,7 +1614,7 @@
       if (bgImage && bgImage !== 'none') {
         const cleanedGradient = replaceGradientWhites(bgImage);
         el.style.setProperty('background-image', cleanedGradient, 'important');
-        el.style.setProperty('background-color', 'var(--kiro-bg)', 'important');
+        el.style.setProperty('background-color', 'var(--xaavv-bg)', 'important');
         el.setAttribute(TUNED_ATTR, '1');
       }
 
@@ -1637,10 +1637,10 @@
       if (bg && bg.a > 0.05) {
         const bgLum = luminance(bg);
         if (bgLum > 140) {
-          el.style.setProperty('background-color', 'var(--kiro-bg)', 'important');
+          el.style.setProperty('background-color', 'var(--xaavv-bg)', 'important');
           el.style.setProperty('background-image', 'none', 'important');
-          el.style.setProperty('color', 'var(--kiro-text)', 'important');
-          el.style.setProperty('-webkit-text-fill-color', 'var(--kiro-text)', 'important');
+          el.style.setProperty('color', 'var(--xaavv-text)', 'important');
+          el.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text)', 'important');
           el.setAttribute(TUNED_ATTR, '1');
         }
       }
@@ -1648,22 +1648,22 @@
       if (fg) {
         const textLum = luminance(fg);
         if (textLum < 95) {
-          el.style.setProperty('color', 'var(--kiro-text)', 'important');
-          el.style.setProperty('-webkit-text-fill-color', 'var(--kiro-text)', 'important');
+          el.style.setProperty('color', 'var(--xaavv-text)', 'important');
+          el.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text)', 'important');
           el.setAttribute(TUNED_ATTR, '1');
         }
       }
 
       if (border && border.a > 0.05 && luminance(border) > 170) {
-        el.style.setProperty('border-color', 'var(--kiro-border)', 'important');
+        el.style.setProperty('border-color', 'var(--xaavv-border)', 'important');
       }
 
       if ((pos === 'fixed' || pos === 'sticky') && bg && bg.a > 0.05 && luminance(bg) > 110) {
-        el.style.setProperty('background-color', 'var(--kiro-bg)', 'important');
+        el.style.setProperty('background-color', 'var(--xaavv-bg)', 'important');
         el.style.setProperty('background-image', 'none', 'important');
-        el.style.setProperty('color', 'var(--kiro-text)', 'important');
-        el.style.setProperty('-webkit-text-fill-color', 'var(--kiro-text)', 'important');
-        el.style.setProperty('border-color', 'var(--kiro-border)', 'important');
+        el.style.setProperty('color', 'var(--xaavv-text)', 'important');
+        el.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text)', 'important');
+        el.style.setProperty('border-color', 'var(--xaavv-border)', 'important');
         el.style.setProperty('backdrop-filter', 'blur(8px)', 'important');
         el.setAttribute(TUNED_ATTR, '1');
       }
