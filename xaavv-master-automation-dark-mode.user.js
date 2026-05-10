@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.13
+// @version      1.2.14
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -1496,12 +1496,13 @@
     const videos = Array.from(document.querySelectorAll('video')).filter((v) => v instanceof HTMLVideoElement);
     const playBtn = document.getElementById('sp_play_btn');
     const btnText = playBtn ? (playBtn.textContent || '').trim() : '';
+    const btnLabel = playBtn ? ((playBtn.getAttribute('aria-label') || '').toLowerCase()) : '';
 
     const hasVideo = videos.length > 0;
     const isPlayingByVideo = videos.some((v) => !v.paused && !v.ended);
     const isPausedByVideo = hasVideo && videos.every((v) => v.paused || v.ended);
-    const isPlayingByIcon = btnText.includes(PAUSE_ICON) || btnText.includes('||');
-    const isPausedByIcon = btnText === PLAY_ICON || btnText.includes('▶') || btnText.includes('▷') || btnText.toLowerCase().includes('play');
+    const isPlayingByIcon = btnText.includes('||') || btnLabel.includes('pause');
+    const isPausedByIcon = btnText.includes('▶') || btnText.includes('▷') || btnLabel.includes('play');
 
     const isPlaying = isPlayingByVideo || (!isPausedByVideo && isPlayingByIcon);
     const isPaused = isPausedByVideo || (!isPlayingByVideo && isPausedByIcon);
