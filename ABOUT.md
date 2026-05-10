@@ -1,3 +1,9 @@
+# About XAAVV Streaming Dark Mode + Automation Userscript
+
+This project provides a Tampermonkey userscript that transforms the XAAVV streaming experience with a professional dark mode, enhanced video controls, and UI automation. The script removes distracting backgrounds from the top bar on play pages, keeps all controls visible and interactive, and adds features like a Download button and interactive seek bar. It is designed for easy installation and use by anyone, including first-time Tampermonkey users. All features are documented in the README and source code.
+
+---
+
 # About
 
 XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades XAAVV with a stable dark UI and player automation focused on real-world reliability across both horizontal and vertical videos.
