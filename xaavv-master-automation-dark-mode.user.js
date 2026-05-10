@@ -34,6 +34,8 @@
   const VIDEO_PROGRESS_FILL_CLASS = 'xaavv-video-progress-fill';
   const VIDEO_PROGRESS_HANDLE_CLASS = 'xaavv-video-progress-handle';
   const VIDEO_PROGRESS_BOUND_ATTR = 'data-xaavv-video-progress-bound';
+  const PLAY_ICON = '\u25B6';
+  const PAUSE_ICON = '\u23F8';
 
   if (document.getElementById(STYLE_ID)) {
     return;
@@ -1125,7 +1127,7 @@
       }
 
       const label = `${node.textContent || ''} ${node.getAttribute('aria-label') || ''}`.toLowerCase();
-      if (!label.includes('search') && !label.includes('æœç´¢')) {
+      if (!label.includes('search') && !label.includes('\u641C\u7D22')) {
         continue;
       }
 
@@ -1430,8 +1432,8 @@
     const hasVideo = videos.length > 0;
     const isPlayingByVideo = videos.some((v) => !v.paused && !v.ended);
     const isPausedByVideo = hasVideo && videos.every((v) => v.paused || v.ended);
-    const isPlayingByIcon = btnText.includes('âšâš') || btnText.includes('||');
-    const isPausedByIcon = btnText === 'â–¶' || btnText.includes('â–º') || btnText.toLowerCase().includes('play');
+    const isPlayingByIcon = btnText.includes(PAUSE_ICON) || btnText.includes('||');
+    const isPausedByIcon = btnText === PLAY_ICON || btnText.includes('▶') || btnText.includes('▷') || btnText.toLowerCase().includes('play');
 
     const isPlaying = isPlayingByVideo || (!isPausedByVideo && isPlayingByIcon);
     const isPaused = isPausedByVideo || (!isPlayingByVideo && isPausedByIcon);
@@ -1460,8 +1462,8 @@
 
     const playBtnNode = document.getElementById('sp_play_btn');
     if (playBtnNode instanceof HTMLElement) {
-      playBtnNode.textContent = isPlaying ? 'âšâš' : 'â–¶';
-      playBtnNode.setAttribute('aria-label', isPlaying ? 'æš‚åœ' : 'æ’­æ”¾');
+      playBtnNode.textContent = isPlaying ? PAUSE_ICON : PLAY_ICON;
+      playBtnNode.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
     }
 
     const seekOverlayEls = document.querySelectorAll('#sp_seek_gesture, #sp_seek_ui');
@@ -1636,7 +1638,7 @@
       if (!(bar instanceof HTMLElement)) {
         continue;
       }
-      if ((bar.textContent || '').includes('SiteMap') || (bar.textContent || '').includes('æœ¬ç½‘ç«™å†…å®¹æ¥è‡ªäº’è”ç½‘')) {
+      if ((bar.textContent || '').includes('SiteMap') || (bar.textContent || '').includes('\u672C\u7AD9\u5185\u5BB9\u6765\u81EA\u4E92\u8054\u7F51')) {
         bar.style.setProperty('background-color', 'var(--xaavv-bg)', 'important');
         bar.style.setProperty('color', 'var(--xaavv-text-muted)', 'important');
         bar.style.setProperty('-webkit-text-fill-color', 'var(--xaavv-text-muted)', 'important');
