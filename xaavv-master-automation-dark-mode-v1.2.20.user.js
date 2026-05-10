@@ -443,6 +443,15 @@
       width: 100% !important;
     }
 
+    /* On play pages, make body and html transparent so video shows through header. */
+    body.sp-play,
+    html.sp-play {
+      background: transparent !important;
+      background-color: transparent !important;
+      background-image: none !important;
+      color: var(--xaavv-text) !important;
+    }
+
     footer,
     contentinfo,
     [role='contentinfo'],
