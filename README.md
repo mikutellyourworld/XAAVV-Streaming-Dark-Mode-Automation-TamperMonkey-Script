@@ -1,3 +1,33 @@
+# Quick Start: How to Install (For Beginners)
+
+**Never used Tampermonkey before? Follow these steps!**
+
+1. **Install Tampermonkey Extension**
+   - **Google Chrome / Brave / Chromium browsers:** [Tampermonkey for Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
+   - **Microsoft Edge:** [Tampermonkey for Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
+   - **Mozilla Firefox:** [Tampermonkey for Firefox](https://addons.mozilla.org/firefox/addon/tampermonkey/)
+   - **Opera:** [Tampermonkey for Opera](https://addons.opera.com/extensions/details/tampermonkey-beta/)
+
+2. **Add the XAAVV Dark Mode + Automation Script**
+   - Click the Tampermonkey icon in your browser toolbar.
+   - Choose "Create a new script".
+   - Delete any code in the editor, then copy and paste the contents of `xaavv-master-automation-dark-mode-v1.2.20.user.js` into the editor.
+   - Click **File > Save** (or press Ctrl+S).
+
+3. **Use the Script**
+   - Visit any XAAVV site (e.g., https://www.xaavv.com/).
+   - The dark mode and automation features will activate automatically.
+
+4. **Updating the Script**
+   - To update, repeat step 2 with the latest script version.
+
+5. **Troubleshooting**
+   - Make sure Tampermonkey is enabled (icon should be visible and not greyed out).
+   - Refresh the XAAVV page after installing or updating the script.
+   - For help, see the FAQ or open an issue.
+
+---
+
 # XAAVV Dark Mode + Automation (Tampermonkey)
 
 A focused Tampermonkey userscript that applies a professional dark interface to XAAVV pages without changing page behavior, player controls, or media rendering.
