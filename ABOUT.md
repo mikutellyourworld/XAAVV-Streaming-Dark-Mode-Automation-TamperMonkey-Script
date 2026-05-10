@@ -5,8 +5,8 @@ XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades
 ## Current Script
 
 - **Name:** XAAVV Master Automation and Dark Mode
-- **File:** `xaavv-master-automation-dark-mode-v1.2.19.user.js`
-- **Current Version:** 1.2.19
+- **File:** `xaavv-master-automation-dark-mode-v1.2.20.user.js`
+- **Current Version:** 1.2.20
 
 ## What This Script Does
 

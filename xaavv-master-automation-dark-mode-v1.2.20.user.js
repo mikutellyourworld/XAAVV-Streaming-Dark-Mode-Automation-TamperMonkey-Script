@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.19
+// @version      1.2.20
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.19';
+  const SCRIPT_VERSION = '1.2.20';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -935,16 +935,23 @@
       return;
     }
 
+    if (document.documentElement.getAttribute('data-xaavv-redirect-attempted') === '1') {
+      return;
+    }
+
+    document.documentElement.setAttribute('data-xaavv-redirect-attempted', '1');
+
+    const currentUrl = location.href;
     const slug = getCurrentSlugFromDetailPath();
 
     const directLink = document.querySelector('a[href*="/xavplay/"]');
-    if (directLink instanceof HTMLAnchorElement && directLink.href) {
+    if (directLink instanceof HTMLAnchorElement && directLink.href && directLink.href !== currentUrl) {
       location.replace(directLink.href);
       return;
     }
 
     const listLink = slug ? document.querySelector(`a[href*="/xavplay/${slug}/"]`) : null;
-    if (listLink instanceof HTMLAnchorElement && listLink.href) {
+    if (listLink instanceof HTMLAnchorElement && listLink.href && listLink.href !== currentUrl) {
       location.replace(listLink.href);
       return;
     }
@@ -952,7 +959,7 @@
     // Parse in-document HTML quickly before network fallback.
     const inlineHtml = document.documentElement ? document.documentElement.innerHTML : '';
     const inlineExtracted = extractPlayHref(inlineHtml);
-    if (inlineExtracted) {
+    if (inlineExtracted && inlineExtracted !== currentUrl) {
       location.replace(inlineExtracted);
       return;
     }
@@ -961,7 +968,7 @@
       const res = await fetch(location.href, { credentials: 'include' });
       const html = await res.text();
       const extracted = extractPlayHref(html);
-      if (extracted) {
+      if (extracted && extracted !== currentUrl) {
         location.replace(extracted);
       }
     } catch (_) {

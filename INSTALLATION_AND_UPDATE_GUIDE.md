@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.19.user.js
+   https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.20.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**

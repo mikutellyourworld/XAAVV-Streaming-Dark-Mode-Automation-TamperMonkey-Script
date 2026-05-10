@@ -2,6 +2,10 @@
 
 A focused Tampermonkey userscript that applies a professional dark interface to XAAVV pages without changing page behavior, player controls, or media rendering.
 
+## About
+
+This script is designed to enhance the XAAVV streaming experience by providing a comfortable dark theme that reduces eye strain during extended viewing sessions. It automatically detects and applies dark mode styling across all XAAVV domains while preserving the website's native functionality. The script includes advanced playback automation features such as auto-play on page load, interactive progress bars with seek functionality, and a convenient video download button. It works seamlessly on vertical and horizontal video layouts and adapts intelligently to the website's dual-layer video rendering system. This is a no-nonsense, user-friendly implementation that prioritizes stability and compatibility over bells and whistles.
+
 ## Features
 
 - Professional dark palette with purple accent highlights
@@ -44,7 +48,8 @@ Checked against:
 
 ## Fix Log
 
-- `1.2.11`: Added an interactive video progress/seek bar overlay on play-page videos. The bar displays current time as a filled segment, allows seeking by clicking, and includes a draggable handle that appears on hover. Themed with purple accent colors.
+- `1.2.20`: Fixed redirect loop issue on intermediate pages by adding safeguards to prevent redirecting to the same URL; added flag to ensure redirect is only attempted once per page load. Improved reliability of intermediate-to-play page routing logic.
+- `1.2.19`: Strengthened play-page header CSS transparency by forcing all descendants of the header to be completely transparent while preserving button and text visibility; header now matches stock UI appearance.
 - `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
 - `1.2.9`: Fixed download-button placement so it anchors inside the video area with a safe top offset, preventing overlap with header navigation buttons (login/register/menu).
 - `1.2.8`: Added a floating play-page `Download` button for video elements. The button auto-tracks the best active/visible video source, follows player bounds, and triggers browser-native download/open behavior with a generated filename.
