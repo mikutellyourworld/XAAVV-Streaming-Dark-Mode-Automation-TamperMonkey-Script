@@ -8,6 +8,7 @@ Current focus:
 2. Direct play-page routing and playback automation assistance.
 3. Player-state synchronization for center controls and overlay blockers.
 4. An invisible full-video pause overlay that activates only while video is playing.
+5. A play-page download button that tracks and downloads the best active video source.
 
 Documentation trail:
 
@@ -17,4 +18,4 @@ Documentation trail:
 
 Request boundary:
 
-- A download button for site-hosted video elements is not implemented.
+- Download button support is implemented for XAAVV play-page video elements.

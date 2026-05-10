@@ -13,6 +13,7 @@ A focused Tampermonkey userscript that applies a Kiro-inspired dark interface to
 - Hardens fixed/sticky top bars to prevent white-on-white text issues
 - Explicitly forces dark header/banners and brand logo text contrast on XAAVV
 - Forces top and bottom site bars to match the page background tone
+- Adds a play-page video download button that tracks the active/visible video
 
 ## Supported Match Rules
 
@@ -42,6 +43,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.8`: Added a floating play-page `Download` button for video elements. The button auto-tracks the best active/visible video source, follows player bounds, and triggers browser-native download/open behavior with a generated filename.
 - `1.2.7`: Added an invisible full-video pause overlay that tracks the active video bounds and pauses playback on click while keeping the control invisible; updated player-state syncing so the overlay only exists during active playback.
 - `1.2.6`: Fixed playback-state detection to evaluate all player video nodes (XAAVV dual-layer video layout), ensuring center play control is hidden during active playback; additionally hides bottom seek overlay box (`#sp_seek_gesture`, `#sp_seek_ui`) while playing so it does not block the video.
 - `1.2.5`: Fixed center play-overlay state classification to rely on authoritative video paused/ended state (with button-icon fallback) instead of `readyState`; reduced click-handler invasiveness so native site handlers remain in control while overlay state re-syncs after interactions.
@@ -119,7 +121,7 @@ Current request status:
 3. Top-left swirl removal: implemented with stronger detection.
 4. Center circle hidden while playing and restored while paused: reinforced through `1.2.7` with multi-video state detection.
 5. Invisible full-video pause overlay: implemented for active playback.
-6. Download button: not implemented (safety/copyright boundary).
+6. Download button: implemented in `1.2.8` for play pages.
 
 Latest control-state status (`1.2.7`):
 
@@ -186,12 +188,12 @@ Wildcard `*.xaavv.live` is included for forward compatibility.
 - Scoped style corrections only for contrast failures
 - Observer is debounced and style-only
 - Explicitly avoids touching media element filters
-- No built-in universal downloader is provided (copyright and source-rights safety)
+- Download control is scope-limited to XAAVV play pages and current visible video elements only
 
 ## Request Boundary
 
-- Download-button functionality for site-hosted videos was requested but was not implemented due copyright/safety constraints.
-- Implemented instead: playback automation, direct-play routing, translation UI cleanup, dark-mode hardening, and visibility fixes.
+- Download-button functionality for site-hosted videos is implemented in this repository for XAAVV play pages.
+- Existing behavior remains: playback automation, direct-play routing, translation UI cleanup, dark-mode hardening, and visibility fixes.
 
 ## Reusable Future Template
 

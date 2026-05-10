@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         XAAVV Kiro Dark Theme
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.7
-// @description  Apply XAAVV dark mode with player-safe rendering, reliable intermediate routing, playback automation assists, unobtrusive translation, loader cleanup, and multi-video-safe playback UI syncing.
+// @version      1.2.8
+// @description  Apply XAAVV dark mode with player-safe rendering, reliable intermediate routing, playback automation assists, unobtrusive translation, loader cleanup, multi-video-safe playback UI syncing, and a play-page video download button.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
 // @match        *://xaavv.live/*
@@ -26,6 +26,8 @@
   const PLAY_CLICK_BOUND_ATTR = 'data-xaavv-play-click-bound';
   const INVISIBLE_PAUSE_OVERLAY_ID = 'xaavv-invisible-pause-overlay';
   const INVISIBLE_PAUSE_OVERLAY_BOUND_ATTR = 'data-xaavv-invisible-pause-overlay-bound';
+  const VIDEO_DOWNLOAD_BUTTON_ID = 'xaavv-video-download-btn';
+  const VIDEO_DOWNLOAD_BOUND_ATTR = 'data-xaavv-video-download-bound';
 
   if (document.getElementById(STYLE_ID)) {
     return;
@@ -93,6 +95,34 @@
       color: transparent !important;
       cursor: pointer !important;
       touch-action: manipulation !important;
+    }
+
+    #xaavv-video-download-btn {
+      display: none !important;
+      position: fixed !important;
+      z-index: 160 !important;
+      min-width: 96px !important;
+      border: 1px solid #8be2c8 !important;
+      border-radius: 999px !important;
+      background: #57c5a7 !important;
+      color: #0b1324 !important;
+      -webkit-text-fill-color: #0b1324 !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.02em !important;
+      padding: 8px 12px !important;
+      line-height: 1 !important;
+      cursor: pointer !important;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35) !important;
+      opacity: 0.96 !important;
+      transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease !important;
+      touch-action: manipulation !important;
+    }
+
+    #xaavv-video-download-btn:hover {
+      filter: brightness(1.06) !important;
+      transform: translateY(-1px) !important;
+      opacity: 1 !important;
     }
 
     body {
@@ -851,6 +881,164 @@
     };
   };
 
+  const getVideoDownloadSource = (video) => {
+    if (!(video instanceof HTMLVideoElement)) {
+      return '';
+    }
+
+    if (video.currentSrc) {
+      return video.currentSrc;
+    }
+    if (video.src) {
+      return video.src;
+    }
+
+    const source = video.querySelector('source[src]');
+    if (source instanceof HTMLSourceElement && source.src) {
+      return source.src;
+    }
+
+    return '';
+  };
+
+  const buildDownloadFilename = (url) => {
+    const slugMatch = location.pathname.match(/\/xavplay\/([a-zA-Z0-9_-]+)\//i);
+    const slug = slugMatch ? slugMatch[1] : 'video';
+
+    let ext = 'mp4';
+    try {
+      const parsed = new URL(url, location.href);
+      const extMatch = parsed.pathname.match(/\.([a-zA-Z0-9]{2,5})(?:$|\?)/);
+      if (extMatch && extMatch[1]) {
+        ext = extMatch[1].toLowerCase();
+      }
+    } catch (_) {
+      // Keep default extension when URL parsing fails.
+    }
+
+    return `xaavv-${slug}-${Date.now()}.${ext}`;
+  };
+
+  const ensureVideoDownloadButton = () => {
+    if (!document.body) {
+      return null;
+    }
+
+    let btn = document.getElementById(VIDEO_DOWNLOAD_BUTTON_ID);
+    if (!(btn instanceof HTMLButtonElement)) {
+      if (btn instanceof HTMLElement) {
+        btn.remove();
+      }
+
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.id = VIDEO_DOWNLOAD_BUTTON_ID;
+      btn.textContent = 'Download';
+      btn.setAttribute('aria-label', 'Download active video');
+      document.body.appendChild(btn);
+    }
+
+    if (btn.getAttribute(VIDEO_DOWNLOAD_BOUND_ATTR) !== '1') {
+      btn.setAttribute(VIDEO_DOWNLOAD_BOUND_ATTR, '1');
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        const source = btn.dataset.downloadUrl || '';
+        if (!source) {
+          return;
+        }
+
+        const anchor = document.createElement('a');
+        anchor.href = source;
+        anchor.rel = 'noopener';
+        anchor.target = '_blank';
+        anchor.download = btn.dataset.downloadName || buildDownloadFilename(source);
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      }, true);
+    }
+
+    return btn;
+  };
+
+  const pickBestDownloadVideo = (videos) => {
+    let best = null;
+    let bestScore = -1;
+
+    for (const video of videos) {
+      if (!(video instanceof HTMLVideoElement)) {
+        continue;
+      }
+
+      const source = getVideoDownloadSource(video);
+      if (!source) {
+        continue;
+      }
+
+      const style = getComputedStyle(video);
+      if (style.display === 'none' || style.visibility === 'hidden') {
+        continue;
+      }
+
+      const rect = video.getBoundingClientRect();
+      if (rect.width <= 1 || rect.height <= 1) {
+        continue;
+      }
+
+      const area = rect.width * rect.height;
+      const playingBonus = (!video.paused && !video.ended) ? 1000000000 : 0;
+      const score = area + playingBonus;
+
+      if (score > bestScore) {
+        best = video;
+        bestScore = score;
+      }
+    }
+
+    return best;
+  };
+
+  const syncVideoDownloadButton = () => {
+    const btn = ensureVideoDownloadButton();
+    if (!(btn instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    if (!isPlayPath()) {
+      btn.style.setProperty('display', 'none', 'important');
+      btn.style.setProperty('pointer-events', 'none', 'important');
+      return;
+    }
+
+    const videos = Array.from(document.querySelectorAll('video')).filter((video) => video instanceof HTMLVideoElement);
+    const bestVideo = pickBestDownloadVideo(videos);
+    if (!(bestVideo instanceof HTMLVideoElement)) {
+      btn.style.setProperty('display', 'none', 'important');
+      btn.style.setProperty('pointer-events', 'none', 'important');
+      return;
+    }
+
+    const source = getVideoDownloadSource(bestVideo);
+    if (!source) {
+      btn.style.setProperty('display', 'none', 'important');
+      btn.style.setProperty('pointer-events', 'none', 'important');
+      return;
+    }
+
+    const rect = bestVideo.getBoundingClientRect();
+    const top = Math.max(8, Math.round(rect.top + 10));
+    const left = Math.max(8, Math.min(window.innerWidth - 120, Math.round(rect.right - 106)));
+
+    btn.dataset.downloadUrl = source;
+    btn.dataset.downloadName = buildDownloadFilename(source);
+    btn.style.setProperty('top', `${top}px`, 'important');
+    btn.style.setProperty('left', `${left}px`, 'important');
+    btn.style.setProperty('display', 'block', 'important');
+    btn.style.setProperty('pointer-events', 'auto', 'important');
+  };
+
   const ensureInvisiblePauseOverlay = () => {
     if (!document.body) {
       return null;
@@ -1020,7 +1208,10 @@
     }
 
     document.documentElement.setAttribute(OVERLAY_WATCH_STARTED_ATTR, '1');
-    setInterval(syncCenterPlayOverlay, 220);
+    setInterval(() => {
+      syncCenterPlayOverlay();
+      syncVideoDownloadButton();
+    }, 220);
   };
 
   const wirePlayPauseBehavior = () => {
@@ -1086,6 +1277,7 @@
 
     wirePlayPauseBehavior();
     syncCenterPlayOverlay();
+    syncVideoDownloadButton();
   };
 
   const killTopLeftSwirl = () => {
@@ -1286,10 +1478,12 @@
     setupPlaybackAutomationAssist();
     wireCenterPlayOverlayState();
     startOverlayWatchdog();
+    syncVideoDownloadButton();
     schedule(runNuclearPass, [500, 1500, 3000]);
     schedule(tryRedirectFromIntermediatePage, [200, 800, 1800]);
     schedule(killTopLeftSwirl, [300, 1200, 2600]);
     schedule(syncCenterPlayOverlay, [300, 1200, 2600]);
+    schedule(syncVideoDownloadButton, [300, 1200, 2600]);
   };
 
   setupDirectPlayRouting();
@@ -1305,6 +1499,7 @@
     killTopLeftSwirl();
     wireCenterPlayOverlayState();
     syncCenterPlayOverlay();
+    syncVideoDownloadButton();
   }, 150));
   observer.observe(document.documentElement, {
     childList: true,
