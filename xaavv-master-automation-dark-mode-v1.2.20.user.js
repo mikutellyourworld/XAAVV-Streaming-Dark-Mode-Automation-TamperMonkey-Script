@@ -96,8 +96,6 @@
     .min-h-screen,
     #__next,
     .sp-play,
-    body.sp-play,
-    html.sp-play,
     #sp_player_wrap {
       background: var(--xaavv-bg) !important;
       background-image: none !important;
