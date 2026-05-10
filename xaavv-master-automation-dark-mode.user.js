@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         XAAVV Dark Theme
+// @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.11
-// @description  Apply XAAVV dark mode with player-safe rendering, reliable intermediate routing, playback automation assists, unobtrusive translation, loader cleanup, multi-video-safe playback UI syncing, download button, and video progress/seek bar.
+// @version      1.2.13
+// @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
 // @match        *://xaavv.live/*
@@ -1185,16 +1185,17 @@
 
     if (searchButton instanceof HTMLElement) {
       const searchRect = searchButton.getBoundingClientRect();
-      // Position download button below search with proper spacing
-      top = Math.round(searchRect.bottom + 12);
-      left = Math.round(searchRect.left);
+      // Position download button directly below search button with safe spacing
+      top = Math.round(searchRect.bottom + 16);
+      // Align with search button but ensure no overlap
+      left = Math.round(Math.max(12, searchRect.left));
     }
 
-    // Keep button below search and outside video
-    const maxTopBeforeVideo = Math.max(80, Math.round(rect.top - 10));
+    // Clamp to ensure button doesn't overlap video or go off-screen
+    const maxTopBeforeVideo = Math.max(100, Math.round(rect.top - 15));
     top = Math.min(top, maxTopBeforeVideo);
-    top = Math.max(64, Math.min(window.innerHeight - 46, top));
-    left = Math.max(12, Math.min(window.innerWidth - buttonWidth - 12, left));
+    top = Math.max(60, Math.min(window.innerHeight - 50, top));
+    left = Math.max(8, Math.min(window.innerWidth - buttonWidth - 8, left));
 
     btn.dataset.downloadUrl = source;
     btn.dataset.downloadName = buildDownloadFilename(source);
@@ -1235,9 +1236,8 @@
     bar.appendChild(handle);
     wrapper.appendChild(bar);
 
-    // Position wrapper as overlay on video
+    // Position wrapper as overlay on video (use CSS for bottom positioning)
     wrapper.style.setProperty('position', 'absolute', 'important');
-    wrapper.style.setProperty('bottom', '0', 'important');
     wrapper.style.setProperty('left', '0', 'important');
     wrapper.style.setProperty('right', '0', 'important');
 
@@ -1293,10 +1293,10 @@
       wrapper.classList.remove('visible');
     }, { passive: true });
 
-    // Inject into DOM hierarchy
-    const videoRect = video.getBoundingClientRect();
+    // Inject into DOM hierarchy - append to video element's parent for proper positioning
     wrapper.style.setProperty('width', '100%', 'important');
-    wrapper.style.setProperty('height', '3px', 'important');
+    wrapper.style.setProperty('height', '5px', 'important');
+    wrapper.style.setProperty('z-index', '15', 'important');
 
     if (video.parentNode instanceof HTMLElement) {
       // Ensure parent is relatively positioned for absolute child
@@ -1304,7 +1304,12 @@
       if (parentStyle.position === 'static' || !parentStyle.position) {
         video.parentNode.style.setProperty('position', 'relative', 'important');
       }
+      // Set bottom positioning on the wrapper for CSS to take effect
+      wrapper.style.setProperty('bottom', '-10px', 'important');
       video.parentNode.appendChild(wrapper);
+    } else {
+      // Fallback: append to video itself
+      video.parentNode ? video.parentNode.appendChild(wrapper) : null;
     }
 
     return wrapper;
