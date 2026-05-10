@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.14
+// @version      1.2.15
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -945,15 +945,24 @@
 
     const previousMuted = videoEl.muted;
     const previousVolume = videoEl.volume;
+    let attempts = 0;
+    let restoreTimer = null;
 
     const runPlay = async () => {
       try {
-        if (videoEl.readyState < 2) {
-          return;
-        }
+        attempts += 1;
+        videoEl.autoplay = true;
+        videoEl.setAttribute('autoplay', 'autoplay');
+        videoEl.setAttribute('playsinline', 'playsinline');
+        videoEl.setAttribute('webkit-playsinline', 'webkit-playsinline');
         videoEl.muted = true;
         await videoEl.play();
-        setTimeout(() => {
+
+        if (restoreTimer) {
+          clearTimeout(restoreTimer);
+        }
+
+        restoreTimer = setTimeout(() => {
           videoEl.muted = previousMuted;
           if (!Number.isNaN(previousVolume)) {
             videoEl.volume = previousVolume;
@@ -962,9 +971,16 @@
       } catch (_) {
         // Browser gesture restrictions may block automated playback start.
       }
+
+      if ((videoEl.paused || videoEl.readyState < 2) && attempts < 12) {
+        setTimeout(runPlay, 250);
+      }
     };
 
+    videoEl.addEventListener('loadedmetadata', runPlay, { once: true });
+    videoEl.addEventListener('loadeddata', runPlay, { once: true });
     videoEl.addEventListener('canplay', runPlay, { once: true });
+    videoEl.addEventListener('canplaythrough', runPlay, { once: true });
     setTimeout(runPlay, 250);
     setTimeout(runPlay, 1000);
     setTimeout(runPlay, 2500);
@@ -1206,11 +1222,6 @@
     }
 
     const source = getVideoDownloadSource(bestVideo);
-    if (!source) {
-      btn.style.setProperty('display', 'none', 'important');
-      btn.style.setProperty('pointer-events', 'none', 'important');
-      return;
-    }
 
     const rect = getPlaybackVideoRect(videos) || bestVideo.getBoundingClientRect();
     const searchButton = findSearchButton();
@@ -1244,12 +1255,25 @@
     top = Math.max(60, Math.min(window.innerHeight - 50, top));
     left = Math.max(8, Math.min(window.innerWidth - buttonWidth - 8, left));
 
-    btn.dataset.downloadUrl = source;
-    btn.dataset.downloadName = buildDownloadFilename(source);
+    if (source) {
+      btn.dataset.downloadUrl = source;
+      btn.dataset.downloadName = buildDownloadFilename(source);
+      btn.textContent = 'Download';
+      btn.setAttribute('aria-label', 'Download active video');
+      btn.style.setProperty('pointer-events', 'auto', 'important');
+      btn.style.setProperty('opacity', '0.98', 'important');
+    } else {
+      btn.dataset.downloadUrl = '';
+      btn.dataset.downloadName = '';
+      btn.textContent = 'Loading...';
+      btn.setAttribute('aria-label', 'Download source loading');
+      btn.style.setProperty('pointer-events', 'none', 'important');
+      btn.style.setProperty('opacity', '0.72', 'important');
+    }
+
     btn.style.setProperty('top', `${top}px`, 'important');
     btn.style.setProperty('left', `${left}px`, 'important');
     btn.style.setProperty('display', 'block', 'important');
-    btn.style.setProperty('pointer-events', 'auto', 'important');
   };
 
   const ensureVideoProgressBar = (video) => {
