@@ -1,7 +1,7 @@
 # RELEASE SUMMARY v1.2.32
 
 Date: 2026-05-11
-Repository: mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+Repository: <REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
 
 ## Request Addressed
 
@@ -72,3 +72,4 @@ This keeps layout stable when the site rehydrates or reapplies styles.
 - Existing transparency hardening remains active.
 - Existing download alignment behavior remains active.
 - No dependency changes.
+

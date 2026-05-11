@@ -93,3 +93,4 @@ When applying this skill to video websites, treat the following behaviors as man
 ## Acceptance Expectation
 
 A finished dark-mode delivery is accepted only when user screenshots show no remaining white/gradient artifacts in the requested strict mode, and core video interactions (play/pause, seek, download, overlays) function correctly on both portrait and landscape playback pages.
+

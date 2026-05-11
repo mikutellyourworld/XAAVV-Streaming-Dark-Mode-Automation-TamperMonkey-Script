@@ -78,3 +78,4 @@ Browser-tool environment may reject actual media decoding (`NotSupportedError`) 
 5. Confirm center play control appears and remains clickable.
 6. Resume playback via center control.
 7. Confirm center control and bottom box are hidden again during active playback.
+

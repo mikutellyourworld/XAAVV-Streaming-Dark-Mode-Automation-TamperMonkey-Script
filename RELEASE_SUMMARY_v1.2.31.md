@@ -1,7 +1,7 @@
 # RELEASE SUMMARY v1.2.31
 
 Date: 2026-05-10
-Repository: mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+Repository: <REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
 
 ## Request Addressed
 
@@ -71,3 +71,4 @@ This prevents dark background reappearance after late site rerenders.
 - Existing login/register/hamburger transparency hardening remains active.
 - Existing download alignment and transparent download background behavior remains unchanged.
 - No dependency changes.
+

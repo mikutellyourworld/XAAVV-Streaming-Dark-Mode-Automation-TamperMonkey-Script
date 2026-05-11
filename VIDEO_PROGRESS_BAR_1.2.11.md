@@ -65,3 +65,4 @@ Added an interactive video progress bar overlay for all video elements on play p
 - Positioned absolutely so it does not disrupt video playback or player controls.
 - Click events are stopped at the wrapper level to prevent interfering with native video click behavior.
 - Respects existing player styling and does not override inline styles on the video element.
+

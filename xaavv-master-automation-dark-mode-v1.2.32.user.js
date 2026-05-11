@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
-// @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+// @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
 // @version      1.2.32
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
@@ -2368,3 +2368,4 @@
     attributeFilter: ['class', 'style']
   });
 })();
+

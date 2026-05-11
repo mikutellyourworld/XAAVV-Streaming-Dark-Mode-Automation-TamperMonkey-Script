@@ -1,7 +1,7 @@
 # RELEASE SUMMARY v1.2.30
 
 Date: 2026-05-10
-Repository: mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+Repository: <REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
 
 ## User Request
 
@@ -81,3 +81,4 @@ This gives persistent enforcement across load, rerender, and mutation cycles.
 - This release focuses only on persistent visual transparency hardening for top-right play-page controls.
 - No dependency changes.
 - No sensitive data added.
+

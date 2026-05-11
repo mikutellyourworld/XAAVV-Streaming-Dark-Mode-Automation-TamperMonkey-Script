@@ -1,7 +1,7 @@
 # RELEASE SUMMARY v1.2.27
 
 Date: 2026-05-10
-Repository: mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+Repository: <REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
 
 ## Release Goals
 
@@ -85,3 +85,4 @@ Added files:
 - This release keeps previous playback and overlay systems intact while narrowing header background logic.
 - No external dependencies were added.
 - No secrets or credentials are included in source or docs.
+

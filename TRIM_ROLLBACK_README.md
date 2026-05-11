@@ -50,3 +50,4 @@ Option B (git rollback):
 
 - This rollback document concerns trim/refactor changes only.
 - Functional patches for playback/overlay state can remain even if trim helper is rolled back.
+

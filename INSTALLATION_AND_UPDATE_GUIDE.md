@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.32.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.32.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -104,7 +104,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.32.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.32.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -115,7 +115,7 @@
 
 1. Go to GitHub: 
    ```
-   https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+   https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
 2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.32.user.js`
@@ -136,7 +136,7 @@
 
 1. Visit Releases page:
    ```
-   https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
+   https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
 2. Find the latest release (v1.2.32)
@@ -254,7 +254,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 
 ## Repository Info
 
-- **Repository:** [mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
+- **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
 - **Current Version:** 1.2.32
 - **Last Updated:** 2026-05-10
 - **License:** See repository
@@ -340,6 +340,7 @@ This script combines:
 ### v1.2.21 (2024-06-09)
 - UI polish for play pages: Download button never overlaps search, always below and right-aligned; top bar fully transparent and non-blocking.
 - All changes are documented in the userscript source code and documentation files.
+
 
 
 

@@ -306,4 +306,5 @@ window.getComputedStyle(document.getElementById('xaavv-video-download-btn'))
 
 **Last Updated:** v1.2.13  
 **Maintained by:** XAAVV Automation Maintainers  
-**Repository:** https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+**Repository:** https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+

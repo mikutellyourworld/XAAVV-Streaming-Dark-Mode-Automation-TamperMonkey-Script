@@ -51,3 +51,4 @@ In this automated browser environment, media playback reports `NotSupportedError
 ## Result
 
 Patch 1.2.5 addresses the previous state-misclassification path and hardens re-sync behavior without overriding native site controls.
+

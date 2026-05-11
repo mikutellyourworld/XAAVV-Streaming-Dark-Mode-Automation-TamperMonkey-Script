@@ -3,7 +3,7 @@
 **Release Date:** May 10, 2026  
 **Version:** 1.2.13  
 **Status:** ✅ Production Ready  
-**Repository:** https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+**Repository:** https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
 
 ---
 
@@ -223,7 +223,7 @@ de87333 - Remove Kiro branding; rename to XAAVV Dark Theme
 ### Quick Start
 ```
 1. Install Tampermonkey extension (Chrome, Firefox, Safari)
-2. Visit: https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.18.user.js
+2. Visit: https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.18.user.js
 3. Click "Install"
 4. Refresh XAAVV page
 5. Features should be active immediately
@@ -407,6 +407,7 @@ The script is **production-ready** and all features have been thoroughly tested 
 
 **Version:** 1.2.13  
 **Release Date:** May 10, 2026  
-**Repository:** https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script  
+**Repository:** https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script  
 **Status:** ✅ Production Ready  
 **Last Updated:** 2026-05-10
+
