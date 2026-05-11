@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.36
+// @version      1.2.37
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.36';
+  const SCRIPT_VERSION = '1.2.37';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -37,6 +37,8 @@
   const VIDEO_PROGRESS_HANDLE_CLASS = 'xaavv-video-progress-handle';
   const VIDEO_PROGRESS_BOUND_ATTR = 'data-xaavv-video-progress-bound';
   const SEARCH_TRANSLATION_BOUND_ATTR = 'data-xaavv-search-translation-bound';
+  const PLAYBACK_ASSIST_BOUND_ATTR = 'data-xaavv-playback-assist-bound';
+  const NAV_WATCH_STARTED_ATTR = 'data-xaavv-nav-watch-started';
   const SEARCH_VARIANT_ROTATION_STORAGE_KEY = 'xaavv-search-variant-rotation-v1';
   const PROGRESS_SEEK_HIT_STRIP_PX = 36;
   const PLAY_BUTTON_PLAY_ICON = `
@@ -1571,6 +1573,11 @@
       return;
     }
 
+    if (document.documentElement.getAttribute(PLAYBACK_ASSIST_BOUND_ATTR) === '1') {
+      return;
+    }
+    document.documentElement.setAttribute(PLAYBACK_ASSIST_BOUND_ATTR, '1');
+
     const wireExisting = () => {
       const videos = document.querySelectorAll('video');
       for (const v of videos) {
@@ -1582,6 +1589,60 @@
 
     const mo = new MutationObserver(() => wireExisting());
     mo.observe(document.documentElement, { childList: true, subtree: true });
+  };
+
+  const runMaintenancePass = () => {
+    wireSearchQueryLocalization();
+    runNuclearPass();
+    killTopLeftSwirl();
+    wireCenterPlayOverlayState();
+    syncVideoProgressBars();
+    syncCenterPlayOverlay();
+    syncVideoDownloadButton();
+    enforceTopRightControlTransparency();
+    enforceTopLeftBrandAndSearchTransparency();
+    enforcePlayVideoFirstLayout();
+  };
+
+  const startNavigationReliabilityWatchdog = () => {
+    if (document.documentElement.getAttribute(NAV_WATCH_STARTED_ATTR) === '1') {
+      return;
+    }
+    document.documentElement.setAttribute(NAV_WATCH_STARTED_ATTR, '1');
+
+    let lastHref = location.href;
+
+    const onUrlChange = () => {
+      const currentHref = location.href;
+      if (currentHref === lastHref) {
+        return;
+      }
+      lastHref = currentHref;
+
+      // URL may update before full DOM paint; run a short burst to stabilize features.
+      runMaintenancePass();
+      schedule(runMaintenancePass, [120, 420, 1000]);
+      schedule(tryRedirectFromIntermediatePage, [120, 420, 1000]);
+    };
+
+    const rawPushState = history.pushState;
+    const rawReplaceState = history.replaceState;
+
+    history.pushState = function patchedPushState() {
+      const out = rawPushState.apply(this, arguments);
+      onUrlChange();
+      return out;
+    };
+
+    history.replaceState = function patchedReplaceState() {
+      const out = rawReplaceState.apply(this, arguments);
+      onUrlChange();
+      return out;
+    };
+
+    window.addEventListener('popstate', onUrlChange, { passive: true });
+    window.addEventListener('hashchange', onUrlChange, { passive: true });
+    setInterval(onUrlChange, 300);
   };
 
   const getPlaybackVideoRect = (videos) => {
@@ -2802,6 +2863,7 @@
     setupPlaybackAutomationAssist();
     wireCenterPlayOverlayState();
     startOverlayWatchdog();
+    startNavigationReliabilityWatchdog();
     syncVideoProgressBars();
     syncVideoDownloadButton();
     enforceTopRightControlTransparency();
@@ -2827,16 +2889,7 @@
   }
 
   const observer = new MutationObserver(debounce(() => {
-    wireSearchQueryLocalization();
-    runNuclearPass();
-    killTopLeftSwirl();
-    wireCenterPlayOverlayState();
-    syncVideoProgressBars();
-    syncCenterPlayOverlay();
-    syncVideoDownloadButton();
-    enforceTopRightControlTransparency();
-    enforceTopLeftBrandAndSearchTransparency();
-    enforcePlayVideoFirstLayout();
+    runMaintenancePass();
   }, 150));
   observer.observe(document.documentElement, {
     childList: true,
