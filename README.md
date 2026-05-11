@@ -1,40 +1,6 @@
-# Quick Start: How to Install (For Beginners)
-
-**Never used Tampermonkey before? Follow these steps!**
-
-1. **Install Tampermonkey Extension**
-   - **Google Chrome / Brave / Chromium browsers:** [Tampermonkey for Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-   - **Microsoft Edge:** [Tampermonkey for Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-   - **Mozilla Firefox:** [Tampermonkey for Firefox](https://addons.mozilla.org/firefox/addon/tampermonkey/)
-   - **Opera:** [Tampermonkey for Opera](https://addons.opera.com/extensions/details/tampermonkey-beta/)
-
-2. **Add the XAAVV Dark Mode + Automation Script**
-   - Click the Tampermonkey icon in your browser toolbar.
-   - Choose "Create a new script".
-   - Delete any code in the editor, then copy and paste the contents of `xaavv-master-automation-dark-mode-v1.2.32.user.js` into the editor.
-   - Click **File > Save** (or press Ctrl+S).
-
-3. **Use the Script**
-   - Visit any XAAVV site (e.g., https://www.xaavv.com/).
-   - The dark mode and automation features will activate automatically.
-
-4. **Updating the Script**
-   - To update, repeat step 2 with the latest script version.
-
-5. **Troubleshooting**
-   - Make sure Tampermonkey is enabled (icon should be visible and not greyed out).
-   - Refresh the XAAVV page after installing or updating the script.
-   - For help, see the FAQ or open an issue.
-
----
-
 # XAAVV Dark Mode + Automation (Tampermonkey)
 
 A focused Tampermonkey userscript that applies a professional dark interface to XAAVV pages without changing page behavior, player controls, or media rendering.
-
-## About
-
-This script is designed to enhance the XAAVV streaming experience by providing a comfortable dark theme that reduces eye strain during extended viewing sessions. It automatically detects and applies dark mode styling across all XAAVV domains while preserving the website's native functionality. The script includes advanced playback automation features such as auto-play on page load, interactive progress bars with seek functionality, and a convenient video download button. It works seamlessly on vertical and horizontal video layouts and adapts intelligently to the website's dual-layer video rendering system. This is a no-nonsense, user-friendly implementation that prioritizes stability and compatibility over bells and whistles.
 
 ## Features
 
@@ -63,7 +29,7 @@ This script is designed to enhance the XAAVV streaming experience by providing a
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-dark-theme.user.js`.
+3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.33.user.js`.
 4. Save and refresh XAAVV pages.
 
 ## Validation Notes
@@ -78,13 +44,8 @@ Checked against:
 
 ## Fix Log
 
-- `1.2.32`: Added recurring play-layout enforcement that reorders the `Selections` (`\u9009\u96c6`) panel beneath the video panel and forces the player area to full horizontal width on play pages, with persistence across late DOM/style rerenders.
-- `1.2.31`: Added recurring top-band brand/search transparency enforcement so `AV Welfare Website` and `search` chip backgrounds stay transparent across late style/DOM rerenders on play pages.
-- `1.2.30`: Added recurring top-right control-cluster transparency enforcement (container + chip level) on play pages so login/register/hamburger dark backgrounds remain transparent even after late site style re-renders.
-- `1.2.29`: Improved search/download alignment by anchoring download position to the visible top search label; forced transparent backgrounds for play-page login/register/hamburger chips via CSS + runtime hardening; made the download button background transparent while preserving visibility.
-- `1.2.27`: Restored top play-page controls (search/login/register) while limiting background removal to top-level header wrappers so no large header background overlaps the video.
-- `1.2.20`: Fixed redirect loop issue on intermediate pages by adding safeguards to prevent redirecting to the same URL; added flag to ensure redirect is only attempted once per page load. Improved reliability of intermediate-to-play page routing logic.
-- `1.2.19`: Strengthened play-page header CSS transparency by forcing all descendants of the header to be completely transparent while preserving button and text visibility; header now matches stock UI appearance.
+- `1.2.33`: Added English-to-Simplified-Chinese search localization for XAAVV search flows. English terms are converted before search submit and `/search/<english>` paths are auto-rewritten. For `butt`/`ass`/`booty`/`rear`/`backside`/`bum`, the mapper uses ranked high-volume variants (`臀`, `美臀`, `后入`, `屁股`, `臀部`, `翘臀`) based on live XAAVV result counts.
+- `1.2.11`: Added an interactive video progress/seek bar overlay on play-page videos. The bar displays current time as a filled segment, allows seeking by clicking, and includes a draggable handle that appears on hover. Themed with purple accent colors.
 - `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
 - `1.2.9`: Fixed download-button placement so it anchors inside the video area with a safe top offset, preventing overlap with header navigation buttons (login/register/menu).
 - `1.2.8`: Added a floating play-page `Download` button for video elements. The button auto-tracks the best active/visible video source, follows player bounds, and triggers browser-native download/open behavior with a generated filename.
@@ -143,21 +104,19 @@ Note: Browser-based DOM inspection and interaction tooling was used to validate 
 
 The following project documents were reviewed/updated as part of this workstream:
 
-1. `xaavv-master-automation-dark-mode-v1.2.32.user.js`
-   - Core implementation: dark mode, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
+1. `xaavv-dark-theme.user.js`
+	- Core implementation: dark mode, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
 2. `README.md`
-   - Full changelog, chronology, constraints, and latest execution notes.
-3. `RELEASE_SUMMARY_v1.2.32.md`
-   - Release-scoped implementation details, verification checklist, and migration notes for v1.2.32.
-4. `DARK_MODING_SKILL.md`
+	- Full changelog (`1.1.1` through `1.2.7`), chronology, constraints, and latest execution notes.
+3. `DARK_MODING_SKILL.md`
 	- Reusable skill guidance: do/don't patterns, misses, prevention checklist.
-5. `SITE_AUTOMATION_TEMPLATE.md`
+4. `SITE_AUTOMATION_TEMPLATE.md`
 	- Generic template for darkening + playback automation + skip-intermediate + translation workflows.
-6. `CENTER_PLAY_OVERLAY_VALIDATION_1.2.6.md`
+5. `CENTER_PLAY_OVERLAY_VALIDATION_1.2.6.md`
 	- Browser recon + iteration log for center control and bottom seek-overlay blocking fix.
-7. `CENTER_PLAY_OVERLAY_VALIDATION_1.2.7.md`
+6. `CENTER_PLAY_OVERLAY_VALIDATION_1.2.7.md`
 	- Added invisible pause-overlay recon, implementation notes, and verification steps.
-8. `ABOUT.md`
+7. `ABOUT.md`
 	- Short repo summary with the current player-overlay behavior and explicit request boundary.
 
 Current request status:
@@ -259,9 +218,3 @@ For reverting only trim/refactor changes (without undoing behavior fixes), see [
 ## License
 
 MIT
-
-
-
-
-
-

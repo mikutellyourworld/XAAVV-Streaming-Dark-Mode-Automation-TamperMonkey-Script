@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.32.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.33.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,27 +23,23 @@
 
 ---
 
-## What's New in v1.2.32
+## What's New in v1.2.33
 
 ### ✅ This Iteration Fixes
 
-#### 1. Selections card moved below video
-- **Issue before:** The `Selections` (`\u9009\u96c6`) panel could appear beside the player.
-- **Now:** The selection panel is programmatically placed under the video panel on play pages.
-- **Technical change:** Added a play-layout reflow pass that finds the selection card by label and reorders it after the video panel.
+#### 1. English search localization to Simplified Chinese
+- **Issue before:** English searches like `butt` were sent directly and often underperformed on XAAVV titles.
+- **Now:** English keywords are translated before search is executed.
+- **Technical change:** Added query localization hooks for submit/click/enter events and auto-rewrite for `/search/<english>` paths.
 
-#### 2. Video area now takes full horizontal width
-- **Issue before:** Video panel width could be constrained by side layout.
-- **Now:** Player container and media wrappers are forced to `width: 100%` with max-width constraints removed.
-- **Technical change:** Added width/max-width normalization for layout container, video panel, and nested media nodes.
+#### 2. Ranked keyword variants for better title coverage
+- For `butt` family terms (`butt`, `ass`, `booty`, `rear`, `backside`, `bum`), the script maps to high-volume XAAVV variants:
+  `臀 美臀 后入 屁股 臀部 翘臀`.
+- Ranking is based on live XAAVV result counts.
 
-#### 3. Rerender-safe persistence
-- Layout enforcement is now re-applied in watchdog, delayed scheduled passes, and mutation updates.
-- This keeps the under-video placement and full-width player stable after late site rerenders.
-
-#### 4. Version and file naming synchronized
-- **Now:** File name and internal metadata both use 1.2.32.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.32.user.js`
+#### 3. Version and file naming synchronized
+- **Now:** File name and internal metadata both use 1.2.33.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.33.user.js`
 
 ---
 
@@ -104,7 +100,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.32.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.33.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -118,7 +114,7 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.32.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.33.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -139,9 +135,9 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.32)
+2. Find the latest release (v1.2.33)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.32.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.33.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -242,7 +238,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.32.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.33.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -255,7 +251,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.32
+- **Current Version:** 1.2.33
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers

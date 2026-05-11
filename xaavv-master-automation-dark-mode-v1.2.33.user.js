@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.32
+// @version      1.2.33
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.32';
+  const SCRIPT_VERSION = '1.2.33';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -36,6 +36,7 @@
   const VIDEO_PROGRESS_FILL_CLASS = 'xaavv-video-progress-fill';
   const VIDEO_PROGRESS_HANDLE_CLASS = 'xaavv-video-progress-handle';
   const VIDEO_PROGRESS_BOUND_ATTR = 'data-xaavv-video-progress-bound';
+  const SEARCH_TRANSLATION_BOUND_ATTR = 'data-xaavv-search-translation-bound';
   const PROGRESS_SEEK_HIT_STRIP_PX = 36;
   const PLAY_BUTTON_PLAY_ICON = `
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -982,6 +983,224 @@
 
   const isPlayPath = () => {
     return /\/xavplay\//i.test(location.pathname);
+  };
+
+  // Ranked by live XAAVV result counts (2026-05-10), highest-first.
+  const EN_TO_ZH_SEARCH_VARIANTS = {
+    butt: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
+    ass: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
+    booty: ['美臀', '臀', '翘臀', '屁股', '臀部'],
+    rear: ['臀', '美臀', '屁股', '臀部'],
+    backside: ['臀', '美臀', '屁股', '臀部'],
+    bum: ['臀', '美臀', '屁股', '臀部']
+  };
+
+  const decodeSearchPathQuery = () => {
+    const m = location.pathname.match(/^\/search\/(.+)$/i);
+    if (!m || !m[1]) {
+      return '';
+    }
+    try {
+      return decodeURIComponent(m[1]);
+    } catch (_) {
+      return m[1];
+    }
+  };
+
+  const normalizeSearchToken = (token) => {
+    return (token || '').toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '');
+  };
+
+  const lookupSearchVariants = (token) => {
+    const normalized = normalizeSearchToken(token);
+    if (!normalized) {
+      return [];
+    }
+
+    if (EN_TO_ZH_SEARCH_VARIANTS[normalized]) {
+      return EN_TO_ZH_SEARCH_VARIANTS[normalized];
+    }
+
+    if (normalized.endsWith('s') && EN_TO_ZH_SEARCH_VARIANTS[normalized.slice(0, -1)]) {
+      return EN_TO_ZH_SEARCH_VARIANTS[normalized.slice(0, -1)];
+    }
+
+    return [];
+  };
+
+  const convertEnglishSearchQueryToZh = (rawQuery) => {
+    const raw = (rawQuery || '').trim();
+    if (!raw) {
+      return { changed: false, query: raw, replacements: [] };
+    }
+
+    // Skip conversion if there is already CJK text.
+    if (/[\u3400-\u9fff]/.test(raw)) {
+      return { changed: false, query: raw, replacements: [] };
+    }
+
+    if (!/[a-z]/i.test(raw)) {
+      return { changed: false, query: raw, replacements: [] };
+    }
+
+    const tokens = raw.split(/\s+/).filter(Boolean);
+    if (!tokens.length) {
+      return { changed: false, query: raw, replacements: [] };
+    }
+
+    // Single-word searches get expanded to multiple high-volume Chinese variants.
+    if (tokens.length === 1) {
+      const variants = lookupSearchVariants(tokens[0]);
+      if (variants.length) {
+        return {
+          changed: true,
+          query: Array.from(new Set(variants)).join(' '),
+          replacements: [{ from: tokens[0], to: variants[0] }]
+        };
+      }
+      return { changed: false, query: raw, replacements: [] };
+    }
+
+    // Multi-word searches map known English tokens to top Chinese variant.
+    const replacements = [];
+    const mapped = tokens.map((token) => {
+      const variants = lookupSearchVariants(token);
+      if (!variants.length) {
+        return token;
+      }
+      replacements.push({ from: token, to: variants[0] });
+      return variants[0];
+    });
+
+    const next = mapped.join(' ').trim();
+    return {
+      changed: next !== raw && replacements.length > 0,
+      query: next,
+      replacements
+    };
+  };
+
+  const buildSearchUrl = (query) => {
+    return `/search/${encodeURIComponent((query || '').trim())}`;
+  };
+
+  const findNearestSearchInput = (seed) => {
+    if (!(seed instanceof Element)) {
+      return null;
+    }
+
+    const container = seed.closest('form, [role="search"], header, [role="banner"], .pink-header, nav, div');
+    if (!container) {
+      return null;
+    }
+
+    const input = container.querySelector('input[type="search"], input[name*="search" i], input[placeholder*="search" i], input[placeholder*="搜" i], input[type="text"]');
+    return input instanceof HTMLInputElement ? input : null;
+  };
+
+  const runSearchTranslationAndNavigate = (rawValue, triggerElement) => {
+    const converted = convertEnglishSearchQueryToZh(rawValue);
+    if (!converted.changed) {
+      return false;
+    }
+
+    if (triggerElement instanceof HTMLInputElement) {
+      triggerElement.value = converted.query;
+    }
+
+    location.assign(buildSearchUrl(converted.query));
+    return true;
+  };
+
+  const maybeRewriteEnglishSearchPath = () => {
+    if (!/^\/search\//i.test(location.pathname)) {
+      return;
+    }
+
+    const rawQuery = decodeSearchPathQuery();
+    if (!rawQuery) {
+      return;
+    }
+
+    const converted = convertEnglishSearchQueryToZh(rawQuery);
+    if (!converted.changed) {
+      return;
+    }
+
+    const target = buildSearchUrl(converted.query);
+    if (target !== `${location.pathname}${location.search}`) {
+      location.replace(target);
+    }
+  };
+
+  const wireSearchQueryLocalization = () => {
+    maybeRewriteEnglishSearchPath();
+
+    if (document.documentElement.getAttribute(SEARCH_TRANSLATION_BOUND_ATTR) === '1') {
+      return;
+    }
+    document.documentElement.setAttribute(SEARCH_TRANSLATION_BOUND_ATTR, '1');
+
+    document.addEventListener('submit', (ev) => {
+      const form = ev.target;
+      if (!(form instanceof HTMLFormElement)) {
+        return;
+      }
+
+      const input = form.querySelector('input[type="search"], input[name*="search" i], input[placeholder*="search" i], input[placeholder*="搜" i], input[type="text"]');
+      if (!(input instanceof HTMLInputElement)) {
+        return;
+      }
+
+      if (runSearchTranslationAndNavigate(input.value, input)) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+    }, true);
+
+    document.addEventListener('keydown', (ev) => {
+      const target = ev.target;
+      if (!(target instanceof HTMLInputElement) || ev.key !== 'Enter') {
+        return;
+      }
+
+      const looksLikeSearchInput = /search|搜/i.test(`${target.name || ''} ${target.placeholder || ''} ${target.id || ''}`);
+      if (!looksLikeSearchInput) {
+        return;
+      }
+
+      if (runSearchTranslationAndNavigate(target.value, target)) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+    }, true);
+
+    document.addEventListener('click', (ev) => {
+      const t = ev.target;
+      if (!(t instanceof Element)) {
+        return;
+      }
+
+      const btn = t.closest('button, [role="button"], a[role="button"]');
+      if (!(btn instanceof HTMLElement)) {
+        return;
+      }
+
+      const label = `${btn.textContent || ''} ${btn.getAttribute('aria-label') || ''}`.toLowerCase();
+      if (!label.includes('search') && !label.includes('\u641c\u7d22')) {
+        return;
+      }
+
+      const input = findNearestSearchInput(btn);
+      if (!(input instanceof HTMLInputElement)) {
+        return;
+      }
+
+      if (runSearchTranslationAndNavigate(input.value, input)) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+    }, true);
   };
 
   const tryRedirectFromIntermediatePage = async () => {
@@ -2345,6 +2564,7 @@
   document.documentElement.setAttribute('data-xaavv-script-version', SCRIPT_VERSION);
 
   const delayedPass = () => {
+    wireSearchQueryLocalization();
     ensureAutoTranslateToEnglish();
     killTopLeftSwirl();
     runNuclearPass();
@@ -2377,6 +2597,7 @@
   }
 
   const observer = new MutationObserver(debounce(() => {
+    wireSearchQueryLocalization();
     runNuclearPass();
     killTopLeftSwirl();
     wireCenterPlayOverlayState();
