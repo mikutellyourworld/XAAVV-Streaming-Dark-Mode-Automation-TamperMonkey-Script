@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.40
+// @version      1.2.41
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.40';
+  const SCRIPT_VERSION = '1.2.41';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -42,6 +42,7 @@
   const SEARCH_VARIANT_ROTATION_STORAGE_KEY = 'xaavv-search-variant-rotation-v1';
   const SEARCH_VARIANT_LAST_PICK_STORAGE_KEY = 'xaavv-search-variant-last-pick-v1';
   const LOCAL_DICTIONARY_STORAGE_KEY = 'xaavv-search-dictionary-private-v1';
+  const DICTIONARY_DEBUG_NOTICE_KEY = 'xaavv-search-dictionary-debug-notice-v1';
   const SEARCH_VARIANT_PICK_DEDUP_WINDOW_MS = 1200;
   const SEARCH_VARIANT_LAST_PICK_MAX_KEYS = 200;
   const PROGRESS_SEEK_HIT_STRIP_PX = 36;
@@ -999,31 +1000,77 @@
     { name: 'token', map: {} }
   ];
 
+  let cachedDictionaryPayloadRaw = null;
+  let cachedDictionaryStacks = SEARCH_DICTIONARY_STACKS;
+
   const loadLocalDictionaryStacks = () => {
     try {
       const raw = localStorage.getItem(LOCAL_DICTIONARY_STORAGE_KEY);
       if (!raw) {
+        cachedDictionaryPayloadRaw = null;
+        cachedDictionaryStacks = SEARCH_DICTIONARY_STACKS;
         return SEARCH_DICTIONARY_STACKS;
+      }
+
+      if (raw === cachedDictionaryPayloadRaw) {
+        return cachedDictionaryStacks;
       }
 
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) {
+        cachedDictionaryPayloadRaw = null;
+        cachedDictionaryStacks = SEARCH_DICTIONARY_STACKS;
         return SEARCH_DICTIONARY_STACKS;
       }
 
       const phrase = parsed.find((entry) => entry && entry.name === 'phrase' && entry.map && typeof entry.map === 'object');
       const token = parsed.find((entry) => entry && entry.name === 'token' && entry.map && typeof entry.map === 'object');
 
-      return [
+      cachedDictionaryPayloadRaw = raw;
+      cachedDictionaryStacks = [
         { name: 'phrase', map: phrase ? phrase.map : {} },
         { name: 'token', map: token ? token.map : {} }
       ];
+      return cachedDictionaryStacks;
     } catch (_) {
+      cachedDictionaryPayloadRaw = null;
+      cachedDictionaryStacks = SEARCH_DICTIONARY_STACKS;
       return SEARCH_DICTIONARY_STACKS;
     }
   };
 
-  const EFFECTIVE_SEARCH_DICTIONARY_STACKS = loadLocalDictionaryStacks();
+  const getStackMap = (name) => {
+    const stack = loadLocalDictionaryStacks().find((entry) => entry && entry.name === name);
+    return stack && stack.map ? stack.map : {};
+  };
+
+  const hasAnyDictionaryEntries = () => {
+    const phraseMap = getStackMap('phrase');
+    const tokenMap = getStackMap('token');
+    return Object.keys(phraseMap).length > 0 || Object.keys(tokenMap).length > 0;
+  };
+
+  const maybeWarnMissingPrivateDictionary = (rawQuery) => {
+    const query = String(rawQuery || '').trim();
+    if (!query || /[^\x00-\x7F]/.test(query) || !/[a-z]/i.test(query) || hasAnyDictionaryEntries()) {
+      return;
+    }
+
+    try {
+      const currentNotice = sessionStorage.getItem(DICTIONARY_DEBUG_NOTICE_KEY);
+      if (currentNotice === query.toLowerCase()) {
+        return;
+      }
+      sessionStorage.setItem(DICTIONARY_DEBUG_NOTICE_KEY, query.toLowerCase());
+    } catch (_) {
+      // Ignore storage failures silently.
+    }
+
+    console.info(
+      '[XAAVV] Search localization skipped because no private dictionary payload is loaded. ' +
+      `Load the sanitized repo script plus your local/private payload in localStorage key "${LOCAL_DICTIONARY_STORAGE_KEY}".`
+    );
+  };
 
   const decodeSearchPathQuery = () => {
     const m = location.pathname.match(/^\/search\/(.+)$/i);
@@ -1069,28 +1116,21 @@
     return out;
   };
 
-  const getStackMap = (name) => {
-    const stack = EFFECTIVE_SEARCH_DICTIONARY_STACKS.find((entry) => entry && entry.name === name);
-    return stack && stack.map ? stack.map : {};
-  };
-
-  const PHRASE_SEARCH_MAP = getStackMap('phrase');
-  const TOKEN_SEARCH_MAP = getStackMap('token');
-
   const lookupPhraseVariants = (query) => {
+    const phraseSearchMap = getStackMap('phrase');
     const normalized = normalizeSearchQueryForLookup(query);
     if (!normalized) {
       return [];
     }
 
-    if (PHRASE_SEARCH_MAP[normalized]) {
-      return dedupeSearchVariants(PHRASE_SEARCH_MAP[normalized]);
+    if (phraseSearchMap[normalized]) {
+      return dedupeSearchVariants(phraseSearchMap[normalized]);
     }
 
     if (normalized.endsWith('s')) {
       const singular = normalized.slice(0, -1);
-      if (PHRASE_SEARCH_MAP[singular]) {
-        return dedupeSearchVariants(PHRASE_SEARCH_MAP[singular]);
+      if (phraseSearchMap[singular]) {
+        return dedupeSearchVariants(phraseSearchMap[singular]);
       }
     }
 
@@ -1098,20 +1138,21 @@
   };
 
   const lookupBestPhraseInQuery = (query) => {
+    const phraseSearchMap = getStackMap('phrase');
     const normalized = normalizeSearchQueryForLookup(query);
     if (!normalized) {
       return null;
     }
 
     let best = null;
-    for (const phraseKey of Object.keys(PHRASE_SEARCH_MAP)) {
+    for (const phraseKey of Object.keys(phraseSearchMap)) {
       const idx = normalized.indexOf(phraseKey);
       if (idx < 0) {
         continue;
       }
 
       if (!best || idx < best.idx || (idx === best.idx && phraseKey.length > best.key.length)) {
-        best = { key: phraseKey, idx, variants: dedupeSearchVariants(PHRASE_SEARCH_MAP[phraseKey]) };
+        best = { key: phraseKey, idx, variants: dedupeSearchVariants(phraseSearchMap[phraseKey]) };
       }
     }
 
@@ -1220,17 +1261,18 @@
   };
 
   const lookupSearchVariants = (token) => {
+    const tokenSearchMap = getStackMap('token');
     const normalized = normalizeSearchToken(token);
     if (!normalized) {
       return [];
     }
 
-    if (TOKEN_SEARCH_MAP[normalized]) {
-      return dedupeSearchVariants(TOKEN_SEARCH_MAP[normalized]);
+    if (tokenSearchMap[normalized]) {
+      return dedupeSearchVariants(tokenSearchMap[normalized]);
     }
 
-    if (normalized.endsWith('s') && TOKEN_SEARCH_MAP[normalized.slice(0, -1)]) {
-      return dedupeSearchVariants(TOKEN_SEARCH_MAP[normalized.slice(0, -1)]);
+    if (normalized.endsWith('s') && tokenSearchMap[normalized.slice(0, -1)]) {
+      return dedupeSearchVariants(tokenSearchMap[normalized.slice(0, -1)]);
     }
 
     return [];
@@ -1250,6 +1292,8 @@
     if (!/[a-z]/i.test(raw)) {
       return { changed: false, query: raw, replacements: [] };
     }
+
+    maybeWarnMissingPrivateDictionary(raw);
 
     const tokens = raw.split(/\s+/).filter(Boolean);
     if (!tokens.length) {
