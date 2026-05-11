@@ -11,7 +11,7 @@
 2. **Add the XAAVV Dark Mode + Automation Script**
    - Click the Tampermonkey icon in your browser toolbar.
    - Choose "Create a new script".
-   - Delete any code in the editor, then copy and paste the contents of `xaavv-master-automation-dark-mode-v1.2.31.user.js` into the editor.
+   - Delete any code in the editor, then copy and paste the contents of `xaavv-master-automation-dark-mode-v1.2.32.user.js` into the editor.
    - Click **File > Save** (or press Ctrl+S).
 
 3. **Use the Script**
@@ -78,6 +78,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.32`: Added recurring play-layout enforcement that reorders the `Selections` (`\u9009\u96c6`) panel beneath the video panel and forces the player area to full horizontal width on play pages, with persistence across late DOM/style rerenders.
 - `1.2.31`: Added recurring top-band brand/search transparency enforcement so `AV Welfare Website` and `search` chip backgrounds stay transparent across late style/DOM rerenders on play pages.
 - `1.2.30`: Added recurring top-right control-cluster transparency enforcement (container + chip level) on play pages so login/register/hamburger dark backgrounds remain transparent even after late site style re-renders.
 - `1.2.29`: Improved search/download alignment by anchoring download position to the visible top search label; forced transparent backgrounds for play-page login/register/hamburger chips via CSS + runtime hardening; made the download button background transparent while preserving visibility.
@@ -142,12 +143,12 @@ Note: Browser-based DOM inspection and interaction tooling was used to validate 
 
 The following project documents were reviewed/updated as part of this workstream:
 
-1. `xaavv-master-automation-dark-mode-v1.2.31.user.js`
+1. `xaavv-master-automation-dark-mode-v1.2.32.user.js`
    - Core implementation: dark mode, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
 2. `README.md`
    - Full changelog, chronology, constraints, and latest execution notes.
-3. `RELEASE_SUMMARY_v1.2.31.md`
-   - Release-scoped implementation details, verification checklist, and migration notes for v1.2.31.
+3. `RELEASE_SUMMARY_v1.2.32.md`
+   - Release-scoped implementation details, verification checklist, and migration notes for v1.2.32.
 4. `DARK_MODING_SKILL.md`
 	- Reusable skill guidance: do/don't patterns, misses, prevention checklist.
 5. `SITE_AUTOMATION_TEMPLATE.md`
@@ -258,6 +259,7 @@ For reverting only trim/refactor changes (without undoing behavior fixes), see [
 ## License
 
 MIT
+
 
 
 

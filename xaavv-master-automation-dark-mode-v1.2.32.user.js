@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.31
+// @version      1.2.32
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.31';
+  const SCRIPT_VERSION = '1.2.32';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -1829,6 +1829,7 @@
       syncVideoProgressBars();
       enforceTopRightControlTransparency();
       enforceTopLeftBrandAndSearchTransparency();
+      enforcePlayVideoFirstLayout();
     }, 220);
   };
 
@@ -2103,6 +2104,87 @@
     }
   };
 
+  const enforcePlayVideoFirstLayout = () => {
+    if (!isPlayPath()) {
+      return;
+    }
+
+    const labelNodes = Array.from(document.querySelectorAll('h2, h3, div, p, span'));
+    const selectionLabel = labelNodes.find((node) => {
+      if (!(node instanceof HTMLElement)) {
+        return false;
+      }
+      const text = (node.textContent || '').trim().toLowerCase();
+      return text === '\u9009\u96c6' || text === 'selections';
+    });
+
+    const selectionCard = selectionLabel instanceof HTMLElement
+      ? selectionLabel.closest('aside, section, div')
+      : null;
+    if (!(selectionCard instanceof HTMLElement)) {
+      return;
+    }
+
+    const layoutContainer = selectionCard.parentElement;
+    if (!(layoutContainer instanceof HTMLElement)) {
+      return;
+    }
+
+    const childPanels = Array.from(layoutContainer.children).filter((node) => node instanceof HTMLElement);
+    const videoPanel = childPanels.find((panel) => {
+      if (!(panel instanceof HTMLElement) || panel === selectionCard) {
+        return false;
+      }
+      if (panel.querySelector('video, #player, .video-js')) {
+        return true;
+      }
+      const panelText = (panel.textContent || '').toLowerCase();
+      return panelText.includes('\u5168\u5c4f') || panelText.includes('full screen');
+    });
+
+    if (!(videoPanel instanceof HTMLElement)) {
+      return;
+    }
+
+    if (videoPanel.nextElementSibling !== selectionCard) {
+      videoPanel.insertAdjacentElement('afterend', selectionCard);
+    }
+
+    layoutContainer.style.setProperty('display', 'block', 'important');
+    layoutContainer.style.setProperty('width', '100%', 'important');
+    layoutContainer.style.setProperty('max-width', 'none', 'important');
+    layoutContainer.style.setProperty('grid-template-columns', '1fr', 'important');
+    layoutContainer.style.setProperty('align-items', 'stretch', 'important');
+
+    videoPanel.style.setProperty('width', '100%', 'important');
+    videoPanel.style.setProperty('max-width', 'none', 'important');
+    videoPanel.style.setProperty('margin-right', '0', 'important');
+    videoPanel.style.setProperty('margin-bottom', '14px', 'important');
+
+    selectionCard.style.setProperty('width', '100%', 'important');
+    selectionCard.style.setProperty('max-width', 'none', 'important');
+    selectionCard.style.setProperty('margin-top', '0', 'important');
+    selectionCard.style.setProperty('position', 'static', 'important');
+
+    const selectionAside = selectionCard.closest('aside');
+    if (selectionAside instanceof HTMLElement) {
+      selectionAside.style.setProperty('width', '100%', 'important');
+      selectionAside.style.setProperty('max-width', 'none', 'important');
+      selectionAside.style.setProperty('position', 'static', 'important');
+    }
+
+    const mediaNodes = videoPanel.querySelectorAll('video, #player, .video-js, [class*="player"]');
+    for (const mediaNode of mediaNodes) {
+      if (!(mediaNode instanceof HTMLElement)) {
+        continue;
+      }
+      mediaNode.style.setProperty('width', '100%', 'important');
+      mediaNode.style.setProperty('max-width', 'none', 'important');
+      mediaNode.style.setProperty('margin-left', '0', 'important');
+      mediaNode.style.setProperty('margin-right', '0', 'important');
+    }
+  };
+
   // Source pattern: computed-style nuclear pass with top-bar forcing for late-loaded elements.
   const runNuclearPass = () => {
     const root = document.body || document.documentElement;
@@ -2248,6 +2330,7 @@
     syncVideoDownloadButton();
     enforceTopRightControlTransparency();
     enforceTopLeftBrandAndSearchTransparency();
+    enforcePlayVideoFirstLayout();
     schedule(runNuclearPass, [500, 1500, 3000]);
     schedule(tryRedirectFromIntermediatePage, [200, 800, 1800]);
     schedule(killTopLeftSwirl, [300, 1200, 2600]);
@@ -2256,6 +2339,7 @@
     schedule(syncVideoDownloadButton, [300, 1200, 2600]);
     schedule(enforceTopRightControlTransparency, [300, 1200, 2600]);
     schedule(enforceTopLeftBrandAndSearchTransparency, [300, 1200, 2600]);
+    schedule(enforcePlayVideoFirstLayout, [300, 1200, 2600]);
   };
 
   setupDirectPlayRouting();
@@ -2275,6 +2359,7 @@
     syncVideoDownloadButton();
     enforceTopRightControlTransparency();
     enforceTopLeftBrandAndSearchTransparency();
+    enforcePlayVideoFirstLayout();
   }, 150));
   observer.observe(document.documentElement, {
     childList: true,

@@ -11,8 +11,8 @@ XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades
 ## Current Script
 
 - **Name:** XAAVV Master Automation and Dark Mode
-- **File:** `xaavv-master-automation-dark-mode-v1.2.31.user.js`
-- **Current Version:** 1.2.31
+- **File:** `xaavv-master-automation-dark-mode-v1.2.32.user.js`
+- **Current Version:** 1.2.32
 
 ## What This Script Does
 
@@ -64,10 +64,11 @@ XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades
 - [INSTALLATION_AND_UPDATE_GUIDE.md](INSTALLATION_AND_UPDATE_GUIDE.md) - install/update flow
 - [TROUBLESHOOTING_v1.2.13.md](TROUBLESHOOTING_v1.2.13.md) - diagnostics and fixes
 
-### v1.2.31 (Brand/Search Transparency Control)
-- Added recurring top-band transparency enforcement for `AV Welfare Website` and `search` label chip wrappers.
-- Prevented dark background return on those elements after late DOM/style rerenders.
-- Preserved existing login/register/hamburger transparency hardening and download alignment behavior.
+### v1.2.32 (Play Layout Reflow)
+- Added recurring play-layout enforcement to move the `Selections` (`\u9009\u96c6`) card directly below the video panel.
+- Forced the video/player panel and media wrappers to full horizontal width on play pages.
+- Wired layout reflow into watchdog, delayed passes, and mutation cycles so layout remains stable across rerenders.
+
 
 
 

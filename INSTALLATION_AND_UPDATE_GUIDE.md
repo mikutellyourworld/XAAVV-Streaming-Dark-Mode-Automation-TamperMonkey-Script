@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.31.user.js
+  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.32.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,27 +23,27 @@
 
 ---
 
-## What's New in v1.2.31
+## What's New in v1.2.32
 
 ### ✅ This Iteration Fixes
 
-#### 1. AV Welfare Website background is transparent
-- **Issue before:** Brand chip behind `AV Welfare Website` could reappear as a dark block.
-- **Now:** Brand label area is forced transparent on play pages.
-- **Technical change:** Added position + text-based runtime clearing for brand label containers and nearby wrappers.
+#### 1. Selections card moved below video
+- **Issue before:** The `Selections` (`\u9009\u96c6`) panel could appear beside the player.
+- **Now:** The selection panel is programmatically placed under the video panel on play pages.
+- **Technical change:** Added a play-layout reflow pass that finds the selection card by label and reorders it after the video panel.
 
-#### 2. Search background is transparent
-- **Issue before:** Search label/chip could render with a dark background in some conditions.
-- **Now:** Search label background is forced transparent.
-- **Technical change:** Added dedicated runtime transparency pass for top-band search label nodes and parent chip wrappers.
+#### 2. Video area now takes full horizontal width
+- **Issue before:** Video panel width could be constrained by side layout.
+- **Now:** Player container and media wrappers are forced to `width: 100%` with max-width constraints removed.
+- **Technical change:** Added width/max-width normalization for layout container, video panel, and nested media nodes.
 
-#### 3. Existing auth/menu transparency hardening preserved
-- Login/register/hamburger transparent behavior remains active.
-- Top-right transparency enforcement continues running in watchdog and mutation cycles.
+#### 3. Rerender-safe persistence
+- Layout enforcement is now re-applied in watchdog, delayed scheduled passes, and mutation updates.
+- This keeps the under-video placement and full-width player stable after late site rerenders.
 
 #### 4. Version and file naming synchronized
-- **Now:** File name and internal metadata both use 1.2.31.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.31.user.js`
+- **Now:** File name and internal metadata both use 1.2.32.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.32.user.js`
 
 ---
 
@@ -104,7 +104,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.31.user.js
+  https://raw.githubusercontent.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.32.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -118,7 +118,7 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.31.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.32.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -139,9 +139,9 @@
    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.31)
+2. Find the latest release (v1.2.32)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.31.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.32.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -242,7 +242,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.31.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.32.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -255,7 +255,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.31
+- **Current Version:** 1.2.32
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers
@@ -335,11 +335,12 @@ This script combines:
 
 **Need help?** Check [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) or visit the GitHub repository.
 
-**Version:** 1.2.31 | **Updated:** 2026-05-10
+**Version:** 1.2.32 | **Updated:** 2026-05-10
 
 ### v1.2.21 (2024-06-09)
 - UI polish for play pages: Download button never overlaps search, always below and right-aligned; top bar fully transparent and non-blocking.
 - All changes are documented in the userscript source code and documentation files.
+
 
 
 
