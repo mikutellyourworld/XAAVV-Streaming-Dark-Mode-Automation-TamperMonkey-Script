@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.33
+// @version      1.2.34
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.33';
+  const SCRIPT_VERSION = '1.2.34';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -985,15 +985,48 @@
     return /\/xavplay\//i.test(location.pathname);
   };
 
-  // Ranked by live XAAVV result counts (2026-05-10), highest-first.
-  const EN_TO_ZH_SEARCH_VARIANTS = {
-    butt: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
-    ass: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
-    booty: ['美臀', '臀', '翘臀', '屁股', '臀部'],
-    rear: ['臀', '美臀', '屁股', '臀部'],
-    backside: ['臀', '美臀', '屁股', '臀部'],
-    bum: ['臀', '美臀', '屁股', '臀部']
-  };
+  // Stacked dictionary: phrase-level mappings first, then token-level fallback.
+  // Variant order is ranked by observed title/search usefulness on XAAVV.
+  const SEARCH_DICTIONARY_STACKS = [
+    {
+      name: 'phrase',
+      map: {
+        'big boob': ['巨乳', '爆乳', '美乳', '丰乳'],
+        'big boobs': ['巨乳', '爆乳', '美乳', '丰乳'],
+        'big breast': ['巨乳', '爆乳', '美乳', '丰乳'],
+        'big breasts': ['巨乳', '爆乳', '美乳', '丰乳'],
+        threesome: ['3p', '三人', '群交'],
+        'three some': ['3p', '三人', '群交'],
+        transvestite: ['伪娘', '女装', '男扮女装'],
+        trap: ['伪娘', '女装', '男扮女装'],
+        cosplay: ['cos', '角色扮演', 'cosplay']
+      }
+    },
+    {
+      name: 'token',
+      map: {
+        butt: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
+        ass: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
+        booty: ['美臀', '臀', '翘臀', '屁股', '臀部'],
+        rear: ['臀', '美臀', '屁股', '臀部'],
+        backside: ['臀', '美臀', '屁股', '臀部'],
+        bum: ['臀', '美臀', '屁股', '臀部'],
+        transvestite: ['伪娘', '女装', '男扮女装'],
+        trap: ['伪娘', '女装', '男扮女装'],
+        crossdresser: ['女装', '伪娘', '男扮女装'],
+        femboy: ['伪娘', '女装'],
+        cosplay: ['cos', '角色扮演', 'cosplay'],
+        flat: ['平胸', '贫乳'],
+        flatchest: ['平胸', '贫乳'],
+        boobs: ['巨乳', '爆乳', '美乳'],
+        boob: ['巨乳', '爆乳', '美乳'],
+        breast: ['美乳', '巨乳', '爆乳'],
+        breasts: ['美乳', '巨乳', '爆乳'],
+        tits: ['巨乳', '爆乳', '美乳'],
+        threesome: ['3p', '三人', '群交']
+      }
+    }
+  ];
 
   const decodeSearchPathQuery = () => {
     const m = location.pathname.match(/^\/search\/(.+)$/i);
@@ -1011,18 +1044,58 @@
     return (token || '').toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '');
   };
 
+  const normalizeSearchQueryForLookup = (query) => {
+    return (query || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
+  const dedupeSearchVariants = (variants) => {
+    return Array.from(new Set((variants || []).filter((v) => !!(v && String(v).trim()))));
+  };
+
+  const getStackMap = (name) => {
+    const stack = SEARCH_DICTIONARY_STACKS.find((entry) => entry && entry.name === name);
+    return stack && stack.map ? stack.map : {};
+  };
+
+  const PHRASE_SEARCH_MAP = getStackMap('phrase');
+  const TOKEN_SEARCH_MAP = getStackMap('token');
+
+  const lookupPhraseVariants = (query) => {
+    const normalized = normalizeSearchQueryForLookup(query);
+    if (!normalized) {
+      return [];
+    }
+
+    if (PHRASE_SEARCH_MAP[normalized]) {
+      return dedupeSearchVariants(PHRASE_SEARCH_MAP[normalized]);
+    }
+
+    if (normalized.endsWith('s')) {
+      const singular = normalized.slice(0, -1);
+      if (PHRASE_SEARCH_MAP[singular]) {
+        return dedupeSearchVariants(PHRASE_SEARCH_MAP[singular]);
+      }
+    }
+
+    return [];
+  };
+
   const lookupSearchVariants = (token) => {
     const normalized = normalizeSearchToken(token);
     if (!normalized) {
       return [];
     }
 
-    if (EN_TO_ZH_SEARCH_VARIANTS[normalized]) {
-      return EN_TO_ZH_SEARCH_VARIANTS[normalized];
+    if (TOKEN_SEARCH_MAP[normalized]) {
+      return dedupeSearchVariants(TOKEN_SEARCH_MAP[normalized]);
     }
 
-    if (normalized.endsWith('s') && EN_TO_ZH_SEARCH_VARIANTS[normalized.slice(0, -1)]) {
-      return EN_TO_ZH_SEARCH_VARIANTS[normalized.slice(0, -1)];
+    if (normalized.endsWith('s') && TOKEN_SEARCH_MAP[normalized.slice(0, -1)]) {
+      return dedupeSearchVariants(TOKEN_SEARCH_MAP[normalized.slice(0, -1)]);
     }
 
     return [];
@@ -1048,13 +1121,22 @@
       return { changed: false, query: raw, replacements: [] };
     }
 
-    // Single-word searches get expanded to multiple high-volume Chinese variants.
+    const phraseVariants = lookupPhraseVariants(raw);
+    if (phraseVariants.length) {
+      return {
+        changed: true,
+        query: phraseVariants.join(' '),
+        replacements: [{ from: raw, to: phraseVariants[0] }]
+      };
+    }
+
+    // Single-word searches get expanded to multiple ranked Chinese variants.
     if (tokens.length === 1) {
       const variants = lookupSearchVariants(tokens[0]);
       if (variants.length) {
         return {
           changed: true,
-          query: Array.from(new Set(variants)).join(' '),
+          query: dedupeSearchVariants(variants).join(' '),
           replacements: [{ from: tokens[0], to: variants[0] }]
         };
       }

@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.33.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.34.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,23 +23,22 @@
 
 ---
 
-## What's New in v1.2.33
+## What's New in v1.2.34
 
 ### ✅ This Iteration Fixes
 
-#### 1. English search localization to Simplified Chinese
-- **Issue before:** English searches like `butt` were sent directly and often underperformed on XAAVV titles.
-- **Now:** English keywords are translated before search is executed.
-- **Technical change:** Added query localization hooks for submit/click/enter events and auto-rewrite for `/search/<english>` paths.
+#### 1. Stacked search dictionary localization
+- **Issue before:** Direct English search strings could underperform on title matching.
+- **Now:** Search queries are localized through a stacked dictionary before search is executed.
+- **Technical change:** Added dictionary-backed query localization hooks for submit/click/enter events and auto-rewrite for `/search/<query>` paths.
 
-#### 2. Ranked keyword variants for better title coverage
-- For `butt` family terms (`butt`, `ass`, `booty`, `rear`, `backside`, `bum`), the script maps to high-volume XAAVV variants:
-  `臀 美臀 后入 屁股 臀部 翘臀`.
-- Ranking is based on live XAAVV result counts.
+#### 2. Prioritized variant ranking for better title coverage
+- Dictionary entries use ranked variants to improve result coverage for supported English query families.
+- Phrase-level mapping is applied first, then token-level fallback.
 
 #### 3. Version and file naming synchronized
-- **Now:** File name and internal metadata both use 1.2.33.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.33.user.js`
+- **Now:** File name and internal metadata both use 1.2.34.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.34.user.js`
 
 ---
 
@@ -100,7 +99,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.33.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.34.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -114,7 +113,7 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.33.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.34.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -135,9 +134,9 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.33)
+2. Find the latest release (v1.2.34)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.33.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.34.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -238,7 +237,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.33.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.34.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -251,7 +250,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.33
+- **Current Version:** 1.2.34
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers
