@@ -2118,15 +2118,41 @@
       return text === '\u9009\u96c6' || text === 'selections';
     });
 
-    const selectionCard = selectionLabel instanceof HTMLElement
-      ? selectionLabel.closest('aside, section, div')
-      : null;
-    if (!(selectionCard instanceof HTMLElement)) {
+    if (!(selectionLabel instanceof HTMLElement)) {
       return;
     }
 
-    const layoutContainer = selectionCard.parentElement;
-    if (!(layoutContainer instanceof HTMLElement)) {
+    let selectionCard = null;
+    let layoutContainer = null;
+    let cursor = selectionLabel.parentElement;
+    while (cursor instanceof HTMLElement && cursor !== document.body) {
+      const parent = cursor.parentElement;
+      if (!(parent instanceof HTMLElement)) {
+        break;
+      }
+
+      const siblings = Array.from(parent.children).filter((node) => node instanceof HTMLElement && node !== cursor);
+      const hasVideoSibling = siblings.some((panel) => {
+        if (!(panel instanceof HTMLElement)) {
+          return false;
+        }
+        if (panel.querySelector('video, #player, .video-js')) {
+          return true;
+        }
+        const panelText = (panel.textContent || '').toLowerCase();
+        return panelText.includes('\u5168\u5c4f') || panelText.includes('full screen');
+      });
+
+      if (hasVideoSibling) {
+        selectionCard = cursor;
+        layoutContainer = parent;
+        break;
+      }
+
+      cursor = parent;
+    }
+
+    if (!(selectionCard instanceof HTMLElement) || !(layoutContainer instanceof HTMLElement)) {
       return;
     }
 
