@@ -72,6 +72,10 @@ Checked against:
 
 Operational guidance, postmortem misses, and prevention checklist are documented in [DARK_MODING_SKILL.md](DARK_MODING_SKILL.md).
 
+## Search Localization Skill
+
+Generic, reusable guidance for English-to-foreign-language query localization via a stacked search dictionary is documented in [FOREIGN_LANGUAGE_SEARCH_LOCALIZATION_SKILL.md](FOREIGN_LANGUAGE_SEARCH_LOCALIZATION_SKILL.md).
+
 ## Steps Taken (Chronological)
 
 1. Added broad dark baseline at document-start so initial paint is not white.
