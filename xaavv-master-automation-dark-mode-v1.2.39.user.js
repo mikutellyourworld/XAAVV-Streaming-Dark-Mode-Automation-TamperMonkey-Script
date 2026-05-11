@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.38
+// @version      1.2.39
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.38';
+  const SCRIPT_VERSION = '1.2.39';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -1521,10 +1521,45 @@
     mo.observe(document.documentElement, { childList: true, subtree: true });
   };
 
+  const removeHomepageTagline = () => {
+    if (location.pathname !== '/') {
+      return;
+    }
+
+    const shouldHide = (value) => {
+      const text = (value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      if (!text) {
+        return false;
+      }
+
+      return text.includes('高清线路')
+        || text.includes('极速播放')
+        || text.includes('high-definition streaming')
+        || text.includes('ultra-fast playback');
+    };
+
+    const nodes = document.querySelectorAll('p, span, div');
+    for (const node of nodes) {
+      if (!(node instanceof HTMLElement)) {
+        continue;
+      }
+
+      if (!shouldHide(node.textContent || '')) {
+        continue;
+      }
+
+      node.style.setProperty('display', 'none', 'important');
+      node.style.setProperty('visibility', 'hidden', 'important');
+      node.style.setProperty('opacity', '0', 'important');
+      node.setAttribute('aria-hidden', 'true');
+    }
+  };
+
   const runMaintenancePass = () => {
     wireSearchQueryLocalization();
     runNuclearPass();
     killTopLeftSwirl();
+    removeHomepageTagline();
     wireCenterPlayOverlayState();
     syncVideoProgressBars();
     syncCenterPlayOverlay();
@@ -2799,6 +2834,7 @@
     enforceTopRightControlTransparency();
     enforceTopLeftBrandAndSearchTransparency();
     enforcePlayVideoFirstLayout();
+    removeHomepageTagline();
     schedule(runNuclearPass, [500, 1500, 3000]);
     schedule(tryRedirectFromIntermediatePage, [200, 800, 1800]);
     schedule(killTopLeftSwirl, [300, 1200, 2600]);
@@ -2808,6 +2844,7 @@
     schedule(enforceTopRightControlTransparency, [300, 1200, 2600]);
     schedule(enforceTopLeftBrandAndSearchTransparency, [300, 1200, 2600]);
     schedule(enforcePlayVideoFirstLayout, [300, 1200, 2600]);
+    schedule(removeHomepageTagline, [250, 900, 1800, 3200]);
   };
 
   setupDirectPlayRouting();
