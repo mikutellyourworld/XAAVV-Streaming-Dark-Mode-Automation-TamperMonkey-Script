@@ -125,3 +125,14 @@ Because the available tools here do not provide a safe authenticated browser wor
 ## Outcome
 
 The v1.2.45 dictionary update is based on XAAVV-native wording rather than guessed synonyms, with emphasis on the body and site-specific labels that XAAVV visibly uses across search results and titles.
+
+## Large-Scale Inventory Follow-up
+
+For broader prevalence mining and reproducible large-count term/name coverage, see:
+
+- `tools/build_xaavv_prevalence_inventory.py`
+- `data/xaavv_prevalence_inventory.json`
+- `data/XAAVV_PREVALENCE_INVENTORY.md`
+- `XAAVV_PREVALENCE_EXPANSION_v1.2.46_2026-05-11.md`
+
+Latest automated inventory run produced 29005 unique term+name entries, and the `>=500` threshold check passed.
