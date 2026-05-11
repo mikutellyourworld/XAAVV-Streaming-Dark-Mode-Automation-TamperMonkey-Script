@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.41
+// @version      1.2.42
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.41';
+  const SCRIPT_VERSION = '1.2.42';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -42,7 +42,6 @@
   const SEARCH_VARIANT_ROTATION_STORAGE_KEY = 'xaavv-search-variant-rotation-v1';
   const SEARCH_VARIANT_LAST_PICK_STORAGE_KEY = 'xaavv-search-variant-last-pick-v1';
   const LOCAL_DICTIONARY_STORAGE_KEY = 'xaavv-search-dictionary-private-v1';
-  const DICTIONARY_DEBUG_NOTICE_KEY = 'xaavv-search-dictionary-debug-notice-v1';
   const SEARCH_VARIANT_PICK_DEDUP_WINDOW_MS = 1200;
   const SEARCH_VARIANT_LAST_PICK_MAX_KEYS = 200;
   const PROGRESS_SEEK_HIT_STRIP_PX = 36;
@@ -993,15 +992,21 @@
     return /\/xavplay\//i.test(location.pathname);
   };
 
-  // Public repository policy: explicit dictionary term sets are not stored in-repo.
-  // Private/local dictionary data can be supplied through localStorage when needed.
-  const SEARCH_DICTIONARY_STACKS = [
-    { name: 'phrase', map: {} },
-    { name: 'token', map: {} }
-  ];
+  const SEARCH_DICTIONARY_STACKS = [{"name":"phrase","map":{"blue hair":["blue hair","\u84dd\u53d1","\u84dd\u6bdb","\u84dd\u8272\u5934\u53d1"],"green hair":["\u00e7\u00bb\u00bf\u00e5\u008f\u2018","\u00e7\u00bb\u00bf\u00e8\u2030\u00b2\u00e5\u00a4\u00b4\u00e5\u008f\u2018","\u00e7\u00bb\u00bf\u00e6\u00af\u203a"],"pink hair":["\u00e7\u00b2\u2030\u00e5\u008f\u2018","\u00e7\u00b2\u2030\u00e8\u2030\u00b2\u00e5\u00a4\u00b4\u00e5\u008f\u2018","\u00e7\u00b2\u2030\u00e6\u00af\u203a"],"silver hair":["\u00e9\u201c\u00b6\u00e5\u008f\u2018","\u00e9\u201c\u00b6\u00e8\u2030\u00b2\u00e5\u00a4\u00b4\u00e5\u008f\u2018"],"white hair":["\u00e7\u2122\u00bd\u00e5\u008f\u2018","\u00e9\u201c\u00b6\u00e7\u2122\u00bd\u00e5\u008f\u2018"],"black hair":["\u00e9\u00bb\u2018\u00e5\u008f\u2018","\u00e9\u00bb\u2018\u00e9\u2022\u00bf\u00e7\u203a\u00b4"],"long hair":["\u00e9\u2022\u00bf\u00e5\u008f\u2018","\u00e9\u00bb\u2018\u00e9\u2022\u00bf\u00e7\u203a\u00b4"],"short hair":["\u00e7\u0178\u00ad\u00e5\u008f\u2018","\u00e7\u0178\u00ad\u00e5\u008f\u2018\u00e5\u00a6\u00b9"],"twin tails":["\u00e5\u008f\u0152\u00e9\u00a9\u00ac\u00e5\u00b0\u00be","\u00e5\u008f\u0152\u00e9\u00a9\u00ac\u00e5\u00b0\u00be\u00e5\u00b0\u2018\u00e5\u00a5\u00b3"],"high ponytail":["\u00e9\u00ab\u02dc\u00e9\u00a9\u00ac\u00e5\u00b0\u00be","\u9a6c\u5c3e"],"hair bun":["\u4e38\u5b50\u5934","\u00e5\u008f\u2018\u00e9\u00ab\u00bb"],"curly hair":["\u00e5\u008d\u00b7\u00e5\u008f\u2018","\u5927\u6ce2\u6d6a"],"wet hair":["\u00e6\u00b9\u00bf\u00e5\u008f\u2018","\u6e7f\u8eab"],"tattoo girl":["\u7eb9\u8eab\u5973","\u7eb9\u8eab\u59b9","\u00e5\u02c6\u00ba\u00e9\u009d\u2019"],"full tattoo":["\u00e6\u00bb\u00a1\u00e8\u0192\u0152\u00e7\u00ba\u00b9\u00e8\u00ba\u00ab","\u00e5\u2026\u00a8\u00e8\u00ba\u00ab\u00e7\u00ba\u00b9\u00e8\u00ba\u00ab","\u00e5\u02c6\u00ba\u00e9\u009d\u2019"],"cosplay girl":["cos","\u00e8\u00a7\u2019\u00e8\u2030\u00b2\u00e6\u2030\u00ae\u00e6\u00bc\u201d","coser"],"anime cosplay":["\u00e5\u0160\u00a8\u00e6\u00bc\u00abcos","\u00e8\u00a7\u2019\u00e8\u2030\u00b2\u00e6\u2030\u00ae\u00e6\u00bc\u201d","cos"],"game cosplay":["\u00e6\u00b8\u00b8\u00e6\u02c6\u008fcos","\u00e8\u00a7\u2019\u00e8\u2030\u00b2\u00e6\u2030\u00ae\u00e6\u00bc\u201d","cos"],"arknights cosplay":["\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178 cos","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","arknights"],"zenless zone zero cosplay":["\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6 cos","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","zzz"],"female lead":["\u5973\u4e3b","\u00e5\u00a5\u00b3\u00e7\u00a5\u017e","\u5c0f\u59d0\u59d0"],"pretty face":["\u00e9\u00ab\u02dc\u00e9\u00a2\u0153\u00e5\u20ac\u00bc","\u00e7\u00a5\u017e\u00e9\u00a2\u0153","\u00e7\u00b2\u00be\u00e8\u2021\u00b4\u00e8\u201e\u00b8"],"big eyes":["\u00e5\u00a4\u00a7\u00e7\u0153\u00bc","\u00e7\u201d\u00b5\u00e7\u0153\u00bc"],"small waist":["\u00e5\u00b0\u008f\u00e8\u203a\u00ae\u00e8\u2026\u00b0","\u00e7\u00bb\u2020\u00e8\u2026\u00b0"],"slim body":["\u00e8\u2039\u2014\u00e6\u009d\u00a1","\u00e7\u00ba\u00a4\u00e7\u00bb\u2020","\u00e7\u02dc\u00a6\u00e8\u00ba\u00ab\u00e6\u009d\u0090"],"athletic girl":["\u00e8\u00bf\u0090\u00e5\u0160\u00a8\u00e7\u00b3\u00bb","\u5065\u8eab\u5973","\u00e6\u00b4\u00bb\u00e5\u0160\u203a\u00e5\u00b0\u2018\u00e5\u00a5\u00b3"],"office lady":["ol","\u00e8\u0081\u0152\u00e5\u0153\u00ba","\u00e7\u00a7\u02dc\u00e4\u00b9\u00a6"],"school girl":["\u00e5\u00ad\u00a6\u00e7\u201d\u0178\u00e5\u00a6\u00b9","\u00e5\u02c6\u00b6\u00e6\u0153\u008d","\u00e6\u00a0\u00a1\u00e5\u203a\u00ad"],"nurse cosplay":["\u00e6\u0160\u00a4\u00e5\u00a3\u00ab","\u00e6\u0160\u00a4\u00e5\u00a3\u00ab\u00e8\u00a3\u2026","cos"],"maid cosplay":["\u00e5\u00a5\u00b3\u00e4\u00bb\u2020","\u00e5\u00a5\u00b3\u00e4\u00bb\u2020\u00e8\u00a3\u2026","cos"],"bunny girl":["\u00e5\u2026\u201d\u00e5\u00a5\u00b3\u00e9\u0192\u017d","\u00e5\u2026\u201d\u00e5\u00a5\u00b3\u00e9\u0192\u017d\u00e8\u00a3\u2026","cos"],"cat girl":["\u00e7\u0152\u00ab\u00e8\u20ac\u00b3","\u00e7\u0152\u00ab\u00e5\u00a8\u02dc","cos"],"idol style":["\u00e5\u0081\u00b6\u00e5\u0192\u008f","\u00e5\u00a5\u00b3\u00e5\u203a\u00a2","\u00e6\u00b8\u2026\u00e7\u00ba\u00af"],"selfie style":["\u00e8\u2021\u00aa\u00e6\u2039\u008d","\u00e9\u2022\u0153\u00e5\u2030\u008d","\u00e7\u00ac\u00ac\u00e4\u00b8\u20ac\u00e8\u00a7\u2020\u00e8\u00a7\u2019"],"arknights amiya":["\u00e9\u02dc\u00bf\u00e7\u00b1\u00b3\u00e5\u00a8\u2026","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","amiya"],"arknights chen":["\u00e9\u2122\u02c6","\u00e9\u2122\u02c6sir","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178"],"arknights kaltsit":["\u00e5\u2021\u00af\u00e5\u00b0\u201d\u00e5\u00b8\u0152","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","kal'tsit"],"arknights texas":["\u00e5\u00be\u00b7\u00e5\u2026\u2039\u00e8\u0090\u00a8\u00e6\u2013\u00af","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","texas"],"arknights lappland":["\u00e6\u2039\u2030\u00e6\u2122\u00ae\u00e5\u2026\u00b0\u00e5\u00be\u00b7","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","lappland"],"arknights exusiai":["\u00e8\u0192\u00bd\u00e5\u00a4\u00a9\u00e4\u00bd\u00bf","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","exusiai"],"arknights skadi":["\u00e6\u2013\u00af\u00e5\u008d\u00a1\u00e8\u2019\u201a","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","skadi"],"arknights surtr":["\u00e5\u008f\u00b2\u00e5\u00b0\u201d\u00e7\u2030\u00b9\u00e5\u00b0\u201d","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","surtr"],"arknights mudrock":["\u6ce5\u5ca9","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","mudrock"],"arknights w":["w","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","w \u00e5\u00b9\u00b2\u00e5\u2018\u02dc"],"zenless ellen":["\u00e8\u2030\u00be\u00e8\u017d\u00b2","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","ellen joe"],"zenless anby":["\u00e5\u00ae\u2030\u00e6\u00af\u201d","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","anby"],"zenless nicole":["\u59ae\u53ef","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","nicole"],"zenless nekomata":["\u00e7\u0152\u00ab\u00e5\u008f\u02c6","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","nekomata"],"zenless soldier 11":["11\u53f7","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","soldier 11"],"zenless koleda":["\u00e7\u008f\u201a\u00e8\u2022\u00be\u00e5\u00a6\u00b2","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","koleda"],"zenless grace":["\u00e6\u00a0\u00bc\u00e8\u017d\u2030\u00e4\u00b8\u009d","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","grace"],"zenless rina":["\u00e4\u00b8\u00bd\u00e5\u00a8\u0153","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","rina"],"zenless zhu yuan":["\u00e6\u0153\u00b1\u00e9\u00b8\u00a2","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","zhu yuan"],"zenless qingyi":["\u00e9\u009d\u2019\u00e8\u00a1\u00a3","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","qingyi"],"zenless jane":["\u00e7\u00ae\u20ac","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","jane doe"],"zenless miyabi":["\u00e9\u203a\u2026","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","miyabi"],"anime rem":["\u00e8\u2022\u00be\u00e5\u00a7\u2020","re:0","rem"],"anime asuna":["\u00e4\u00ba\u0161\u00e4\u00b8\u009d\u00e5\u00a8\u0153","\u00e5\u02c6\u20ac\u00e5\u2030\u2018\u00e7\u00a5\u017e\u00e5\u0178\u0178","asuna"],"anime mikasa":["\u00e4\u00b8\u2030\u00e7\u00ac\u00a0","\u00e8\u00bf\u203a\u00e5\u2021\u00bb\u00e7\u0161\u201e\u00e5\u00b7\u00a8\u00e4\u00ba\u00ba","mikasa"],"anime marin":["\u00e5\u2013\u0153\u00e5\u00a4\u0161\u00e5\u00b7\u009d\u00e6\u00b5\u00b7\u00e6\u00a2\u00a6","\u00e6\u203a\u00b4\u00e8\u00a1\u00a3\u00e4\u00ba\u00ba\u00e5\u0081\u00b6","marin"],"anime zero two":["02","darling in the franxx","zero two"],"anime yor":["\u00e7\u00ba\u00a6\u00e5\u00b0\u201d","\u00e9\u2014\u00b4\u00e8\u00b0\u008d\u00e8\u00bf\u2021\u00e5\u00ae\u00b6\u00e5\u00ae\u00b6","yor"],"anime makima":["\u00e7\u017d\u203a\u00e5\u00a5\u2021\u00e7\u017d\u203a","\u00e7\u201d\u00b5\u00e9\u201d\u00af\u00e4\u00ba\u00ba","makima"],"anime hinata":["\u00e9\u203a\u008f\u00e7\u201d\u00b0","\u706b\u5f71","hinata"],"anime nami":["\u00e5\u00a8\u0153\u00e7\u00be\u017d","\u00e6\u00b5\u00b7\u00e8\u00b4\u00bc\u00e7\u017d\u2039","nami"],"anime boa hancock":["\u00e6\u00b1\u2030\u00e5\u00ba\u201c\u00e5\u2026\u2039","\u00e6\u00b5\u00b7\u00e8\u00b4\u00bc\u00e7\u017d\u2039","boa"],"anime nezuko":["\u00e7\u00a5\u00a2\u00e8\u00b1\u2020\u00e5\u00ad\u0090","\u9b3c\u706d","nezuko"]}},{"name":"token","map":{"female":["\u00e5\u00a5\u00b3\u00e7\u201d\u0178","\u5c0f\u59d0\u59d0","\u00e5\u00a5\u00b3\u00e7\u00a5\u017e"],"girl":["\u59b9\u5b50","\u00e5\u00a5\u00b3\u00e7\u201d\u0178","\u00e5\u00b0\u2018\u00e5\u00a5\u00b3"],"woman":["\u5973\u4eba","\u00e5\u00a5\u00b3\u00e6\u20ac\u00a7","\u5c0f\u59d0\u59d0"],"waifu":["\u00e8\u20ac\u0081\u00e5\u00a9\u2020","\u00e4\u00ba\u0152\u00e6\u00ac\u00a1\u00e5\u2026\u0192\u00e5\u00a5\u00b3\u00e7\u00a5\u017e","\u00e5\u00a5\u00b3\u00e7\u00a5\u017e"],"hair":["\u00e5\u008f\u2018\u00e5\u017e\u2039","\u00e9\u2022\u00bf\u00e5\u008f\u2018","\u00e7\u0178\u00ad\u00e5\u008f\u2018"],"blue":["\u00e8\u201c\u009d\u00e8\u2030\u00b2","\u00e8\u201c\u009d\u00e5\u008f\u2018","\u00e8\u201c\u009d\u00e6\u00af\u203a"],"green":["\u00e7\u00bb\u00bf\u00e8\u2030\u00b2","\u00e7\u00bb\u00bf\u00e5\u008f\u2018","\u00e7\u00bb\u00bf\u00e6\u00af\u203a"],"pink":["\u00e7\u00b2\u2030\u00e8\u2030\u00b2","\u00e7\u00b2\u2030\u00e5\u008f\u2018","\u00e7\u00b2\u2030\u00e6\u00af\u203a"],"silver":["\u00e9\u201c\u00b6\u00e8\u2030\u00b2","\u00e9\u201c\u00b6\u00e5\u008f\u2018","\u00e7\u2122\u00bd\u00e5\u008f\u2018"],"white":["\u00e7\u2122\u00bd\u00e8\u2030\u00b2","\u00e7\u2122\u00bd\u00e5\u008f\u2018","\u00e9\u201c\u00b6\u00e7\u2122\u00bd\u00e5\u008f\u2018"],"black":["\u00e9\u00bb\u2018\u00e8\u2030\u00b2","\u00e9\u00bb\u2018\u00e5\u008f\u2018","\u00e9\u00bb\u2018\u00e9\u2022\u00bf\u00e7\u203a\u00b4"],"blonde":["\u00e9\u2021\u2018\u00e5\u008f\u2018","\u00e9\u00bb\u201e\u00e5\u008f\u2018","\u00e9\u2021\u2018\u00e6\u00af\u203a"],"tattoo":["\u7eb9\u8eab","\u00e5\u02c6\u00ba\u00e9\u009d\u2019","\u7eb9\u8eab\u59b9"],"cosplay":["cos","\u00e8\u00a7\u2019\u00e8\u2030\u00b2\u00e6\u2030\u00ae\u00e6\u00bc\u201d","coser"],"cos":["cos","\u00e8\u00a7\u2019\u00e8\u2030\u00b2\u00e6\u2030\u00ae\u00e6\u00bc\u201d","coser"],"anime":["\u00e5\u0160\u00a8\u00e6\u00bc\u00ab","\u00e4\u00ba\u0152\u00e6\u00ac\u00a1\u00e5\u2026\u0192","\u00e7\u2022\u00aa\u00e5\u2030\u00a7\u00e8\u00a7\u2019\u00e8\u2030\u00b2"],"game":["\u00e6\u00b8\u00b8\u00e6\u02c6\u008f","\u00e4\u00ba\u0152\u00e6\u00b8\u00b8","\u00e6\u00b8\u00b8\u00e6\u02c6\u008f\u00e8\u00a7\u2019\u00e8\u2030\u00b2"],"character":["\u00e8\u00a7\u2019\u00e8\u2030\u00b2","\u00e4\u00ba\u00ba\u00e7\u2030\u00a9","\u00e8\u00a7\u2019\u00e8\u2030\u00b2\u00e6\u2030\u00ae\u00e6\u00bc\u201d"],"arknights":["\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","arknights","\u00e6\u2013\u00b9\u00e8\u02c6\u0178"],"zenless":["\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","zzz","zenless"],"zzz":["\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","zenless","zzz"],"amiya":["\u00e9\u02dc\u00bf\u00e7\u00b1\u00b3\u00e5\u00a8\u2026","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","amiya"],"chen":["\u00e9\u2122\u02c6","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","chen"],"kaltsit":["\u00e5\u2021\u00af\u00e5\u00b0\u201d\u00e5\u00b8\u0152","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","kal'tsit"],"texas":["\u00e5\u00be\u00b7\u00e5\u2026\u2039\u00e8\u0090\u00a8\u00e6\u2013\u00af","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","texas"],"lappland":["\u00e6\u2039\u2030\u00e6\u2122\u00ae\u00e5\u2026\u00b0\u00e5\u00be\u00b7","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","lappland"],"exusiai":["\u00e8\u0192\u00bd\u00e5\u00a4\u00a9\u00e4\u00bd\u00bf","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","exusiai"],"skadi":["\u00e6\u2013\u00af\u00e5\u008d\u00a1\u00e8\u2019\u201a","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","skadi"],"surtr":["\u00e5\u008f\u00b2\u00e5\u00b0\u201d\u00e7\u2030\u00b9\u00e5\u00b0\u201d","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","surtr"],"mudrock":["\u6ce5\u5ca9","\u00e6\u02dc\u017d\u00e6\u2014\u00a5\u00e6\u2013\u00b9\u00e8\u02c6\u0178","mudrock"],"ellen":["\u00e8\u2030\u00be\u00e8\u017d\u00b2","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","ellen joe"],"anby":["\u00e5\u00ae\u2030\u00e6\u00af\u201d","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","anby"],"nicole":["\u59ae\u53ef","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","nicole"],"nekomata":["\u00e7\u0152\u00ab\u00e5\u008f\u02c6","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","nekomata"],"koleda":["\u00e7\u008f\u201a\u00e8\u2022\u00be\u00e5\u00a6\u00b2","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","koleda"],"grace":["\u00e6\u00a0\u00bc\u00e8\u017d\u2030\u00e4\u00b8\u009d","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","grace"],"rina":["\u00e4\u00b8\u00bd\u00e5\u00a8\u0153","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","rina"],"zhuyuan":["\u00e6\u0153\u00b1\u00e9\u00b8\u00a2","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","zhu yuan"],"qingyi":["\u00e9\u009d\u2019\u00e8\u00a1\u00a3","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","qingyi"],"miyabi":["\u00e9\u203a\u2026","\u00e7\u00bb\u009d\u00e5\u0152\u00ba\u00e9\u203a\u00b6","miyabi"],"rem":["\u00e8\u2022\u00be\u00e5\u00a7\u2020","re:0","rem"],"asuna":["\u00e4\u00ba\u0161\u00e4\u00b8\u009d\u00e5\u00a8\u0153","\u00e5\u02c6\u20ac\u00e5\u2030\u2018\u00e7\u00a5\u017e\u00e5\u0178\u0178","asuna"],"mikasa":["\u00e4\u00b8\u2030\u00e7\u00ac\u00a0","\u00e8\u00bf\u203a\u00e5\u2021\u00bb\u00e7\u0161\u201e\u00e5\u00b7\u00a8\u00e4\u00ba\u00ba","mikasa"],"marin":["\u00e5\u2013\u0153\u00e5\u00a4\u0161\u00e5\u00b7\u009d\u00e6\u00b5\u00b7\u00e6\u00a2\u00a6","\u00e6\u203a\u00b4\u00e8\u00a1\u00a3\u00e4\u00ba\u00ba\u00e5\u0081\u00b6","marin"],"yor":["\u00e7\u00ba\u00a6\u00e5\u00b0\u201d","\u00e9\u2014\u00b4\u00e8\u00b0\u008d\u00e8\u00bf\u2021\u00e5\u00ae\u00b6\u00e5\u00ae\u00b6","yor"],"makima":["\u00e7\u017d\u203a\u00e5\u00a5\u2021\u00e7\u017d\u203a","\u00e7\u201d\u00b5\u00e9\u201d\u00af\u00e4\u00ba\u00ba","makima"],"hinata":["\u00e9\u203a\u008f\u00e7\u201d\u00b0","\u706b\u5f71","hinata"],"nami":["\u00e5\u00a8\u0153\u00e7\u00be\u017d","\u00e6\u00b5\u00b7\u00e8\u00b4\u00bc\u00e7\u017d\u2039","nami"],"hancock":["\u00e6\u00b1\u2030\u00e5\u00ba\u201c\u00e5\u2026\u2039","\u00e6\u00b5\u00b7\u00e8\u00b4\u00bc\u00e7\u017d\u2039","\u00e6\u00b1\u2030\u00e5\u00ba\u201c\u00e5\u2026\u2039"],"nezuko":["\u00e7\u00a5\u00a2\u00e8\u00b1\u2020\u00e5\u00ad\u0090","\u9b3c\u706d","nezuko"],"butt":["\u7f8e\u81c0","\u5c41\u80a1","\u7fd8\u81c0"],"ass":["\u7f8e\u81c0","\u5c41\u80a1","\u7fd8\u81c0"],"booty":["\u7f8e\u81c0","\u5c41\u80a1","\u7fd8\u81c0"]}}];
 
   let cachedDictionaryPayloadRaw = null;
   let cachedDictionaryStacks = SEARCH_DICTIONARY_STACKS;
+
+  const mergeDictionaryStackMaps = (baseMap, overrideMap) => {
+    const merged = { ...(baseMap || {}) };
+    for (const [key, value] of Object.entries(overrideMap || {})) {
+      if (!key || !Array.isArray(value)) {
+        continue;
+      }
+      merged[key] = value;
+    }
+    return merged;
+  };
 
   const loadLocalDictionaryStacks = () => {
     try {
@@ -1025,11 +1030,19 @@
 
       const phrase = parsed.find((entry) => entry && entry.name === 'phrase' && entry.map && typeof entry.map === 'object');
       const token = parsed.find((entry) => entry && entry.name === 'token' && entry.map && typeof entry.map === 'object');
+      const basePhrase = SEARCH_DICTIONARY_STACKS.find((entry) => entry && entry.name === 'phrase');
+      const baseToken = SEARCH_DICTIONARY_STACKS.find((entry) => entry && entry.name === 'token');
 
       cachedDictionaryPayloadRaw = raw;
       cachedDictionaryStacks = [
-        { name: 'phrase', map: phrase ? phrase.map : {} },
-        { name: 'token', map: token ? token.map : {} }
+        {
+          name: 'phrase',
+          map: mergeDictionaryStackMaps(basePhrase ? basePhrase.map : {}, phrase ? phrase.map : {})
+        },
+        {
+          name: 'token',
+          map: mergeDictionaryStackMaps(baseToken ? baseToken.map : {}, token ? token.map : {})
+        }
       ];
       return cachedDictionaryStacks;
     } catch (_) {
@@ -1044,32 +1057,24 @@
     return stack && stack.map ? stack.map : {};
   };
 
-  const hasAnyDictionaryEntries = () => {
-    const phraseMap = getStackMap('phrase');
-    const tokenMap = getStackMap('token');
-    return Object.keys(phraseMap).length > 0 || Object.keys(tokenMap).length > 0;
-  };
-
-  const maybeWarnMissingPrivateDictionary = (rawQuery) => {
-    const query = String(rawQuery || '').trim();
-    if (!query || /[^\x00-\x7F]/.test(query) || !/[a-z]/i.test(query) || hasAnyDictionaryEntries()) {
-      return;
+  const preferLocalizedVariants = (sourceText, variants) => {
+    const cleaned = dedupeSearchVariants(variants);
+    if (!cleaned.length) {
+      return cleaned;
     }
 
-    try {
-      const currentNotice = sessionStorage.getItem(DICTIONARY_DEBUG_NOTICE_KEY);
-      if (currentNotice === query.toLowerCase()) {
-        return;
-      }
-      sessionStorage.setItem(DICTIONARY_DEBUG_NOTICE_KEY, query.toLowerCase());
-    } catch (_) {
-      // Ignore storage failures silently.
+    const nonAscii = cleaned.filter((variant) => /[^\x00-\x7F]/.test(variant));
+    if (nonAscii.length) {
+      return nonAscii;
     }
 
-    console.info(
-      '[XAAVV] Search localization skipped because no private dictionary payload is loaded. ' +
-      `Load the sanitized repo script plus your local/private payload in localStorage key "${LOCAL_DICTIONARY_STORAGE_KEY}".`
-    );
+    const normalizedSource = normalizeSearchQueryForLookup(sourceText);
+    if (!normalizedSource) {
+      return cleaned;
+    }
+
+    const nonSelf = cleaned.filter((variant) => normalizeSearchQueryForLookup(variant) !== normalizedSource);
+    return nonSelf.length ? nonSelf : cleaned;
   };
 
   const decodeSearchPathQuery = () => {
@@ -1293,14 +1298,12 @@
       return { changed: false, query: raw, replacements: [] };
     }
 
-    maybeWarnMissingPrivateDictionary(raw);
-
     const tokens = raw.split(/\s+/).filter(Boolean);
     if (!tokens.length) {
       return { changed: false, query: raw, replacements: [] };
     }
 
-    const phraseMatch = lookupPhraseVariants(raw);
+    const phraseMatch = preferLocalizedVariants(raw, lookupPhraseVariants(raw));
     if (phraseMatch.length) {
       const normalizedPhraseKey = normalizeSearchQueryForLookup(raw);
       const selected = pickSingleVariant(`phrase:${normalizedPhraseKey}`, phraseMatch, `raw:${normalizedPhraseKey}`);
@@ -1316,7 +1319,11 @@
     const embeddedPhraseMatch = lookupBestPhraseInQuery(raw);
     if (embeddedPhraseMatch) {
       const normalizedRaw = normalizeSearchQueryForLookup(raw);
-      const selected = pickSingleVariant(`phrase:${embeddedPhraseMatch.key}`, embeddedPhraseMatch.variants, `embed:${embeddedPhraseMatch.key}|raw:${normalizedRaw}`);
+      const selected = pickSingleVariant(
+        `phrase:${embeddedPhraseMatch.key}`,
+        preferLocalizedVariants(embeddedPhraseMatch.key, embeddedPhraseMatch.variants),
+        `embed:${embeddedPhraseMatch.key}|raw:${normalizedRaw}`
+      );
       if (selected) {
         return {
           changed: true,
@@ -1329,7 +1336,7 @@
     // Single-word searches now resolve to one best/rotated target variant.
     if (tokens.length === 1) {
       const normalizedToken = normalizeSearchToken(tokens[0]);
-      const variants = lookupSearchVariants(tokens[0]);
+      const variants = preferLocalizedVariants(tokens[0], lookupSearchVariants(tokens[0]));
       if (variants.length && normalizedToken) {
         const selected = pickSingleVariant(`token:${normalizedToken}`, variants, `single:${normalizedToken}`);
         if (selected) {
@@ -1346,7 +1353,7 @@
     // Multi-word searches: choose ONE translated term from the first recognized token.
     for (const token of tokens) {
       const normalizedToken = normalizeSearchToken(token);
-      const variants = lookupSearchVariants(token);
+      const variants = preferLocalizedVariants(token, lookupSearchVariants(token));
       if (!variants.length || !normalizedToken) {
         continue;
       }

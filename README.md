@@ -29,9 +29,9 @@ A focused Tampermonkey userscript that applies a professional dark interface to 
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.41.user.js`.
+3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.42.user.js`.
 4. Save and refresh XAAVV pages.
-5. If you use private search localization, load your local/private dictionary payload into `localStorage` key `xaavv-search-dictionary-private-v1` before testing English search rewrites.
+5. Optional: load a local/private dictionary payload into `localStorage` key `xaavv-search-dictionary-private-v1` if you want to override or extend the built-in search-localization baseline.
 
 ## Validation Notes
 
@@ -45,6 +45,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.42`: Search-localization baseline restored in-script. The public userscript now ships with an embedded dictionary baseline, still merges optional local/private overrides from `localStorage`, and prefers localized variants over unchanged English aliases when rewriting recognized search terms.
 - `1.2.41`: Search-localization hot-reload fix. The script now re-reads the private dictionary payload from `localStorage` instead of snapshotting it only at startup, and logs a sanitized diagnostic message when English search rewrites are attempted without the private payload present.
 - `1.2.40`: Search-localization sequencing hardening update. Repeated identical search attempts now advance dictionary rotation exactly once per attempt while preserving ranked order from the private dictionary payload.
 - `1.2.39`: Removed the homepage tagline line (including translated English variant text) and added runtime re-hide passes so it stays removed after dynamic page updates.
@@ -85,7 +86,7 @@ Generic, reusable guidance for English-to-foreign-language query localization vi
 
 ## Dictionary Expansion Process
 
-Public dictionary documentation is intentionally high-level only. See [DICTIONARY_EXPANSION_PROCESS_v1.2.41_2026-05-11.md](DICTIONARY_EXPANSION_PROCESS_v1.2.41_2026-05-11.md) and [DICTIONARY_DISCLOSURE_POLICY.md](DICTIONARY_DISCLOSURE_POLICY.md).
+Public dictionary documentation is intentionally high-level only. See [DICTIONARY_EXPANSION_PROCESS_v1.2.42_2026-05-11.md](DICTIONARY_EXPANSION_PROCESS_v1.2.42_2026-05-11.md) and [DICTIONARY_DISCLOSURE_POLICY.md](DICTIONARY_DISCLOSURE_POLICY.md).
 
 ## Steps Taken (Chronological)
 

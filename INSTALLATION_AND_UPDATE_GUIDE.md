@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.41.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.42.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,24 +23,23 @@
 
 ---
 
-## What's New in v1.2.41
+## What's New in v1.2.42
 
 ### ✅ This Iteration Fixes
 
-#### 1. Search localization payload hot-reload
-- English search localization now re-reads the private dictionary payload from `localStorage` instead of requiring a startup-time snapshot.
-- If no private payload is present, the script emits a sanitized console diagnostic so missing dictionary state is easier to diagnose.
+#### 1. Built-in search localization baseline
+- The public userscript now ships with an embedded search-localization dictionary baseline.
+- Recognized English searches can rewrite without requiring a separate private payload to be loaded first.
 
-#### 2. Search localization behavior remains stable
-- Search localization still uses dictionary-backed query conversion.
+#### 2. Local overrides still supported
+- A local/private payload in `localStorage` key `xaavv-search-dictionary-private-v1` can still override or extend the built-in baseline.
 
 #### 3. Version and file naming synchronized
-- **Now:** File name and internal metadata both use 1.2.41.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.41.user.js`
+- **Now:** File name and internal metadata both use 1.2.42.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.42.user.js`
 
-#### 4. Private payload reminder
-- Search-term rewriting requires a local/private payload in `localStorage` key `xaavv-search-dictionary-private-v1`.
-- Public repository artifacts remain sanitized and do not embed term-level dictionary data.
+#### 4. Variant selection hardening
+- When both localized and unchanged English aliases exist for the same intent, the search rewrite now prefers localized variants so the search term actually changes.
 
 ---
 
@@ -101,7 +100,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.41.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.42.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -115,7 +114,7 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.41.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.42.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -136,9 +135,9 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.41)
+2. Find the latest release (v1.2.42)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.41.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.42.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -222,7 +221,7 @@ After installing/updating, verify these features work:
 Common fixes:
 - Hard refresh (Ctrl+Shift+R)
 - Clear Tampermonkey cache (Dashboard → ⚙️ → Storage → Clear all)
-- Confirm your local/private dictionary payload has been loaded into `localStorage` key `xaavv-search-dictionary-private-v1`
+- If needed, confirm any optional local/private override payload in `localStorage` key `xaavv-search-dictionary-private-v1` is valid JSON
 - Disable other userscripts (may conflict)
 - Check browser console (F12 → Console) for errors
 
@@ -240,7 +239,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.41.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.42.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -253,7 +252,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.41
+- **Current Version:** 1.2.42
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers

@@ -22,6 +22,6 @@ See `DICTIONARY_DISCLOSURE_POLICY.md` for the repository policy.
 
 ## Runtime Requirement (Sanitized)
 
-1. Public script builds do not embed term-level dictionary data.
-2. Search-term rewriting only activates when a local/private payload is present in `localStorage` key `xaavv-search-dictionary-private-v1`.
-3. Runtime consumers should re-read that payload when it changes instead of assuming it only exists at initial script startup.
+1. Public script builds may carry dictionary-backed localization logic without publishing term-level documentation in public docs.
+2. An optional local/private payload in `localStorage` key `xaavv-search-dictionary-private-v1` may override or extend the in-script baseline.
+3. Runtime consumers should prefer localized target variants over unchanged English aliases when both exist for the same recognized intent.
