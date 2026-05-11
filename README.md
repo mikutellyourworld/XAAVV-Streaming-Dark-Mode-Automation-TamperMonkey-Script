@@ -29,7 +29,7 @@ A focused Tampermonkey userscript that applies a professional dark interface to 
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.34.user.js`.
+3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.35.user.js`.
 4. Save and refresh XAAVV pages.
 
 ## Validation Notes
@@ -44,7 +44,7 @@ Checked against:
 
 ## Fix Log
 
-- `1.2.34`: Added a stacked search dictionary for English-to-Simplified-Chinese query localization with prioritized phrase-level and token-level mappings. Search submit and `/search/<query>` rewrites now use dictionary-ranked variants for stronger result coverage.
+- `1.2.35`: Updated search localization to resolve each English query into a single target-language search term (instead of multi-term expansion). Repeated searches of the same English key can rotate through ranked fallback variants to improve coverage without over-broad query strings.
 - `1.2.11`: Added an interactive video progress/seek bar overlay on play-page videos. The bar displays current time as a filled segment, allows seeking by clicking, and includes a draggable handle that appears on hover. Themed with purple accent colors.
 - `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
 - `1.2.9`: Fixed download-button placement so it anchors inside the video area with a safe top offset, preventing overlap with header navigation buttons (login/register/menu).

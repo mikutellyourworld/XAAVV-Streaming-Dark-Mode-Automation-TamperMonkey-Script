@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.34
+// @version      1.2.35
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.34';
+  const SCRIPT_VERSION = '1.2.35';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -37,6 +37,7 @@
   const VIDEO_PROGRESS_HANDLE_CLASS = 'xaavv-video-progress-handle';
   const VIDEO_PROGRESS_BOUND_ATTR = 'data-xaavv-video-progress-bound';
   const SEARCH_TRANSLATION_BOUND_ATTR = 'data-xaavv-search-translation-bound';
+  const SEARCH_VARIANT_ROTATION_STORAGE_KEY = 'xaavv-search-variant-rotation-v1';
   const PROGRESS_SEEK_HIT_STRIP_PX = 36;
   const PLAY_BUTTON_PLAY_ICON = `
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -995,6 +996,7 @@
         'big boobs': ['巨乳', '爆乳', '美乳', '丰乳'],
         'big breast': ['巨乳', '爆乳', '美乳', '丰乳'],
         'big breasts': ['巨乳', '爆乳', '美乳', '丰乳'],
+        'rear entry': ['后入', '背入'],
         threesome: ['3p', '三人', '群交'],
         'three some': ['3p', '三人', '群交'],
         transvestite: ['伪娘', '女装', '男扮女装'],
@@ -1006,6 +1008,8 @@
       name: 'token',
       map: {
         butt: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
+        buttock: ['臀', '美臀', '屁股', '臀部'],
+        buttocks: ['臀', '美臀', '屁股', '臀部'],
         ass: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
         booty: ['美臀', '臀', '翘臀', '屁股', '臀部'],
         rear: ['臀', '美臀', '屁股', '臀部'],
@@ -1084,6 +1088,68 @@
     return [];
   };
 
+  const lookupBestPhraseInQuery = (query) => {
+    const normalized = normalizeSearchQueryForLookup(query);
+    if (!normalized) {
+      return null;
+    }
+
+    let best = null;
+    for (const phraseKey of Object.keys(PHRASE_SEARCH_MAP)) {
+      const idx = normalized.indexOf(phraseKey);
+      if (idx < 0) {
+        continue;
+      }
+
+      if (!best || idx < best.idx || (idx === best.idx && phraseKey.length > best.key.length)) {
+        best = { key: phraseKey, idx, variants: dedupeSearchVariants(PHRASE_SEARCH_MAP[phraseKey]) };
+      }
+    }
+
+    if (!best || !best.variants.length) {
+      return null;
+    }
+
+    return best;
+  };
+
+  const loadVariantRotationState = () => {
+    try {
+      const raw = localStorage.getItem(SEARCH_VARIANT_ROTATION_STORAGE_KEY);
+      if (!raw) {
+        return {};
+      }
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (_) {
+      return {};
+    }
+  };
+
+  const saveVariantRotationState = (state) => {
+    try {
+      localStorage.setItem(SEARCH_VARIANT_ROTATION_STORAGE_KEY, JSON.stringify(state || {}));
+    } catch (_) {
+      // Ignore storage failures silently.
+    }
+  };
+
+  const pickSingleVariant = (lookupKey, variants) => {
+    const cleaned = dedupeSearchVariants(variants);
+    if (!lookupKey || !cleaned.length) {
+      return '';
+    }
+
+    const state = loadVariantRotationState();
+    const current = Number(state[lookupKey] || 0);
+    const safeIndex = Number.isFinite(current) ? current : 0;
+    const selected = cleaned[((safeIndex % cleaned.length) + cleaned.length) % cleaned.length];
+
+    state[lookupKey] = safeIndex + 1;
+    saveVariantRotationState(state);
+    return selected;
+  };
+
   const lookupSearchVariants = (token) => {
     const normalized = normalizeSearchToken(token);
     if (!normalized) {
@@ -1121,45 +1187,69 @@
       return { changed: false, query: raw, replacements: [] };
     }
 
-    const phraseVariants = lookupPhraseVariants(raw);
-    if (phraseVariants.length) {
-      return {
-        changed: true,
-        query: phraseVariants.join(' '),
-        replacements: [{ from: raw, to: phraseVariants[0] }]
-      };
-    }
-
-    // Single-word searches get expanded to multiple ranked Chinese variants.
-    if (tokens.length === 1) {
-      const variants = lookupSearchVariants(tokens[0]);
-      if (variants.length) {
+    const phraseMatch = lookupPhraseVariants(raw);
+    if (phraseMatch.length) {
+      const normalizedPhraseKey = normalizeSearchQueryForLookup(raw);
+      const selected = pickSingleVariant(`phrase:${normalizedPhraseKey}`, phraseMatch);
+      if (selected) {
         return {
           changed: true,
-          query: dedupeSearchVariants(variants).join(' '),
-          replacements: [{ from: tokens[0], to: variants[0] }]
+          query: selected,
+          replacements: [{ from: raw, to: selected }]
         };
+      }
+    }
+
+    const embeddedPhraseMatch = lookupBestPhraseInQuery(raw);
+    if (embeddedPhraseMatch) {
+      const selected = pickSingleVariant(`phrase:${embeddedPhraseMatch.key}`, embeddedPhraseMatch.variants);
+      if (selected) {
+        return {
+          changed: true,
+          query: selected,
+          replacements: [{ from: embeddedPhraseMatch.key, to: selected }]
+        };
+      }
+    }
+
+    // Single-word searches now resolve to one best/rotated target variant.
+    if (tokens.length === 1) {
+      const normalizedToken = normalizeSearchToken(tokens[0]);
+      const variants = lookupSearchVariants(tokens[0]);
+      if (variants.length && normalizedToken) {
+        const selected = pickSingleVariant(`token:${normalizedToken}`, variants);
+        if (selected) {
+          return {
+            changed: true,
+            query: selected,
+            replacements: [{ from: tokens[0], to: selected }]
+          };
+        }
       }
       return { changed: false, query: raw, replacements: [] };
     }
 
-    // Multi-word searches map known English tokens to top Chinese variant.
-    const replacements = [];
-    const mapped = tokens.map((token) => {
+    // Multi-word searches: choose ONE translated term from the first recognized token.
+    for (const token of tokens) {
+      const normalizedToken = normalizeSearchToken(token);
       const variants = lookupSearchVariants(token);
-      if (!variants.length) {
-        return token;
+      if (!variants.length || !normalizedToken) {
+        continue;
       }
-      replacements.push({ from: token, to: variants[0] });
-      return variants[0];
-    });
 
-    const next = mapped.join(' ').trim();
-    return {
-      changed: next !== raw && replacements.length > 0,
-      query: next,
-      replacements
-    };
+      const selected = pickSingleVariant(`token:${normalizedToken}`, variants);
+      if (!selected) {
+        continue;
+      }
+
+      return {
+        changed: true,
+        query: selected,
+        replacements: [{ from: token, to: selected }]
+      };
+    }
+
+    return { changed: false, query: raw, replacements: [] };
   };
 
   const buildSearchUrl = (query) => {
