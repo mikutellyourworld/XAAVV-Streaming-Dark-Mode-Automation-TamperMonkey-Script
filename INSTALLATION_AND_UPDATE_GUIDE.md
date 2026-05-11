@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.37.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.38.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,22 +23,21 @@
 
 ---
 
-## What's New in v1.2.37
+## What's New in v1.2.38
 
 ### ✅ This Iteration Fixes
 
-#### 1. Reliability hardening for script startup and route transitions
-- Added a navigation watchdog that detects SPA-style URL transitions and re-runs search-localization/UI maintenance passes without requiring a full reload.
-- URL-change triggers now include `history.pushState`, `history.replaceState`, `popstate`, `hashchange`, and a fallback periodic URL check.
-- Added idempotent guardrails so playback-automation observers are not duplicated during recovery passes.
+#### 1. Public dictionary disclosure sanitization
+- Public repository dictionary term inventories were removed.
+- Public script now supports local-only dictionary payload loading for private term data.
+- Public documentation now uses high-level dictionary references only.
 
 #### 2. Search localization behavior remains stable
-- Repeated searches of the same English key can rotate through ranked fallback variants.
-- Phrase-level mapping is applied first, then token-level fallback.
+- Search localization still uses dictionary-backed query conversion.
 
 #### 3. Version and file naming synchronized
-- **Now:** File name and internal metadata both use 1.2.37.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.37.user.js`
+- **Now:** File name and internal metadata both use 1.2.38.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.38.user.js`
 
 ---
 
@@ -99,7 +98,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.37.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.38.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -113,7 +112,7 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.37.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.38.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -134,9 +133,9 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.37)
+2. Find the latest release (v1.2.38)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.37.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.38.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -237,7 +236,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.37.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.38.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -250,7 +249,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.37
+- **Current Version:** 1.2.38
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers

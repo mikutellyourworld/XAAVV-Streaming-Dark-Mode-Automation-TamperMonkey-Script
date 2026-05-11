@@ -88,7 +88,7 @@ Use this test sequence after installing v1.2.37:
 2. Navigate using in-site links (not manual full reload) to:
 - Detail page (`/xaavv/<slug>.html`)
 - Play page (`/xavplay/<slug>/...`)
-- Search page (`/search/trans`)
+- Search page (`/search/<english-query>`)
 3. Confirm search localization still rewrites English queries to one ranked localized term.
 4. Confirm top-bar and play-page UI hardening is applied after each route transition.
 5. Repeat in-app navigations rapidly and verify features remain active without needing reload.

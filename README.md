@@ -29,7 +29,7 @@ A focused Tampermonkey userscript that applies a professional dark interface to 
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.37.user.js`.
+3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.38.user.js`.
 4. Save and refresh XAAVV pages.
 
 ## Validation Notes
@@ -44,8 +44,9 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.38`: Public dictionary disclosure sanitation release. Removed explicit dictionary term inventories from repository code/docs and switched public script to local-only dictionary loading (`localStorage` private payload). Added repository disclosure policy to keep term-level dictionary data out of public commits.
 - `1.2.37`: Reliability hardening update. Added a navigation watchdog to re-run localization/UI maintenance after SPA-style URL changes (`pushState`, `replaceState`, `popstate`, `hashchange`, plus periodic fallback polling). Added idempotent guard for playback-assist observer wiring to prevent duplicate observers during re-sync cycles.
-- `1.2.36`: Expanded stacked search dictionary coverage for trans/transgender-adjacent aliases and common adult-tag synonyms (for example: `trans`, `transgender`, `ladyboy`, `shemale`, `fairy`, `anal`, `creampie`, `gangbang`, `bdsm`). Ranking remains ordered by observed XAAVV relevance and still resolves to one translated term per search with repeated-query rotation fallback.
+- `1.2.36`: Expanded localization dictionary coverage and improved ranking behavior. Public documentation intentionally omits term-level dictionary details.
 - `1.2.35`: Updated search localization to resolve each English query into a single target-language search term (instead of multi-term expansion). Repeated searches of the same English key can rotate through ranked fallback variants to improve coverage without over-broad query strings.
 - `1.2.11`: Added an interactive video progress/seek bar overlay on play-page videos. The bar displays current time as a filled segment, allows seeking by clicking, and includes a draggable handle that appears on hover. Themed with purple accent colors.
 - `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
@@ -80,7 +81,7 @@ Generic, reusable guidance for English-to-foreign-language query localization vi
 
 ## Dictionary Expansion Process
 
-The full reproducible process used for the v1.2.36 dictionary expansion (term sourcing, live XAAVV evidence capture, ranking, and validation) is documented in [DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md](DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md).
+Public dictionary documentation is intentionally high-level only. See [DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md](DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md) and [DICTIONARY_DISCLOSURE_POLICY.md](DICTIONARY_DISCLOSURE_POLICY.md).
 
 ## Steps Taken (Chronological)
 

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.37
+// @version      1.2.38
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.37';
+  const SCRIPT_VERSION = '1.2.38';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -40,6 +40,7 @@
   const PLAYBACK_ASSIST_BOUND_ATTR = 'data-xaavv-playback-assist-bound';
   const NAV_WATCH_STARTED_ATTR = 'data-xaavv-nav-watch-started';
   const SEARCH_VARIANT_ROTATION_STORAGE_KEY = 'xaavv-search-variant-rotation-v1';
+  const LOCAL_DICTIONARY_STORAGE_KEY = 'xaavv-search-dictionary-private-v1';
   const PROGRESS_SEEK_HIT_STRIP_PX = 36;
   const PLAY_BUTTON_PLAY_ICON = `
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -988,109 +989,38 @@
     return /\/xavplay\//i.test(location.pathname);
   };
 
-  // Stacked dictionary: phrase-level mappings first, then token-level fallback.
-  // Variant order is ranked by observed title/search usefulness on XAAVV.
+  // Public repository policy: explicit dictionary term sets are not stored in-repo.
+  // Private/local dictionary data can be supplied through localStorage when needed.
   const SEARCH_DICTIONARY_STACKS = [
-    {
-      name: 'phrase',
-      map: {
-        'big boob': ['巨乳', '爆乳', '美乳', '丰乳'],
-        'big boobs': ['巨乳', '爆乳', '美乳', '丰乳'],
-        'big breast': ['巨乳', '爆乳', '美乳', '丰乳'],
-        'big breasts': ['巨乳', '爆乳', '美乳', '丰乳'],
-        'rear entry': ['后入', '背入'],
-        threesome: ['3p', '三人', '群交'],
-        'three some': ['3p', '三人', '群交'],
-        transgender: ['伪娘', '变性人', '跨性别', '人妖', 'TS'],
-        'trans gender': ['伪娘', '变性人', '跨性别', '人妖', 'TS'],
-        'trans woman': ['伪娘', '跨性别', 'TS', '变性人'],
-        'trans women': ['伪娘', '跨性别', 'TS', '变性人'],
-        'trans girl': ['伪娘', '跨性别', 'TS', '变性人'],
-        'trans girls': ['伪娘', '跨性别', 'TS', '变性人'],
-        ladyboy: ['人妖', '伪娘', 'TS', '变性人'],
-        shemale: ['人妖', '伪娘', 'TS', '变性人'],
-        newhalf: ['变性人', '跨性别', '伪娘', 'TS'],
-        crossdresser: ['女装', '伪娘', '男扮女装', '异装癖'],
-        'cross dresser': ['女装', '伪娘', '男扮女装', '异装癖'],
-        'cross dressing': ['女装', '伪娘', '男扮女装', '异装癖'],
-        femboy: ['伪娘', '女装', '男娘', 'TS'],
-        otokonoko: ['男娘', '伪娘', '女装', 'TS'],
-        'male to female': ['变性人', '跨性别', '伪娘', 'TS'],
-        'mtf trans': ['变性人', '跨性别', '伪娘', 'TS'],
-        'deep throat': ['深喉', '口爆', '口交'],
-        'oral sex': ['口交', '深喉', '口爆'],
-        'blow job': ['口交', '深喉', '口爆'],
-        'cream pie': ['内射', '中出', '无套内射'],
-        'group sex': ['群交', '多人', '3p'],
-        'gang bang': ['群交', '多人', '轮奸'],
-        transvestite: ['伪娘', '女装', '男扮女装'],
-        trap: ['伪娘', '女装', '男扮女装'],
-        cosplay: ['cos', '角色扮演', 'cosplay']
-      }
-    },
-    {
-      name: 'token',
-      map: {
-        butt: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
-        buttock: ['臀', '美臀', '屁股', '臀部'],
-        buttocks: ['臀', '美臀', '屁股', '臀部'],
-        ass: ['臀', '美臀', '后入', '屁股', '臀部', '翘臀'],
-        booty: ['美臀', '臀', '翘臀', '屁股', '臀部'],
-        rear: ['臀', '美臀', '屁股', '臀部'],
-        backside: ['臀', '美臀', '屁股', '臀部'],
-        bum: ['臀', '美臀', '屁股', '臀部'],
-        trans: ['伪娘', '变性人', '跨性别', 'TS', '人妖'],
-        transgender: ['伪娘', '变性人', '跨性别', 'TS', '人妖'],
-        tranny: ['伪娘', '变性人', '跨性别', 'TS', '人妖'],
-        shemale: ['人妖', '伪娘', 'TS', '变性人'],
-        ladyboy: ['人妖', '伪娘', 'TS', '变性人'],
-        newhalf: ['变性人', '跨性别', '伪娘', 'TS'],
-        ts: ['TS', '伪娘', '变性人', '人妖'],
-        fairy: ['伪娘', '女装', 'TS', '变性人'],
-        crossdress: ['女装', '伪娘', '男扮女装', '异装癖'],
-        crossdresser: ['女装', '伪娘', '男扮女装', '异装癖'],
-        crossdressing: ['女装', '伪娘', '男扮女装', '异装癖'],
-        transvestite: ['伪娘', '女装', '男扮女装'],
-        trap: ['伪娘', '女装', '男扮女装'],
-        femboy: ['伪娘', '男娘', '女装', 'TS'],
-        otokonoko: ['男娘', '伪娘', '女装', 'TS'],
-        cosplay: ['cos', '角色扮演', 'cosplay'],
-        anal: ['肛交', '后庭', '肛门'],
-        analsex: ['肛交', '后庭', '肛门'],
-        blowjob: ['口交', '深喉', '口爆'],
-        deepthroat: ['深喉', '口交', '口爆'],
-        creampie: ['内射', '中出', '无套内射'],
-        gangbang: ['群交', '多人', '轮奸'],
-        orgy: ['群交', '多人', '淫乱派对'],
-        milf: ['人妻', '熟女', '人妻熟女'],
-        mature: ['熟女', '人妻', '御姐'],
-        amateur: ['素人', '真实', '自拍'],
-        lesbian: ['女同', '百合', '蕾丝'],
-        teen: ['萝莉', '少女', '清纯'],
-        asian: ['亚洲', '日韩', '中文'],
-        japanese: ['日本', '日系', '日语'],
-        chinese: ['国产', '中文', '国语'],
-        uncensored: ['无码', '无修正', '无码流出'],
-        bdsm: ['调教', '捆绑', 'SM'],
-        bondage: ['捆绑', '束缚', 'SM'],
-        domination: ['调教', '主导', '女王'],
-        submissive: ['臣服', '受虐', 'M属性'],
-        solo: ['自慰', '独自', '单人'],
-        masturbation: ['自慰', '手淫', '自摸'],
-        squirt: ['潮吹', '喷水', '喷潮'],
-        rimjob: ['舔肛', '肛门口交', '后庭舔'],
-        shemaleporn: ['人妖', '伪娘', 'TS', '变性人'],
-        flat: ['平胸', '贫乳'],
-        flatchest: ['平胸', '贫乳'],
-        boobs: ['巨乳', '爆乳', '美乳'],
-        boob: ['巨乳', '爆乳', '美乳'],
-        breast: ['美乳', '巨乳', '爆乳'],
-        breasts: ['美乳', '巨乳', '爆乳'],
-        tits: ['巨乳', '爆乳', '美乳'],
-        threesome: ['3p', '三人', '群交']
-      }
-    }
+    { name: 'phrase', map: {} },
+    { name: 'token', map: {} }
   ];
+
+  const loadLocalDictionaryStacks = () => {
+    try {
+      const raw = localStorage.getItem(LOCAL_DICTIONARY_STORAGE_KEY);
+      if (!raw) {
+        return SEARCH_DICTIONARY_STACKS;
+      }
+
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) {
+        return SEARCH_DICTIONARY_STACKS;
+      }
+
+      const phrase = parsed.find((entry) => entry && entry.name === 'phrase' && entry.map && typeof entry.map === 'object');
+      const token = parsed.find((entry) => entry && entry.name === 'token' && entry.map && typeof entry.map === 'object');
+
+      return [
+        { name: 'phrase', map: phrase ? phrase.map : {} },
+        { name: 'token', map: token ? token.map : {} }
+      ];
+    } catch (_) {
+      return SEARCH_DICTIONARY_STACKS;
+    }
+  };
+
+  const EFFECTIVE_SEARCH_DICTIONARY_STACKS = loadLocalDictionaryStacks();
 
   const decodeSearchPathQuery = () => {
     const m = location.pathname.match(/^\/search\/(.+)$/i);
@@ -1121,7 +1051,7 @@
   };
 
   const getStackMap = (name) => {
-    const stack = SEARCH_DICTIONARY_STACKS.find((entry) => entry && entry.name === name);
+    const stack = EFFECTIVE_SEARCH_DICTIONARY_STACKS.find((entry) => entry && entry.name === name);
     return stack && stack.map ? stack.map : {};
   };
 

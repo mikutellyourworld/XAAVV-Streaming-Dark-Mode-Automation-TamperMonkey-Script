@@ -10,8 +10,8 @@ The goal is to provide enough operational and technical context for a new mainta
 
 ## Current Baseline
 
-- Active script file: xaavv-master-automation-dark-mode-v1.2.36.user.js
-- Current script version metadata: 1.2.36
+- Active script file: xaavv-master-automation-dark-mode-v1.2.38.user.js
+- Current script version metadata: 1.2.38
 - Primary branch: main
 - Latest core behavior update commit: cf72533
 - Latest documentation/skill update commit: 8f2a5e6
@@ -137,13 +137,17 @@ Known validation emphasis areas:
 - 1.2.35
   - Single-term output per search plus repeated-query fallback sequencing.
 - 1.2.36
-  - Expanded trans/transgender-adjacent aliases and common high-frequency tag families in phrase/token stacks.
-  - Added full process documentation in `DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md` with evidence collection, ranking criteria, validation checklist, and repeatable maintenance workflow.
+  - Expanded localization dictionary coverage and ranking behavior.
+  - Added public process note in `DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md` without term-level disclosure.
 - 1.2.37
   - Reliability hardening for intermittent post-navigation behavior.
   - Added URL-change watchdog (`pushState`, `replaceState`, `popstate`, `hashchange`, plus fallback polling) to re-run maintenance when SPA-style transitions occur without full reload.
   - Added observer idempotency guard for playback-assist setup to avoid duplicate observer wiring during repeated stabilization passes.
   - Added diagnosis and remediation record in `RELIABILITY_DIAGNOSIS_AND_FIX_v1.2.37_2026-05-11.md`.
+- 1.2.38
+  - Public dictionary disclosure sanitation release.
+  - Removed explicit dictionary term sets from public repository code/docs.
+  - Added local-only dictionary loading pattern and disclosure governance in `DICTIONARY_DISCLOSURE_POLICY.md`.
 
 ---
 
