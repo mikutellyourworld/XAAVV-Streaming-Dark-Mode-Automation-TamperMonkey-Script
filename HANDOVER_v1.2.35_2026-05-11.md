@@ -10,8 +10,8 @@ The goal is to provide enough operational and technical context for a new mainta
 
 ## Current Baseline
 
-- Active script file: xaavv-master-automation-dark-mode-v1.2.35.user.js
-- Current script version metadata: 1.2.35
+- Active script file: xaavv-master-automation-dark-mode-v1.2.36.user.js
+- Current script version metadata: 1.2.36
 - Primary branch: main
 - Latest core behavior update commit: cf72533
 - Latest documentation/skill update commit: 8f2a5e6
@@ -136,6 +136,9 @@ Known validation emphasis areas:
   - Stacked dictionary model with phrase/token prioritization.
 - 1.2.35
   - Single-term output per search plus repeated-query fallback sequencing.
+- 1.2.36
+  - Expanded trans/transgender-adjacent aliases and common high-frequency tag families in phrase/token stacks.
+  - Added full process documentation in `DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md` with evidence collection, ranking criteria, validation checklist, and repeatable maintenance workflow.
 
 ---
 

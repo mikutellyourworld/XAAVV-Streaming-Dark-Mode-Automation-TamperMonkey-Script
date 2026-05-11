@@ -29,7 +29,7 @@ A focused Tampermonkey userscript that applies a professional dark interface to 
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.35.user.js`.
+3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.36.user.js`.
 4. Save and refresh XAAVV pages.
 
 ## Validation Notes
@@ -44,6 +44,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.36`: Expanded stacked search dictionary coverage for trans/transgender-adjacent aliases and common adult-tag synonyms (for example: `trans`, `transgender`, `ladyboy`, `shemale`, `fairy`, `anal`, `creampie`, `gangbang`, `bdsm`). Ranking remains ordered by observed XAAVV relevance and still resolves to one translated term per search with repeated-query rotation fallback.
 - `1.2.35`: Updated search localization to resolve each English query into a single target-language search term (instead of multi-term expansion). Repeated searches of the same English key can rotate through ranked fallback variants to improve coverage without over-broad query strings.
 - `1.2.11`: Added an interactive video progress/seek bar overlay on play-page videos. The bar displays current time as a filled segment, allows seeking by clicking, and includes a draggable handle that appears on hover. Themed with purple accent colors.
 - `1.2.10`: Moved the `Download` button to sit below the search control and clamped it above the video frame so it does not overlap content; updated visual styling to match existing XAAVV button theme.
@@ -75,6 +76,10 @@ Operational guidance, postmortem misses, and prevention checklist are documented
 ## Search Localization Skill
 
 Generic, reusable guidance for English-to-foreign-language query localization via a stacked search dictionary is documented in [FOREIGN_LANGUAGE_SEARCH_LOCALIZATION_SKILL.md](FOREIGN_LANGUAGE_SEARCH_LOCALIZATION_SKILL.md).
+
+## Dictionary Expansion Process
+
+The full reproducible process used for the v1.2.36 dictionary expansion (term sourcing, live XAAVV evidence capture, ranking, and validation) is documented in [DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md](DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md).
 
 ## Steps Taken (Chronological)
 

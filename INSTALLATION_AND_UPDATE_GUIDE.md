@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.35.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.36.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,22 +23,22 @@
 
 ---
 
-## What's New in v1.2.35
+## What's New in v1.2.36
 
 ### ✅ This Iteration Fixes
 
-#### 1. Single-term search dictionary localization
-- **Issue before:** Expanded multi-term translated queries could reduce precision for some searches.
-- **Now:** Each English query resolves to one target-language search term.
-- **Technical change:** Dictionary-backed localization now selects a single ranked term per query.
+#### 1. Expanded dictionary coverage for trans and common tag families
+- Added broader English alias support for trans/transgender-adjacent terms, including `trans`, `transgender`, `ladyboy`, `shemale`, `newhalf`, `ts`, and `fairy`.
+- Added common high-frequency adult-tag families such as `anal`, `blowjob`, `creampie`, `gangbang`, `milf`, `amateur`, `uncensored`, and `bdsm`.
+- Ranked target-language variants remain ordered by observed XAAVV result relevance.
 
 #### 2. Ranked fallback rotation for repeated queries
 - Repeated searches of the same English key can rotate through ranked fallback variants.
 - Phrase-level mapping is applied first, then token-level fallback.
 
 #### 3. Version and file naming synchronized
-- **Now:** File name and internal metadata both use 1.2.35.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.35.user.js`
+- **Now:** File name and internal metadata both use 1.2.36.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.36.user.js`
 
 ---
 
@@ -99,7 +99,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.35.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.36.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -113,7 +113,7 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.35.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.36.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -134,9 +134,9 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.35)
+2. Find the latest release (v1.2.36)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.35.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.36.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -237,7 +237,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.35.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.36.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -250,7 +250,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.35
+- **Current Version:** 1.2.36
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers
