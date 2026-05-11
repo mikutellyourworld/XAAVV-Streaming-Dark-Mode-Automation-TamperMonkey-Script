@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.39
+// @version      1.2.40
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.39';
+  const SCRIPT_VERSION = '1.2.40';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -40,7 +40,10 @@
   const PLAYBACK_ASSIST_BOUND_ATTR = 'data-xaavv-playback-assist-bound';
   const NAV_WATCH_STARTED_ATTR = 'data-xaavv-nav-watch-started';
   const SEARCH_VARIANT_ROTATION_STORAGE_KEY = 'xaavv-search-variant-rotation-v1';
+  const SEARCH_VARIANT_LAST_PICK_STORAGE_KEY = 'xaavv-search-variant-last-pick-v1';
   const LOCAL_DICTIONARY_STORAGE_KEY = 'xaavv-search-dictionary-private-v1';
+  const SEARCH_VARIANT_PICK_DEDUP_WINDOW_MS = 1200;
+  const SEARCH_VARIANT_LAST_PICK_MAX_KEYS = 200;
   const PROGRESS_SEEK_HIT_STRIP_PX = 36;
   const PLAY_BUTTON_PLAY_ICON = `
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -1047,7 +1050,23 @@
   };
 
   const dedupeSearchVariants = (variants) => {
-    return Array.from(new Set((variants || []).filter((v) => !!(v && String(v).trim()))));
+    const out = [];
+    const seen = new Set();
+    for (const variant of variants || []) {
+      const cleaned = String(variant || '').trim();
+      if (!cleaned) {
+        continue;
+      }
+
+      const key = cleaned.toLowerCase();
+      if (seen.has(key)) {
+        continue;
+      }
+
+      seen.add(key);
+      out.push(cleaned);
+    }
+    return out;
   };
 
   const getStackMap = (name) => {
@@ -1124,19 +1143,79 @@
     }
   };
 
-  const pickSingleVariant = (lookupKey, variants) => {
+  const loadLastVariantPickState = () => {
+    try {
+      const raw = sessionStorage.getItem(SEARCH_VARIANT_LAST_PICK_STORAGE_KEY);
+      if (!raw) {
+        return {};
+      }
+
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (_) {
+      return {};
+    }
+  };
+
+  const saveLastVariantPickState = (state) => {
+    try {
+      sessionStorage.setItem(SEARCH_VARIANT_LAST_PICK_STORAGE_KEY, JSON.stringify(state || {}));
+    } catch (_) {
+      // Ignore storage failures silently.
+    }
+  };
+
+  const pruneLastVariantPickState = (state) => {
+    const entries = Object.entries(state || {});
+    if (entries.length <= SEARCH_VARIANT_LAST_PICK_MAX_KEYS) {
+      return state || {};
+    }
+
+    entries.sort((a, b) => {
+      const tsA = Number(a[1] && a[1].ts) || 0;
+      const tsB = Number(b[1] && b[1].ts) || 0;
+      return tsB - tsA;
+    });
+
+    return Object.fromEntries(entries.slice(0, SEARCH_VARIANT_LAST_PICK_MAX_KEYS));
+  };
+
+  const pickSingleVariant = (lookupKey, variants, dedupeContextKey) => {
     const cleaned = dedupeSearchVariants(variants);
     if (!lookupKey || !cleaned.length) {
       return '';
     }
 
+    const contextKey = String(dedupeContextKey || '');
+    const dedupeLookupKey = `${lookupKey}|${contextKey}`;
+    const now = Date.now();
+
+    const dedupeState = loadLastVariantPickState();
+    const lastPick = dedupeState[dedupeLookupKey];
+    const lastTs = Number(lastPick && lastPick.ts);
+    const lastIdx = Number(lastPick && lastPick.idx);
+    const lastLen = Number(lastPick && lastPick.len);
+    const withinWindow = Number.isFinite(lastTs) && now - lastTs <= SEARCH_VARIANT_PICK_DEDUP_WINDOW_MS;
+    if (withinWindow && Number.isFinite(lastIdx) && lastIdx >= 0 && lastLen === cleaned.length) {
+      return cleaned[lastIdx % cleaned.length] || '';
+    }
+
     const state = loadVariantRotationState();
     const current = Number(state[lookupKey] || 0);
     const safeIndex = Number.isFinite(current) ? current : 0;
-    const selected = cleaned[((safeIndex % cleaned.length) + cleaned.length) % cleaned.length];
+    const selectedIndex = ((safeIndex % cleaned.length) + cleaned.length) % cleaned.length;
+    const selected = cleaned[selectedIndex];
 
     state[lookupKey] = safeIndex + 1;
     saveVariantRotationState(state);
+
+    dedupeState[dedupeLookupKey] = {
+      ts: now,
+      idx: selectedIndex,
+      len: cleaned.length
+    };
+    saveLastVariantPickState(pruneLastVariantPickState(dedupeState));
+
     return selected;
   };
 
@@ -1180,7 +1259,7 @@
     const phraseMatch = lookupPhraseVariants(raw);
     if (phraseMatch.length) {
       const normalizedPhraseKey = normalizeSearchQueryForLookup(raw);
-      const selected = pickSingleVariant(`phrase:${normalizedPhraseKey}`, phraseMatch);
+      const selected = pickSingleVariant(`phrase:${normalizedPhraseKey}`, phraseMatch, `raw:${normalizedPhraseKey}`);
       if (selected) {
         return {
           changed: true,
@@ -1192,7 +1271,8 @@
 
     const embeddedPhraseMatch = lookupBestPhraseInQuery(raw);
     if (embeddedPhraseMatch) {
-      const selected = pickSingleVariant(`phrase:${embeddedPhraseMatch.key}`, embeddedPhraseMatch.variants);
+      const normalizedRaw = normalizeSearchQueryForLookup(raw);
+      const selected = pickSingleVariant(`phrase:${embeddedPhraseMatch.key}`, embeddedPhraseMatch.variants, `embed:${embeddedPhraseMatch.key}|raw:${normalizedRaw}`);
       if (selected) {
         return {
           changed: true,
@@ -1207,7 +1287,7 @@
       const normalizedToken = normalizeSearchToken(tokens[0]);
       const variants = lookupSearchVariants(tokens[0]);
       if (variants.length && normalizedToken) {
-        const selected = pickSingleVariant(`token:${normalizedToken}`, variants);
+        const selected = pickSingleVariant(`token:${normalizedToken}`, variants, `single:${normalizedToken}`);
         if (selected) {
           return {
             changed: true,
@@ -1227,7 +1307,8 @@
         continue;
       }
 
-      const selected = pickSingleVariant(`token:${normalizedToken}`, variants);
+      const normalizedRaw = normalizeSearchQueryForLookup(raw);
+      const selected = pickSingleVariant(`token:${normalizedToken}`, variants, `multi:${normalizedToken}|raw:${normalizedRaw}`);
       if (!selected) {
         continue;
       }

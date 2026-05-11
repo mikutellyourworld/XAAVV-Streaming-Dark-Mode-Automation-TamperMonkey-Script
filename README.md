@@ -29,7 +29,7 @@ A focused Tampermonkey userscript that applies a professional dark interface to 
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.39.user.js`.
+3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.40.user.js`.
 4. Save and refresh XAAVV pages.
 
 ## Validation Notes
@@ -44,6 +44,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.40`: Search-localization sequencing hardening update. Repeated identical search attempts now advance dictionary rotation exactly once per attempt while preserving ranked order from the private dictionary payload.
 - `1.2.39`: Removed the homepage tagline line (including translated English variant text) and added runtime re-hide passes so it stays removed after dynamic page updates.
 - `1.2.38`: Public dictionary disclosure sanitation release. Removed explicit dictionary term inventories from repository code/docs and switched public script to local-only dictionary loading (`localStorage` private payload). Added repository disclosure policy to keep term-level dictionary data out of public commits.
 - `1.2.37`: Reliability hardening update. Added a navigation watchdog to re-run localization/UI maintenance after SPA-style URL changes (`pushState`, `replaceState`, `popstate`, `hashchange`, plus periodic fallback polling). Added idempotent guard for playback-assist observer wiring to prevent duplicate observers during re-sync cycles.
@@ -82,7 +83,7 @@ Generic, reusable guidance for English-to-foreign-language query localization vi
 
 ## Dictionary Expansion Process
 
-Public dictionary documentation is intentionally high-level only. See [DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md](DICTIONARY_EXPANSION_PROCESS_v1.2.36_2026-05-11.md) and [DICTIONARY_DISCLOSURE_POLICY.md](DICTIONARY_DISCLOSURE_POLICY.md).
+Public dictionary documentation is intentionally high-level only. See [DICTIONARY_EXPANSION_PROCESS_v1.2.40_2026-05-11.md](DICTIONARY_EXPANSION_PROCESS_v1.2.40_2026-05-11.md) and [DICTIONARY_DISCLOSURE_POLICY.md](DICTIONARY_DISCLOSURE_POLICY.md).
 
 ## Steps Taken (Chronological)
 
