@@ -2,7 +2,7 @@
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
 // @version      1.2.45
-// @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support with XAAVV-native search localization for body traits, site-native tags, and trans/crossdress vocabulary.
+// @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support with XAAVV-native search localization for body traits, site-native tags, and extended search vocabulary.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
 // @match        *://xaavv.live/*
