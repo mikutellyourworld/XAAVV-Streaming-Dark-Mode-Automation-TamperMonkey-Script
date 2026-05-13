@@ -1,18 +1,23 @@
-# About XAAVV Streaming Dark Mode + Automation Userscript
+# About XAAVV Streaming Automation Userscript
 
-This project provides a Tampermonkey userscript that transforms the XAAVV streaming experience with a professional dark mode, enhanced video controls, and UI automation. The script removes distracting backgrounds from the top bar on play pages, keeps all controls visible and interactive, and adds features like a Download button and interactive seek bar. It is designed for easy installation and use by anyone, including first-time Tampermonkey users. All features are documented in the README and source code.
+This project provides a Tampermonkey userscript that transforms the XAAVV streaming experience with interface theming, enhanced video controls, and UI automation. The script removes distracting backgrounds from the top bar on play pages, keeps all controls visible and interactive, and adds features like a Download button and interactive seek bar. It is designed for easy installation and use by anyone, including first-time Tampermonkey users. All features are documented in the README and source code.
 
 ---
 
 # About
 
-XAAVV Master Automation and Dark Mode is a Tampermonkey userscript that upgrades XAAVV with a stable dark UI and player automation focused on real-world reliability across both horizontal and vertical videos.
+XAAVV Master Automation is a Tampermonkey userscript that upgrades XAAVV with stable interface theming and player automation focused on real-world reliability across both horizontal and vertical videos.
 
 ## Current Script
 
-- **Name:** XAAVV Master Automation and Dark Mode
-- **File:** `xaavv-master-automation-dark-mode-v1.2.47.user.js`
-- **Current Version:** 1.2.47
+- **Name:** XAAVV Master Automation
+- **File:** `xaavv-master-automation-v1.2.48.user.js`
+- **Current Version:** 1.2.48
+
+## Naming Rebrand Note
+
+- "Dark Mode" was removed from userscript and repository naming in v1.2.48.
+- The feature set is unchanged: interface theming and playback automation remain active.
 
 ## What This Script Does
 

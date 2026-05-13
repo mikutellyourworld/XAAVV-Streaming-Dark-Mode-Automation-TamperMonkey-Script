@@ -1,4 +1,4 @@
-# XAAVV Master Automation and Dark Mode - Installation & Update Guide
+# XAAVV Master Automation - Installation & Update Guide
 
 ## Quick Update Instructions
 
@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.47.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Automation-TamperMonkey-Script/main/xaavv-master-automation-v1.2.48.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,7 +23,7 @@
 
 ---
 
-## What's New in v1.2.47
+## What's New in v1.2.48
 
 ### ✅ This Iteration Fixes
 
@@ -38,9 +38,10 @@
 - The purple progress/seek bar now tracks the active playback surface instead of a stale video parent container.
 - Horizontal XAAVV videos now expose a larger, fixed-position seek hit area, matching the working behavior on vertical layouts.
 
-#### 4. Version and file naming synchronized
-- **Now:** File name and internal metadata both use 1.2.47.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.47.user.js`
+#### 4. Naming rebrand (Dark Mode removed from names)
+- **Userscript name now:** XAAVV Master Automation
+- **Current script file:** `xaavv-master-automation-v1.2.48.user.js`
+- **Repository name now:** `XAAVV-Streaming-Automation-TamperMonkey-Script`
 
 #### 5. Variant selection hardening
 - When both localized and unchanged English aliases exist for the same intent, the search rewrite now prefers localized variants so the search term actually changes.
@@ -49,7 +50,7 @@
 
 ## Feature Overview (Complete)
 
-### 🎨 Dark Mode
+### 🎨 Interface Theme
 - Complete dark theme applied to all XAAVV pages
 - Purple accent colors (#9d8cff, #b5a8ff)
 - No white surface leaks
@@ -104,7 +105,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.47.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Automation-TamperMonkey-Script/main/xaavv-master-automation-v1.2.48.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -115,10 +116,10 @@
 
 1. Go to GitHub: 
    ```
-   https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
+  https://github.com/<REPO_OWNER>/XAAVV-Streaming-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.47.user.js`
+2. Click the script file: `xaavv-master-automation-v1.2.48.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -136,12 +137,12 @@
 
 1. Visit Releases page:
    ```
-   https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
+  https://github.com/<REPO_OWNER>/XAAVV-Streaming-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.47)
+2. Find the latest release (v1.2.48)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.47.user.js`
+3. Download `xaavv-master-automation-v1.2.48.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -156,7 +157,7 @@
 
 After installing/updating, verify these features work:
 
-- [ ] **Dark Mode Applied**
+- [ ] **Interface Theme Applied**
   - Visit any XAAVV page
   - Page should have dark background (#121520)
   - Text should be light (#eceffd)
@@ -244,7 +245,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.47.user.js`
+**Current Version:** `xaavv-master-automation-v1.2.48.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -256,8 +257,8 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 
 ## Repository Info
 
-- **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.47
+- **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Automation-TamperMonkey-Script)
+- **Current Version:** 1.2.48
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers
@@ -302,11 +303,11 @@ A: No. Tampermonkey scripts require:
 - Not available on mobile browsers (Android, iOS)
 - Some mobile browsers (Kiwi Browser on Android) may support extensions
 
-**Q: Why isn't the dark mode applying everywhere?**
+**Q: Why isn't the interface theme applying everywhere?**
 A: The script targets:
 - XAAVV domain only
 - Play pages specifically for video features
-- Other pages get dark mode but no video controls
+- Other pages get interface theming but no video controls
 
 **Q: Can I customize the colors?**
 A: Yes. In Tampermonkey Dashboard:
@@ -326,7 +327,7 @@ Example:
 ## Credits & Acknowledgments
 
 This script combines:
-- Dark mode expertise from web accessibility standards
+- Interface theming expertise from web accessibility standards
 - Tampermonkey scripting best practices
 - XAAVV platform API knowledge
 - Community feedback and testing
@@ -337,7 +338,7 @@ This script combines:
 
 **Need help?** Check [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) or visit the GitHub repository.
 
-**Version:** 1.2.47 | **Updated:** 2026-05-12
+**Version:** 1.2.48 | **Updated:** 2026-05-12
 
 ### v1.2.21 (2024-06-09)
 - UI polish for play pages: Download button never overlaps search, always below and right-aligned; top bar fully transparent and non-blocking.

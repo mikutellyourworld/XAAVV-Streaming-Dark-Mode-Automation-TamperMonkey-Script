@@ -1,4 +1,4 @@
-# XAAVV Dark Mode + Automation (Tampermonkey)
+# XAAVV Automation (Tampermonkey)
 
 A focused Tampermonkey userscript that applies a professional dark interface to XAAVV pages without changing page behavior, player controls, or media rendering.
 
@@ -29,7 +29,7 @@ A focused Tampermonkey userscript that applies a professional dark interface to 
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.47.user.js`.
+3. Replace the default content with `xaavv-master-automation-v1.2.48.user.js`.
 4. Save and refresh XAAVV pages.
 5. Optional: load a local/private dictionary payload into `localStorage` key `xaavv-search-dictionary-private-v1` if you want to override or extend the built-in search-localization baseline.
 
@@ -45,8 +45,9 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.48`: Removed "Dark Mode" from userscript and repository naming. Updated artifact naming to `xaavv-master-automation-v1.2.48.user.js`, updated namespace/repository references to `XAAVV-Streaming-Automation-TamperMonkey-Script`, and documented the naming rebrand while retaining interface theming behavior.
 - `1.2.47`: Reworked the progress/seek bar into a tracked overlay that follows the active playback surface. Horizontal XAAVV videos now use the same reliable seek hit area as vertical layouts, so the purple time bar remains clickable instead of drifting onto a stale parent container.
-- `1.2.46`: Synchronized the shipped userscript filename and public install/update references to the current versioned artifact name (`xaavv-master-automation-dark-mode-v1.2.46.user.js`) so README, install guidance, and reproducibility notes all match the published script.
+- `1.2.46`: Synchronized the shipped userscript filename and public install/update references to the then-current versioned artifact name so README, install guidance, and reproducibility notes matched the published script.
 - `1.2.42`: Search-localization baseline restored in-script. The public userscript now ships with an embedded dictionary baseline, still merges optional local/private overrides from `localStorage`, and prefers localized variants over unchanged English aliases when rewriting recognized search terms.
 - `1.2.41`: Search-localization hot-reload fix. The script now re-reads the private dictionary payload from `localStorage` instead of snapshotting it only at startup, and logs a sanitized diagnostic message when English search rewrites are attempted without the private payload present.
 - `1.2.40`: Search-localization sequencing hardening update. Repeated identical search attempts now advance dictionary rotation exactly once per attempt while preserving ranked order from the private dictionary payload.
@@ -68,7 +69,7 @@ Checked against:
 - `1.2.1`: Improved intermediate-page bypass reliability (`/xaavv/{slug}.html` -> `/xavplay/{slug}/...`) using inline DOM extraction + repeated timed redirect attempts; added dedicated `.sp-play` and `#sp_player_wrap` dark background hardening to remove purple side gutters; expanded top-left swirl cleanup to catch small SVG/circle ring loaders.
 - `1.2.0`: Added direct play-page routing (skip `/xaavv/...` intermediates by fetching and extracting `/xavplay/...` target), playback automation assist on play pages, and runtime removal for top-left spinner/swirl overlays.
 - `1.1.10`: Kept automatic English translation while hiding Google Translate toolbar/banner/spinner UI and forcing page top offset back to `0`; added extra suppression for fixed spinner/loader ring overlays in the top-left.
-- `1.1.9`: Added stronger player visibility recovery by resetting dark-mode inline overrides on player subtree (`#player`, `.video-js`, `vjs-*`, `#danmu_layer`) and enabled automatic English translation mode via Google Translate initialization/cookie.
+- `1.1.9`: Added stronger player visibility recovery by resetting theme-related inline overrides on player subtree (`#player`, `.video-js`, `vjs-*`, `#danmu_layer`) and enabled automatic English translation mode via Google Translate initialization/cookie.
 - `1.1.8`: Added player-safe exclusions to preserve video visibility and controls (`#player`, `.video-js`, `vjs-*`, `#danmu_layer`) and removed unsafe blanket transparent-wrapper background forcing that could dim/cover playback layers.
 - `1.1.7`: Removed persistent white header-edge fades by hard-disabling gradient overlay elements in the top bar and flattening header/banner masks, pseudo-elements, and decorative absolute fade blocks.
 - `1.1.6`: Enforced strict no-gradient rendering for buttons/chips/tags (including `::before`/`::after`) and removed button glow so no gradient-like shine remains visible.
@@ -123,7 +124,7 @@ Note: Browser-based DOM inspection and interaction tooling was used to validate 
 The following project documents were reviewed/updated as part of this workstream:
 
 1. `xaavv-dark-theme.user.js`
-	- Core implementation: dark mode, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
+	- Core implementation: interface theming, player safety, direct routing, playback automation, translation UX cleanup, swirl removal, center overlay behavior.
 2. `README.md`
 	- Full changelog (`1.1.1` through `1.2.7`), chronology, constraints, and latest execution notes.
 3. `DARK_MODING_SKILL.md`
@@ -216,7 +217,7 @@ Wildcard `*.xaavv.live` is included for forward compatibility.
 ## Request Boundary
 
 - Download-button functionality for site-hosted videos is implemented in this repository for XAAVV play pages.
-- Existing behavior remains: playback automation, direct-play routing, translation UI cleanup, dark-mode hardening, and visibility fixes.
+- Existing behavior remains: playback automation, direct-play routing, translation UI cleanup, theme hardening, and visibility fixes.
 
 ## Reusable Future Template
 

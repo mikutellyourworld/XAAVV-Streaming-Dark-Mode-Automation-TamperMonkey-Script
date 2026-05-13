@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         XAAVV Master Automation and Dark Mode
-// @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.47
-// @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support with XAAVV-native search localization.
+// @name         XAAVV Master Automation
+// @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Automation-TamperMonkey-Script
+// @version      1.2.48
+// @description  Comprehensive automation suite: interface theming, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support with XAAVV-native search localization.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
 // @match        *://xaavv.live/*
@@ -17,10 +17,10 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.47';
+  const SCRIPT_VERSION = '1.2.48';
 
-  const STYLE_ID = 'xaavv-dark-theme-style';
-  const TUNED_ATTR = 'data-xaavv-dark-tuned';
+  const STYLE_ID = 'xaavv-theme-style';
+  const TUNED_ATTR = 'data-xaavv-theme-tuned';
   const TRANSLATE_HOOK_ID = 'xaavv-translate-hook';
   const PLAYBACK_AUTOMATION_ATTR = 'data-xaavv-playback-automation-wired';
   const PLAY_UI_TUNED_ATTR = 'data-xaavv-play-ui-tuned';
@@ -81,7 +81,7 @@
     return;
   }
 
-  // Source pattern: dark-mode baseline adapted for XAAVV + accent colors.
+  // Source pattern: baseline interface theme adapted for XAAVV + accent colors.
   const css = `
     :root {
       color-scheme: dark;
