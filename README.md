@@ -14,7 +14,7 @@ A focused Tampermonkey userscript that applies a professional dark interface to 
 - Explicitly forces dark header/banners and brand logo text contrast on XAAVV
 - Forces top and bottom site bars to match the page background tone
 - Adds a play-page video download button that tracks the active/visible video
-- Adds an interactive video progress/seek bar with time tracking on vertical videos
+- Adds an interactive video progress/seek bar with time tracking on both horizontal and vertical videos
 
 ## Supported Match Rules
 
@@ -29,7 +29,7 @@ A focused Tampermonkey userscript that applies a professional dark interface to 
 
 1. Install Tampermonkey.
 2. Create a new userscript.
-3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.46.user.js`.
+3. Replace the default content with `xaavv-master-automation-dark-mode-v1.2.47.user.js`.
 4. Save and refresh XAAVV pages.
 5. Optional: load a local/private dictionary payload into `localStorage` key `xaavv-search-dictionary-private-v1` if you want to override or extend the built-in search-localization baseline.
 
@@ -45,6 +45,7 @@ Checked against:
 
 ## Fix Log
 
+- `1.2.47`: Reworked the progress/seek bar into a tracked overlay that follows the active playback surface. Horizontal XAAVV videos now use the same reliable seek hit area as vertical layouts, so the purple time bar remains clickable instead of drifting onto a stale parent container.
 - `1.2.46`: Synchronized the shipped userscript filename and public install/update references to the current versioned artifact name (`xaavv-master-automation-dark-mode-v1.2.46.user.js`) so README, install guidance, and reproducibility notes all match the published script.
 - `1.2.42`: Search-localization baseline restored in-script. The public userscript now ships with an embedded dictionary baseline, still merges optional local/private overrides from `localStorage`, and prefers localized variants over unchanged English aliases when rewriting recognized search terms.
 - `1.2.41`: Search-localization hot-reload fix. The script now re-reads the private dictionary payload from `localStorage` instead of snapshotting it only at startup, and logs a sanitized diagnostic message when English search rewrites are attempted without the private payload present.

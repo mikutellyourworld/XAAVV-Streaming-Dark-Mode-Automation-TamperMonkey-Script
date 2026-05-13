@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         XAAVV Master Automation and Dark Mode
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
-// @version      1.2.46
+// @version      1.2.47
 // @description  Comprehensive automation suite: dark mode rendering, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support with XAAVV-native search localization.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_VERSION = '1.2.46';
+  const SCRIPT_VERSION = '1.2.47';
 
   const STYLE_ID = 'xaavv-dark-theme-style';
   const TUNED_ATTR = 'data-xaavv-dark-tuned';
@@ -30,6 +30,7 @@
   const INVISIBLE_PAUSE_OVERLAY_BOUND_ATTR = 'data-xaavv-invisible-pause-overlay-bound';
   const VIDEO_DOWNLOAD_BUTTON_ID = 'xaavv-video-download-btn';
   const VIDEO_DOWNLOAD_BOUND_ATTR = 'data-xaavv-video-download-bound';
+  const VIDEO_PROGRESS_OVERLAY_ID = 'xaavv-video-progress-overlay';
   const VIDEO_PROGRESS_WRAPPER_CLASS = 'xaavv-video-progress-wrapper';
   const VIDEO_PROGRESS_BAR_CLASS = 'xaavv-video-progress-bar';
   const VIDEO_PROGRESS_BUFFER_CLASS = 'xaavv-video-progress-buffer';
@@ -2045,18 +2046,88 @@
     btn.style.setProperty('display', 'block', 'important');
   };
 
-  const ensureVideoProgressBar = (video) => {
-    if (!(video instanceof HTMLVideoElement)) {
-      return null;
-    }
-    if (video.getAttribute(VIDEO_PROGRESS_BOUND_ATTR) === '1') {
-      const existing = video.parentNode?.querySelector(`.${VIDEO_PROGRESS_WRAPPER_CLASS}`);
-      return existing instanceof HTMLElement ? existing : null;
+  const getVisiblePlaybackVideos = () => {
+    return Array.from(document.querySelectorAll('video')).filter((video) => {
+      if (!(video instanceof HTMLVideoElement)) {
+        return false;
+      }
+
+      const style = getComputedStyle(video);
+      if (style.display === 'none' || style.visibility === 'hidden') {
+        return false;
+      }
+
+      const rect = video.getBoundingClientRect();
+      return rect.width > 1 && rect.height > 1;
+    });
+  };
+
+  const pickPrimaryPlaybackVideo = (videos, requireDuration) => {
+    let best = null;
+    let bestScore = -1;
+
+    for (const video of videos) {
+      if (!(video instanceof HTMLVideoElement)) {
+        continue;
+      }
+
+      if (requireDuration && (!Number.isFinite(video.duration) || video.duration <= 0)) {
+        continue;
+      }
+
+      const rect = video.getBoundingClientRect();
+      const hasSource = !!(video.currentSrc || video.src);
+      const area = rect.width * rect.height;
+      const playingBonus = (!video.paused && !video.ended) ? 1000000000 : 0;
+      const sourceBonus = hasSource ? 1000000 : 0;
+      const durationBonus = Number.isFinite(video.duration) && video.duration > 0 ? 100000 : 0;
+      const score = area + playingBonus + sourceBonus + durationBonus;
+
+      if (score > bestScore) {
+        best = video;
+        bestScore = score;
+      }
     }
 
-    video.setAttribute(VIDEO_PROGRESS_BOUND_ATTR, '1');
+    return best;
+  };
 
-    const wrapper = document.createElement('div');
+  const getActiveProgressContext = () => {
+    const visibleVideos = getVisiblePlaybackVideos();
+    const primaryVideo = pickPrimaryPlaybackVideo(visibleVideos, false);
+    const seekablePrimary = pickPrimaryPlaybackVideo(visibleVideos, true);
+
+    const seekTargets = seekablePrimary instanceof HTMLVideoElement
+      ? visibleVideos.filter((video) => Number.isFinite(video.duration)
+        && video.duration > 0
+        && Math.abs(video.duration - seekablePrimary.duration) < 2)
+      : [];
+
+    const activeVideo = seekTargets.find((video) => !video.paused && !video.ended)
+      || seekTargets[0]
+      || primaryVideo
+      || null;
+
+    const rectSource = activeVideo instanceof HTMLVideoElement ? activeVideo : primaryVideo;
+    const rect = rectSource instanceof HTMLVideoElement
+      ? rectSource.getBoundingClientRect()
+      : null;
+
+    return {
+      activeVideo,
+      rect,
+      seekTargets,
+    };
+  };
+
+  const ensureVideoProgressBar = () => {
+    let wrapper = document.getElementById(VIDEO_PROGRESS_OVERLAY_ID);
+    if (wrapper instanceof HTMLElement) {
+      return wrapper;
+    }
+
+    wrapper = document.createElement('div');
+    wrapper.id = VIDEO_PROGRESS_OVERLAY_ID;
     wrapper.className = VIDEO_PROGRESS_WRAPPER_CLASS;
 
     const bar = document.createElement('div');
@@ -2075,120 +2146,6 @@
     bar.appendChild(fill);
     bar.appendChild(handle);
     wrapper.appendChild(bar);
-
-    const videoRect = video.getBoundingClientRect();
-    const isVerticalVideo = isVerticalVideoRect(videoRect);
-    const wrapperBottom = isVerticalVideo ? 16 : 2;
-    const wrapperHeight = isVerticalVideo ? 20 : 16;
-
-    // Position wrapper as overlay on video (use CSS for bottom positioning)
-    wrapper.style.setProperty('position', 'absolute', 'important');
-    wrapper.style.setProperty('bottom', `${wrapperBottom}px`, 'important');
-    wrapper.style.setProperty('left', '0', 'important');
-    wrapper.style.setProperty('right', '0', 'important');
-    wrapper.style.setProperty('height', `${wrapperHeight}px`, 'important');
-    wrapper.style.setProperty('z-index', '18', 'important');
-    wrapper.style.setProperty('touch-action', 'manipulation', 'important');
-
-    const getActiveSeekTargets = () => {
-      const videos = Array.from(document.querySelectorAll('video')).filter((v) => v instanceof HTMLVideoElement);
-      let primary = null;
-      let primaryScore = -1;
-
-      for (const candidate of videos) {
-        const style = getComputedStyle(candidate);
-        if (style.display === 'none' || style.visibility === 'hidden') {
-          continue;
-        }
-
-        const rect = candidate.getBoundingClientRect();
-        if (rect.width <= 1 || rect.height <= 1) {
-          continue;
-        }
-
-        if (!Number.isFinite(candidate.duration) || candidate.duration <= 0) {
-          continue;
-        }
-
-        const hasSource = !!(candidate.currentSrc || candidate.src);
-        const area = rect.width * rect.height;
-        const playingBonus = (!candidate.paused && !candidate.ended) ? 1000000000 : 0;
-        const sourceBonus = hasSource ? 1000000 : 0;
-        const score = area + playingBonus + sourceBonus;
-
-        if (score > primaryScore) {
-          primary = candidate;
-          primaryScore = score;
-        }
-      }
-
-      if (!(primary instanceof HTMLVideoElement)) {
-        return [video];
-      }
-
-      const synced = videos.filter((v) => Number.isFinite(v.duration)
-        && v.duration > 0
-        && Math.abs(v.duration - primary.duration) < 2);
-
-      return synced.length ? synced : [primary];
-    };
-
-    const seekFromEvent = (ev) => {
-      const rect = wrapper.getBoundingClientRect();
-      const clickX = ev.clientX - rect.left;
-      const percent = Math.max(0, Math.min(1, clickX / rect.width));
-      const targets = getActiveSeekTargets();
-
-      for (const target of targets) {
-        if (!(target instanceof HTMLVideoElement) || !Number.isFinite(target.duration) || target.duration <= 0) {
-          continue;
-        }
-        target.currentTime = percent * target.duration;
-      }
-    };
-
-    // Wire seek on click
-    wrapper.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      seekFromEvent(ev);
-    }, true);
-
-    wrapper.addEventListener('pointerdown', (ev) => {
-      if (ev.button !== 0) {
-        return;
-      }
-      ev.preventDefault();
-      ev.stopPropagation();
-      seekFromEvent(ev);
-    }, true);
-
-    // Update on video timeupdate
-    const updateProgress = () => {
-      const targets = getActiveSeekTargets();
-      const active = targets.find((v) => !v.paused && !v.ended) || targets[0] || video;
-      if (!(active instanceof HTMLVideoElement)) {
-        return;
-      }
-
-      const duration = active.duration || 0;
-      const current = active.currentTime || 0;
-      const percent = duration > 0 ? (current / duration) * 100 : 0;
-
-      fill.style.setProperty('width', `${percent}%`, 'important');
-      handle.style.setProperty('left', `${percent}%`, 'important');
-
-      if (active.buffered && active.buffered.length > 0 && duration > 0) {
-        const bufferedEnd = active.buffered.end(active.buffered.length - 1);
-        const bufferedPct = Math.max(0, Math.min(100, (bufferedEnd / duration) * 100));
-        buffer.style.setProperty('width', `${bufferedPct}%`, 'important');
-      }
-    };
-
-    video.addEventListener('timeupdate', updateProgress, { passive: true });
-    video.addEventListener('loadedmetadata', updateProgress, { passive: true });
-    video.addEventListener('play', updateProgress, { passive: true });
-    video.addEventListener('pause', updateProgress, { passive: true });
 
     let hideTimer = null;
     const showProgress = () => {
@@ -2209,49 +2166,159 @@
       }, 120);
     };
 
-    // Show progress bar on pointer movement or hover over either the video or the seek bar.
-    video.addEventListener('pointerenter', showProgress, { passive: true });
-    video.addEventListener('pointermove', showProgress, { passive: true });
-    video.addEventListener('mouseover', showProgress, { passive: true });
+    const updateProgress = () => {
+      const context = getActiveProgressContext();
+      const active = context.activeVideo;
+      if (!(active instanceof HTMLVideoElement)) {
+        fill.style.setProperty('width', '0%', 'important');
+        buffer.style.setProperty('width', '0%', 'important');
+        handle.style.setProperty('left', '0%', 'important');
+        return;
+      }
 
-    video.addEventListener('pointerleave', hideProgress, { passive: true });
-    video.addEventListener('mouseout', hideProgress, { passive: true });
+      const duration = active.duration || 0;
+      const current = active.currentTime || 0;
+      const percent = duration > 0 ? (current / duration) * 100 : 0;
 
-    // Also listen on the wrapper itself for hover.
+      fill.style.setProperty('width', `${percent}%`, 'important');
+      handle.style.setProperty('left', `${percent}%`, 'important');
+
+      if (active.buffered && active.buffered.length > 0 && duration > 0) {
+        const bufferedEnd = active.buffered.end(active.buffered.length - 1);
+        const bufferedPct = Math.max(0, Math.min(100, (bufferedEnd / duration) * 100));
+        buffer.style.setProperty('width', `${bufferedPct}%`, 'important');
+      } else {
+        buffer.style.setProperty('width', '0%', 'important');
+      }
+    };
+
+    const seekFromEvent = (ev) => {
+      const rect = wrapper.getBoundingClientRect();
+      if (rect.width <= 1) {
+        return;
+      }
+
+      const clickX = ev.clientX - rect.left;
+      const percent = Math.max(0, Math.min(1, clickX / rect.width));
+      const context = getActiveProgressContext();
+
+      for (const target of context.seekTargets) {
+        if (!(target instanceof HTMLVideoElement) || !Number.isFinite(target.duration) || target.duration <= 0) {
+          continue;
+        }
+
+        target.currentTime = percent * target.duration;
+      }
+
+      updateProgress();
+    };
+
+    const syncProgressGeometry = () => {
+      if (!isPlayPath()) {
+        wrapper.style.setProperty('display', 'none', 'important');
+        wrapper.style.setProperty('pointer-events', 'none', 'important');
+        return;
+      }
+
+      const context = getActiveProgressContext();
+      const rect = context.rect;
+      if (!rect || rect.width <= 1 || rect.height <= 1) {
+        wrapper.style.setProperty('display', 'none', 'important');
+        wrapper.style.setProperty('pointer-events', 'none', 'important');
+        return;
+      }
+
+      const vertical = isVerticalVideoRect(rect);
+      const hitStripHeight = vertical ? 20 : 28;
+      const hitStripOffset = vertical ? 16 : 10;
+      const top = Math.round(rect.top + rect.height - hitStripOffset - hitStripHeight);
+
+      wrapper.style.setProperty('position', 'fixed', 'important');
+      wrapper.style.setProperty('left', `${Math.round(rect.left)}px`, 'important');
+      wrapper.style.setProperty('top', `${Math.max(0, top)}px`, 'important');
+      wrapper.style.setProperty('width', `${Math.round(rect.width)}px`, 'important');
+      wrapper.style.setProperty('height', `${hitStripHeight}px`, 'important');
+      wrapper.style.setProperty('z-index', '230', 'important');
+      wrapper.style.setProperty('display', 'block', 'important');
+      wrapper.style.setProperty('pointer-events', 'auto', 'important');
+      wrapper.style.setProperty('touch-action', 'manipulation', 'important');
+      wrapper.style.setProperty('background', 'transparent', 'important');
+
+      updateProgress();
+    };
+
+    wrapper.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      seekFromEvent(ev);
+    }, true);
+
+    wrapper.addEventListener('pointerdown', (ev) => {
+      if (ev.button !== 0) {
+        return;
+      }
+      ev.preventDefault();
+      ev.stopPropagation();
+      seekFromEvent(ev);
+    }, true);
+
     wrapper.addEventListener('pointerenter', showProgress, { passive: true });
     wrapper.addEventListener('pointermove', showProgress, { passive: true });
     wrapper.addEventListener('mouseover', showProgress, { passive: true });
-
     wrapper.addEventListener('pointerleave', hideProgress, { passive: true });
     wrapper.addEventListener('mouseout', hideProgress, { passive: true });
 
-    // Inject into DOM hierarchy - append to video element's parent for proper positioning
-    wrapper.style.setProperty('width', '100%', 'important');
-    wrapper.style.setProperty('background', 'transparent', 'important');
+    wrapper.xaavvShowProgress = showProgress;
+    wrapper.xaavvHideProgress = hideProgress;
+    wrapper.xaavvSyncProgressGeometry = syncProgressGeometry;
+    wrapper.xaavvUpdateProgress = updateProgress;
 
-    if (video.parentNode instanceof HTMLElement) {
-      // Ensure parent is relatively positioned for absolute child
-      const parentStyle = getComputedStyle(video.parentNode);
-      if (parentStyle.position === 'static' || !parentStyle.position) {
-        video.parentNode.style.setProperty('position', 'relative', 'important');
-      }
-      video.parentNode.appendChild(wrapper);
-    } else {
-      // Fallback: append to video itself
-      video.parentNode ? video.parentNode.appendChild(wrapper) : null;
-    }
-
+    (document.body || document.documentElement).appendChild(wrapper);
     return wrapper;
   };
 
   const syncVideoProgressBars = () => {
-    if (!isPlayPath()) {
+    const wrapper = ensureVideoProgressBar();
+    if (!(wrapper instanceof HTMLElement)) {
       return;
     }
 
-    const videos = Array.from(document.querySelectorAll('video')).filter((v) => v instanceof HTMLVideoElement);
+    const showProgress = typeof wrapper.xaavvShowProgress === 'function' ? wrapper.xaavvShowProgress : null;
+    const hideProgress = typeof wrapper.xaavvHideProgress === 'function' ? wrapper.xaavvHideProgress : null;
+    const updateProgress = typeof wrapper.xaavvUpdateProgress === 'function' ? wrapper.xaavvUpdateProgress : null;
+
+    const videos = getVisiblePlaybackVideos();
     for (const video of videos) {
-      ensureVideoProgressBar(video);
+      if (video.getAttribute(VIDEO_PROGRESS_BOUND_ATTR) === '1') {
+        continue;
+      }
+
+      video.setAttribute(VIDEO_PROGRESS_BOUND_ATTR, '1');
+
+      if (showProgress) {
+        video.addEventListener('pointerenter', showProgress, { passive: true });
+        video.addEventListener('pointermove', showProgress, { passive: true });
+        video.addEventListener('mouseover', showProgress, { passive: true });
+      }
+
+      if (hideProgress) {
+        video.addEventListener('pointerleave', hideProgress, { passive: true });
+        video.addEventListener('mouseout', hideProgress, { passive: true });
+      }
+
+      if (updateProgress) {
+        video.addEventListener('timeupdate', updateProgress, { passive: true });
+        video.addEventListener('loadedmetadata', updateProgress, { passive: true });
+        video.addEventListener('play', updateProgress, { passive: true });
+        video.addEventListener('pause', updateProgress, { passive: true });
+        video.addEventListener('progress', updateProgress, { passive: true });
+        video.addEventListener('seeking', updateProgress, { passive: true });
+        video.addEventListener('seeked', updateProgress, { passive: true });
+      }
+    }
+
+    if (typeof wrapper.xaavvSyncProgressGeometry === 'function') {
+      wrapper.xaavvSyncProgressGeometry();
     }
   };
 
