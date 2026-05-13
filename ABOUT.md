@@ -47,6 +47,7 @@ XAAVV Master Automation is a Tampermonkey userscript that upgrades XAAVV with st
 - Handles dual-layer/stacked XAAVV video rendering safely
 
 ### QoL
+- **Search Localization**: Translates search queries from Chinese into English for processing; returns results in English context
 - Optional unobtrusive translation bootstrap for English-first reading
 - Removes persistent top-left spinner artifacts
 

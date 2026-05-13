@@ -2,7 +2,7 @@
 // @name         XAAVV Master Automation
 // @namespace    https://github.com/mikutellyourworld/XAAVV-Streaming-Automation-TamperMonkey-Script
 // @version      1.2.48
-// @description  Comprehensive automation suite: interface theming, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, and unobtrusive translation support with XAAVV-native search localization.
+// @description  Comprehensive automation suite: interface theming, video playback controls (download + seek bar), playback automation, intermediate page routing, multi-video synchronization, search translation (Chinese to English), and unobtrusive translation support.
 // @author       XAAVV Automation Maintainers
 // @match        *://www.xaavv.live/*
 // @match        *://xaavv.live/*

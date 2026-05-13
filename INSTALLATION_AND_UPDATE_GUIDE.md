@@ -202,6 +202,39 @@ After installing/updating, verify these features work:
 
 ---
 
+## Frequently Asked Questions
+
+### What is Search Translation?
+
+The script includes built-in **search localization** that translates search queries from **Chinese into English** for processing:
+
+- When you type a Chinese search term, the script automatically translates it to the English equivalent
+- The search query is then submitted to XAAVV with the English translation
+- Results are returned and displayed in English context
+- This feature helps search reliability and consistency across the platform
+
+**Example:**
+- You type: `中文搜索` (Chinese search term)
+- Script translates to: `Chinese search`
+- XAAVV processes and returns results in English
+
+### Can I Customize Search Translation?
+
+Yes! The script supports local overrides via `localStorage`:
+
+1. Open browser Developer Tools (F12)
+2. Go to Console tab
+3. Enter:
+   ```javascript
+   localStorage['xaavv-search-dictionary-private-v1'] = JSON.stringify({ "你的词": "your_translation" })
+   ```
+4. Replace with your custom translations
+5. Refresh the XAAVV page
+
+The built-in baseline handles common searches automatically, and local overrides let you add custom mappings for specialized terms.
+
+---
+
 ## Troubleshooting
 
 ### Script Not Loading?
