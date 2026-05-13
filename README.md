@@ -1,20 +1,32 @@
 # XAAVV Automation (Tampermonkey)
 
-A focused Tampermonkey userscript that applies a professional dark interface to XAAVV pages without changing page behavior, player controls, or media rendering.
+A comprehensive Tampermonkey userscript providing automation, enhanced playback controls, search translation, and a professional dark interface for XAAVV streaming pages.
 
 ## Features
 
-- Professional dark palette with purple accent highlights
-- Works on current and future XAAVV subdomains
-- Avoids global inversion/filter tricks that can break images and video
-- Keeps forms, navigation, cards, and buttons readable
-- Preserves player controls and interaction behavior
-- Adds dynamic safety passes to catch late-loaded white surfaces
-- Hardens fixed/sticky top bars to prevent white-on-white text issues
-- Explicitly forces dark header/banners and brand logo text contrast on XAAVV
-- Forces top and bottom site bars to match the page background tone
-- Adds a play-page video download button that tracks the active/visible video
-- Adds an interactive video progress/seek bar with time tracking on both horizontal and vertical videos
+### 🌐 Search Localization
+- **Chinese to English Translation**: Automatically translates Chinese search queries into English for processing
+- Returns results in English context for consistent search experience
+- Built-in baseline dictionary with optional local override support
+- Customizable search mappings via `localStorage` for specialized terms
+
+### ▶️ Playback Automation & Controls
+- **Smart Autoplay**: Automatic video autoplay with muted-start flow and delayed audio restoration
+- **Download Button**: Floating download button on play pages for easy video saving
+- **Interactive Progress Bar**: Click-to-seek functionality with real-time tracking on horizontal and vertical videos
+- **Click-to-Pause Overlay**: Pause videos with a click anywhere on the video surface
+- **Multi-Video Sync**: Handles stacked XAAVV video layouts safely with synchronized playback controls
+
+### 🚀 Navigation & Routing
+- **Direct Play Navigation**: Skips intermediate detail pages and routes directly to playable content
+- **Page Detection**: Automatically adapts controls and features to page type
+
+### 🎨 Interface & Experience
+- **Professional Dark Theme**: Dark palette (#121520) with purple accents (#9d8cff, #b5a8ff)
+- **Safe Styling**: Avoids global filters/inversions that break media rendering
+- **Readable UI**: Forms, navigation, cards, and buttons remain readable and interactive
+- **Dynamic Updates**: Safety passes catch late-loaded white surfaces
+- **Unobtrusive Translation**: Optional Google Translate integration without UI popups
 
 ## Supported Match Rules
 
@@ -45,7 +57,7 @@ Checked against:
 
 ## Fix Log
 
-- `1.2.48`: Removed "Dark Mode" from userscript and repository naming. Updated artifact naming to `xaavv-master-automation-v1.2.48.user.js`, updated namespace/repository references to `XAAVV-Streaming-Automation-TamperMonkey-Script`, and documented the naming rebrand while retaining interface theming behavior.
+- `1.2.48`: Removed "Dark Mode" from userscript and repository naming. Updated artifact to `xaavv-master-automation-v1.2.48.user.js`, repository to `XAAVV-Streaming-Automation-TamperMonkey-Script`, and added comprehensive search translation documentation. The script now explicitly highlights its Chinese-to-English search translation feature alongside interface theming and playback automation capabilities.
 - `1.2.47`: Reworked the progress/seek bar into a tracked overlay that follows the active playback surface. Horizontal XAAVV videos now use the same reliable seek hit area as vertical layouts, so the purple time bar remains clickable instead of drifting onto a stale parent container.
 - `1.2.46`: Synchronized the shipped userscript filename and public install/update references to the then-current versioned artifact name so README, install guidance, and reproducibility notes matched the published script.
 - `1.2.42`: Search-localization baseline restored in-script. The public userscript now ships with an embedded dictionary baseline, still merges optional local/private overrides from `localStorage`, and prefers localized variants over unchanged English aliases when rewriting recognized search terms.
@@ -79,13 +91,13 @@ Checked against:
 - `1.1.2`: Unified top banner and footer (`© 2026 ... SiteMap`) to the same base background tone as the page, plus explicit bar hardening pass.
 - `1.1.1`: Added targeted `.pink-header` and `[role='banner']` overrides so `AV福利网` text cannot render white on pale/white header backgrounds.
 
-## Dark Moding Skill
+## Automation & Interface Skill
 
-Operational guidance, postmortem misses, and prevention checklist are documented in [DARK_MODING_SKILL.md](DARK_MODING_SKILL.md).
+Operational guidance for building robust userscripts with playback automation, UI enhancement, and dynamic DOM handling patterns. See [DARK_MODING_SKILL.md](DARK_MODING_SKILL.md) for detailed case study on interface theme implementation.
 
 ## Search Localization Skill
 
-Generic, reusable guidance for English-to-foreign-language query localization via a stacked search dictionary is documented in [FOREIGN_LANGUAGE_SEARCH_LOCALIZATION_SKILL.md](FOREIGN_LANGUAGE_SEARCH_LOCALIZATION_SKILL.md).
+Technical guidance for implementing cross-language search query translation with dictionary-based routing and optional overrides. See [FOREIGN_LANGUAGE_SEARCH_LOCALIZATION_SKILL.md](FOREIGN_LANGUAGE_SEARCH_LOCALIZATION_SKILL.md) for methodology and best practices.
 
 ## Dictionary Expansion Process
 
