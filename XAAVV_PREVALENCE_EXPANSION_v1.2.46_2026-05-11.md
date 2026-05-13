@@ -40,7 +40,7 @@ Userscript syntax check:
 
 ```powershell
 Set-Location 'C:\Users\purpl\Documents\xaavv-dark-kiro-tampermonkey'
-node --check xaavv-master-automation-dark-mode-v1.2.45.user.js
+node --check xaavv-master-automation-dark-mode-v1.2.46.user.js
 ```
 
 Inventory minimum-threshold check:

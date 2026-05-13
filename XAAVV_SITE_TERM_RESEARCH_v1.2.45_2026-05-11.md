@@ -22,7 +22,7 @@ Reproduction command pattern used in this release:
 
 ```powershell
 Set-Location 'C:\Users\purpl\Documents\xaavv-dark-kiro-tampermonkey'
-node --check xaavv-master-automation-dark-mode-v1.2.45.user.js
+node --check xaavv-master-automation-dark-mode-v1.2.46.user.js
 ```
 
 Search evidence collection is reproducible by opening XAAVV term pages directly in the browser and copying the visible counts into this note.

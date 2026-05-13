@@ -8,7 +8,7 @@ Branch: main
 
 - Latest pushed userscript release: v1.2.45
 - Latest pushed tooling/docs commit: 7eced47
-- Userscript file in repo: xaavv-master-automation-dark-mode-v1.2.45.user.js
+- Userscript file in repo: xaavv-master-automation-dark-mode-v1.2.46.user.js
 
 ## What Was Completed
 
@@ -34,12 +34,12 @@ Branch: main
 - data/XAAVV_PREVALENCE_INVENTORY.md
 - XAAVV_PREVALENCE_EXPANSION_v1.2.46_2026-05-11.md
 - XAAVV_SITE_TERM_RESEARCH_v1.2.45_2026-05-11.md
-- xaavv-master-automation-dark-mode-v1.2.45.user.js
+- xaavv-master-automation-dark-mode-v1.2.46.user.js
 
 ## Validation Evidence
 
 - JavaScript syntax check:
-  - node --check xaavv-master-automation-dark-mode-v1.2.45.user.js
+  - node --check xaavv-master-automation-dark-mode-v1.2.46.user.js
 
 - Python tooling syntax check:
   - python -m py_compile tools/build_xaavv_prevalence_inventory.py
@@ -72,7 +72,7 @@ Branch: main
 Set-Location '<repo-root>'
 python tools/build_xaavv_prevalence_inventory.py --pages 8
 python -c "import json; d=json.load(open('data/xaavv_prevalence_inventory.json', encoding='utf-8')); total=d['counts']['total_unique_term_plus_name_entries']; assert total>=500; print(total)"
-node --check xaavv-master-automation-dark-mode-v1.2.45.user.js
+node --check xaavv-master-automation-dark-mode-v1.2.46.user.js
 ```
 
 ## Suggested Immediate Next Actions

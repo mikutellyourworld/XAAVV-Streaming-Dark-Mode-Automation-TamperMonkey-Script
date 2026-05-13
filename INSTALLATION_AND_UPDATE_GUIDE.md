@@ -6,7 +6,7 @@
 
 1. **Copy the raw script URL:**
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.42.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.46.user.js
    ```
 
 2. **In Tampermonkey Dashboard:**
@@ -23,7 +23,7 @@
 
 ---
 
-## What's New in v1.2.42
+## What's New in v1.2.46
 
 ### ✅ This Iteration Fixes
 
@@ -35,8 +35,8 @@
 - A local/private payload in `localStorage` key `xaavv-search-dictionary-private-v1` can still override or extend the built-in baseline.
 
 #### 3. Version and file naming synchronized
-- **Now:** File name and internal metadata both use 1.2.42.
-- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.42.user.js`
+- **Now:** File name and internal metadata both use 1.2.46.
+- **Current script file:** `xaavv-master-automation-dark-mode-v1.2.46.user.js`
 
 #### 4. Variant selection hardening
 - When both localized and unchanged English aliases exist for the same intent, the search rewrite now prefers localized variants so the search term actually changes.
@@ -100,7 +100,7 @@
 
 2. Visit the raw script URL:
    ```
-  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.42.user.js
+  https://raw.githubusercontent.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/main/xaavv-master-automation-dark-mode-v1.2.46.user.js
    ```
 
 3. Tampermonkey will show an install dialog
@@ -114,7 +114,7 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script
    ```
 
-2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.42.user.js`
+2. Click the script file: `xaavv-master-automation-dark-mode-v1.2.46.user.js`
 
 3. Click "Raw" button (top-right of code view)
 
@@ -135,9 +135,9 @@
    https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script/releases
    ```
 
-2. Find the latest release (v1.2.42)
+2. Find the latest release (v1.2.46)
 
-3. Download `xaavv-master-automation-dark-mode-v1.2.42.user.js`
+3. Download `xaavv-master-automation-dark-mode-v1.2.46.user.js`
 
 4. In Tampermonkey Dashboard:
    - "+ Create a new script"
@@ -239,7 +239,7 @@ Common fixes:
 
 ## File Naming
 
-**Current Version:** `xaavv-master-automation-dark-mode-v1.2.42.user.js`
+**Current Version:** `xaavv-master-automation-dark-mode-v1.2.46.user.js`
 
 **Previous Names:**
 - v1.2.11: `xaavv-dark-theme.user.js`
@@ -252,7 +252,7 @@ If you have old versions installed, consider deleting them from Tampermonkey Das
 ## Repository Info
 
 - **Repository:** [<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script](https://github.com/<REPO_OWNER>/XAAVV-Streaming-Dark-Mode-Automation-TamperMonkey-Script)
-- **Current Version:** 1.2.42
+- **Current Version:** 1.2.46
 - **Last Updated:** 2026-05-10
 - **License:** See repository
 - **Author:** XAAVV Automation Maintainers
@@ -332,7 +332,7 @@ This script combines:
 
 **Need help?** Check [TROUBLESHOOTING_v1.2.13.md](./TROUBLESHOOTING_v1.2.13.md) or visit the GitHub repository.
 
-**Version:** 1.2.32 | **Updated:** 2026-05-10
+**Version:** 1.2.46 | **Updated:** 2026-05-12
 
 ### v1.2.21 (2024-06-09)
 - UI polish for play pages: Download button never overlaps search, always below and right-aligned; top bar fully transparent and non-blocking.
